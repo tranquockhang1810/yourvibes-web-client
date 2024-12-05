@@ -162,7 +162,7 @@ const Post: React.FC<IPost> = React.memo(({
         </div>
       }
     >
-      <span className='font-bold'>hello</span>
+      <span className='font-bold text-red-500'>hello</span>
       {renderPrivacyIcon()}
       {renderLikeIcon()}
     </Card >
