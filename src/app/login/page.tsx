@@ -1,8 +1,9 @@
+import LoginFeature from '@/components/screens/login/view/LoginFeature'
 import React from 'react'
 
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
+    <LoginFeature />
   )
 }
 
