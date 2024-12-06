@@ -1,4 +1,4 @@
-import { TransferToFormData } from "@/src/utils/helper/TransferToFormData";
+import { TransferToFormData } from "@/utils/helper/TransferToFormData";
 import { ApiPath } from "../../ApiPath";
 import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";

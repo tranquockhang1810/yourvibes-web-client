@@ -3,13 +3,17 @@ import { Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { useAuth } from '@/context/auth/useAuth';
 import useColor from '@/hooks/useColor';
-import { Card, Form } from 'antd';
-import React, { useCallback, useState } from 'react';
-import { FaGlobe, FaHeart, FaLock, FaRegHeart } from "react-icons/fa";
+import { Avatar, Button, Card, Col, Dropdown, Form, Menu, MenuProps, Modal, Popover, Row, Tooltip } from 'antd';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FaGlobe, FaHeart, FaLock, FaRegComments, FaRegHeart } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
 import { getTimeDiff } from '@/utils/helper/DateTransfer';
 import { RiAdvertisementLine } from "react-icons/ri";
 import { HiDotsVertical } from "react-icons/hi";
+import { BsFillPeopleFill } from 'react-icons/bs';
+import { IoShareSocialOutline } from 'react-icons/io5';
+import EditPostViewModel from '@/components/features/editpost/viewModel/EditPostViewModel';
+import { defaultPostRepo } from '@/api/features/post/PostRepo';
 
 interface IPost {
   post?: PostResponseModel,
@@ -30,57 +34,25 @@ const Post: React.FC<IPost> = React.memo(({
   const [shareForm] = Form.useForm();
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
-  // const {
-  //   deleteLoading,
-  //   likePost,
-  //   likedPost,
-  //   setLikedPost,
-  //   sharePost,
-  //   shareLoading,
-  //   deletePost,
-  // } = EditPostViewModel(defaultPostRepo);
+  const {
+    deleteLoading,
+    likePost,
+    likedPost,
+    setLikedPost,
+    sharePost,
+    shareLoading,
+    deletePost,
+  } = EditPostViewModel(defaultPostRepo);
   // const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
-  const likedPost: PostResponseModel = {
-    "id": "3c56102f-f139-44b5-9314-feb7898c677a",
-    "user_id": "7dfdf978-9706-4720-aa3f-382af4b14f70",
-    "user": {
-      "id": "7dfdf978-9706-4720-aa3f-382af4b14f70",
-      "family_name": "Pc",
-      "name": "Huy",
-      "avatar_url": "https://res.cloudinary.com/dkf51e57t/image/upload/v1731483436/yourVibes/t33btwrq6rurxho4o5sc.jpg"
-    },
-    "parent_id": undefined,
-    "parent_post": undefined,
-    "content": "test post",
-    "like_count": 1,
-    "comment_count": 1,
-    "privacy": "public",
-    "location": "",
-    "is_advertisement": false,
-    "status": true,
-    "created_at": "2024-11-19T03:55:39.89293+07:00",
-    "updated_at": "2024-11-28T20:32:52.075703+07:00",
-    "media": [
-      {
-        "id": 44,
-        "post_id": "3c56102f-f139-44b5-9314-feb7898c677a",
-        "media_url": "https://res.cloudinary.com/dkf51e57t/image/upload/v1731963346/yourVibes/s40veufkaso1lyscxrub.png",
-        "status": true,
-        "created_at": "2024-11-19T03:55:49.838189+07:00"
-      }
-    ],
-    "is_liked": false
-  }
-
   const renderPrivacyIcon = () => {
-    switch ("public") {
+    switch (likedPost?.privacy) {
       case Privacy.PUBLIC:
-        return <FaGlobe size={24} color={brandPrimaryTap} />;
-      // case Privacy.FRIEND_ONLY:
-      //   return <BsFillPeopleFill  size={24} color={brandPrimaryTap} />;
-      // case Privacy.PRIVATE:
-      //   return <FaLock size={24} color={brandPrimaryTap} />;
+        return <FaGlobe size={12} color={brandPrimaryTap} />;
+      case Privacy.FRIEND_ONLY:
+        return <BsFillPeopleFill size={12} color={brandPrimaryTap} />;
+      case Privacy.PRIVATE:
+        return <FaLock size={12} color={brandPrimaryTap} />;
       default:
         return null;
     }
@@ -100,71 +72,188 @@ const Post: React.FC<IPost> = React.memo(({
   };
 
   const renderLikeIcon = useCallback(() => {
-    // if (likedPost?.is_liked) {
-    if (true) {
+    if (likedPost?.is_liked) {
       return <FaHeart size={24} color={"red"} />;
     } else {
       return <FaRegHeart size={24} color={brandPrimaryTap} />;
     }
-  }, []);
+  }, [likedPost?.is_liked]);
+
+  const items: MenuProps['items'] = useMemo(() => {
+    if (user?.id === likedPost?.user?.id)
+      return [
+        {
+          key: '1',
+          label: localStrings.Post.EditPost,
+          type: 'item',
+          onClick: () => {
+            router.push(`/edit-post/${post?.id}`);
+          }
+        },
+        {
+          key: '2',
+          label: localStrings.Post.DeletePost,
+          type: 'item',
+          onClick: () => {
+            Modal.confirm({
+              centered: true,
+              title: localStrings.Public.Confirm,
+              content: localStrings.DeletePost.DeleteConfirm,
+              okText: localStrings.Public.Confirm,
+              cancelText: localStrings.Public.Cancel,
+              onOk: () => {
+                deletePost && deletePost(post?.id as string);
+              }
+            });
+          }
+        },
+        {
+          key: '3',
+          label: localStrings.Post.Advertisement,
+          type: 'item',
+          onClick: () => {
+            router.push(`/ads?postId=${post?.id}`);
+          }
+        }
+      ]
+    else return [
+      {
+        key: '1',
+        label: localStrings.Post.ReportPost,
+        type: 'item',
+        onClick: () => {
+          router.push(`/report?postId=${post?.id}`);
+        }
+      },
+      {
+        key: '2',
+        label: localStrings.Post.DeleteNewFeed,
+        type: 'item',
+        onClick: () => {
+          Modal.confirm({
+            centered: true,
+            title: localStrings.Public.Confirm,
+            content: localStrings.DeletePost.DeleteConfirm,
+            okText: localStrings.Public.Confirm,
+            cancelText: localStrings.Public.Cancel,
+            onOk: () => {
+              deletePost && deletePost(post?.id as string);
+            }
+          });
+        }
+      }
+    ]
+  }, [user, likedPost]);
+
+  useEffect(() => {
+    setLikedPost(post);
+  }, [post]);
 
   return (
     <Card
       style={{
         margin: 10,
-        borderColor: isParentPost ? brandPrimary : "red",
-        maxWidth: 800
+        borderColor: isParentPost ? brandPrimary : "black",
+        maxWidth: 600,
+        width: "100%",
       }}
       title={
-        <div style={{ display: 'flex', flexDirection: 'row', marginRight: 8 }}>
-          <div
+        <Row gutter={[8, 8]} className='m-2'>
+          <Col xs={4} md={2}
+            className='hover:cursor-pointer'
             onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
           >
-            <img
+            <Avatar
               src={likedPost?.user?.avatar_url}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 30
-              }}
+              shape='circle'
             />
-          </div>
-          <div style={{ flexDirection: 'column', marginLeft: 8, width: '92%' }}>
-            <div
-              onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
-            >
-              <span style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</span>
-            </div>
-            <div style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {likedPost?.is_advertisement ? (
-                <>
-                  <span style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</span>
-                  <RiAdvertisementLine size={24} color={brandPrimaryTap} />
-                </>)
-                : (
-                  <>
+          </Col>
+          <Col xs={18} md={21}>
+            <Row>
+              <Col
+                span={24}
+                className='hover:cursor-pointer hover:underline'
+                onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+              >
+                <span style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</span>
+              </Col>
+              <Col span={24}>
+                {likedPost?.is_advertisement ? (
+                  <div className='flex flex-row items-center'>
+                    <span style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{localStrings.Post.Sponsor}</span>
+                    <RiAdvertisementLine size={24} color={brandPrimaryTap} />
+                  </div>
+                ) : (
+                  <div className='flex flex-row items-center'>
                     <span style={{ color: brandPrimaryTap, fontSize: 12, opacity: 0.5, marginRight: 10 }}>{getTimeDiff(likedPost?.created_at, localStrings)}</span>
                     {renderPrivacyIcon()}
-                  </>
-                )
-              }
-
-            </div>
-          </div>
+                  </div>
+                )}
+              </Col>
+            </Row>
+          </Col>
           {isParentPost || noFooter ? null : (
-            <div
-              style={{ width: '8%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}
-              //onClick={showAction}
+
+            <Col xs={2} md={1}
+              className='hover:cursor-pointer'
+            //onClick={showAction}
             >
-              <HiDotsVertical size={16} />
-            </div>
+              <Dropdown
+                trigger={['click']}
+                menu={{ items }}
+              >
+                <HiDotsVertical size={16} />
+              </Dropdown>
+            </Col>
           )}
-        </div>
+        </Row>
       }
+      actions={isParentPost || noFooter ? undefined : [
+        <Row align={'middle'} justify={'center'}>
+          {renderLikeIcon()}
+          <span style={{ color: brandPrimary }} className='ml-2'>{likedPost?.like_count}</span>
+        </Row>,
+        <Row align={'middle'} justify={'center'}>
+          <FaRegComments size={24} color={brandPrimary} />
+          <span style={{ color: brandPrimary }} className='ml-2'>{likedPost?.comment_count}</span>
+        </Row>,
+        <Row align={'middle'} justify={'center'}>
+          <IoShareSocialOutline size={24} color={brandPrimary} />
+        </Row>,
+      ]}
     >
-      <span className='font-bold text-red-500'>hello</span>
-      {renderPrivacyIcon()}
-      {renderLikeIcon()}
+      <Row gutter={[8, 8]} className='mx-2'>
+        {!isParentPost && children ? (
+          <Col span={24} >
+            {likedPost?.content && (
+              <span className='pl-2'>{likedPost?.content}</span>
+            )}
+            {children}
+          </Col>
+        ) : (
+          likedPost?.content &&
+            likedPost?.parent_id ? (
+            <div>
+              <div style={{ paddingLeft: 10 }}>
+                <span>{likedPost?.content}</span>
+              </div>
+              <div style={{ paddingLeft: 5, paddingRight: 5 }}>
+                <div style={{ padding: 10, borderColor: "#000", borderWidth: 1, borderRadius: 5 }}>
+                  <span style={{ textAlign: 'center', fontWeight: "bold", fontSize: 16 }}>
+                    {localStrings.Post.NoContent}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Col span={22}>
+              {likedPost?.content && (
+                <span className='pl-2'>{likedPost?.content}</span>
+              )}
+              {/* {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />} */}
+            </Col>
+          ))}
+      </Row>
     </Card >
   );
 })
