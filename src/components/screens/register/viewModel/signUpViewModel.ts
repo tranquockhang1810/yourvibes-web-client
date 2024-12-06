@@ -1,13 +1,11 @@
-import { AuthenRepo } from "@/src/api/features/authenticate/AuthenRepo";
-import { useState } from "react";
-import Toast from "react-native-toast-message";
-import { RegisterRequestModel } from "@/src/api/features/authenticate/model/RegisterModel";
-import { VerifyOTPRequestModel } from "@/src/api/features/authenticate/model/VerifyOTPModel";
-import dayjs from 'dayjs';
-import { router } from "expo-router";
-import { useAuth } from "@/src/context/auth/useAuth";
+import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
+import { useState } from "react"; 
+import { RegisterRequestModel } from "@/api/features/authenticate/model/RegisterModel";
+import { VerifyOTPRequestModel } from "@/api/features/authenticate/model/VerifyOTPModel";
+import dayjs from 'dayjs'; 
+import { useAuth } from "@/context/auth/useAuth";
 const customParseFormat = require("dayjs/plugin/customParseFormat");
-dayjs.extend(customParseFormat)
+dayjs.extend(customParseFormat)  
 
 // Handle sign up
 const SignUpViewModel = (repo: AuthenRepo) => {
@@ -28,25 +26,26 @@ const SignUpViewModel = (repo: AuthenRepo) => {
         otp: data?.otp,
       }
       const response = await repo.register(params);
-      if (response && !response?.error) {
-        Toast.show({
-          type: "success",
-          text1: localStrings.SignUp.SignUpSuccess,
-        });
-        router.push(`/login?email=${data?.email}&password=${data?.password}`);
-      } else {
-        Toast.show({
-          type: "error",
-          text1: localStrings.SignUp.SignUpFailed,
-          text2: response?.error?.message,
-        });
-      }
+      
+      // if (response && !response?.error) {
+      //   Toast.show({
+      //     type: "success",
+      //     text1: localStrings.SignUp.SignUpSuccess,
+      //   });
+      //   router.push(`/login?email=${data?.email}&password=${data?.password}`);
+      // } else {
+      //   Toast.show({
+      //     type: "error",
+      //     text1: localStrings.SignUp.SignUpFailed,
+      //     text2: response?.error?.message,
+      //   });
+      // }
     } catch (error) {
       console.error("Error:", error);
-      Toast.show({
-        type: "error",
-        text1: localStrings.SignUp.SignUpFailed,
-      });
+      // Toast.show({
+      //   type: "error",
+      //   text1: localStrings.SignUp.SignUpFailed,
+      // });
     } finally {
       setLoading(false);
     }
@@ -59,32 +58,32 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       const response = await repo.verifyOTP(data);
       console.log(response);
 
-      if (!response?.error) {
-        Toast.show({
-          type: "success",
-          text1: localStrings.SignUp.OTPSuccess,
-        });
-      } else {
-        if (response?.error?.code === 60009) {
-          Toast.show({
-            type: "error",
-            text1: localStrings.SignUp.OTPAlreadySent,
-            text2: response?.error?.message,
-          });
-        } else {
-          Toast.show({
-            type: "error",
-            text1: localStrings.SignUp.OTPFailed,
-            text2: response?.error?.message,
-          });
-        }
-      }
+      // if (!response?.error) {
+      //   Toast.show({
+      //     type: "success",
+      //     text1: localStrings.SignUp.OTPSuccess,
+      //   });
+      // } else {
+      //   if (response?.error?.code === 60009) {
+      //     Toast.show({
+      //       type: "error",
+      //       text1: localStrings.SignUp.OTPAlreadySent,
+      //       text2: response?.error?.message,
+      //     });
+      //   } else {
+      //     Toast.show({
+      //       type: "error",
+      //       text1: localStrings.SignUp.OTPFailed,
+      //       text2: response?.error?.message,
+      //     });
+      //   }
+      // }
     } catch (error) {
       console.error(error);
-      Toast.show({
-        type: "error",
-        text1: localStrings.SignUp.OTPFailed,
-      });
+      // Toast.show({
+      //   type: "error",
+      //   text1: localStrings.SignUp.OTPFailed,
+      // });
     } finally {
       setOtpLoading(false);
     }

@@ -5,7 +5,7 @@ import { GoogleOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 
 const LoginPage = () => {
-  const onFinish = (values: any) => {
+  const onFinish = (values:any) => {
     console.log("Submitted:", values);
   };
 
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
           {/* Link quên mật khẩu */}
           <div className="mb-4 text-center text-xs">
-            <a href="#" className="text-blue-500">
+            <a href="/forgotPassword" className="text-blue-500">
               Tôi không còn nhớ mật khẩu
             </a>
           </div>

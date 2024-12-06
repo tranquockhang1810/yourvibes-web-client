@@ -1,12 +1,43 @@
 "use client";
 import React from "react";
-import { Button, Checkbox, DatePicker, Form, Input } from "antd";
+import { Button, Checkbox, DatePicker, Form, Input, message } from "antd";
+import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
+import SignUpViewModel from "../viewModel/signUpViewModel";
 
 const SignUpFeature: React.FC = () => {
   const [form] = Form.useForm();
+  const repo = new AuthenRepo(); // Khởi tạo AuthenRepo
+  const { handleSignUp, verifyOTP, loading, otpLoading } = SignUpViewModel(repo);
 
-  const handleFinish = (values: any) => {
-    console.log("Form submitted:", values);
+  const onSignUp = async (values: any) => {
+    try {
+      await handleSignUp({
+        family_name: values.firstName,
+        name: values.lastName,
+        email: values.email,
+        password: values.password,
+        phone_number: values.phone,
+        birthday: values.dob.format("DD/MM/YYYY"),
+        otp: values.otp,
+      });
+      message.success("Đăng ký thành công!");
+    } catch (error) {
+      message.error("Đăng ký thất bại. Vui lòng thử lại.");
+    }
+  };
+
+  const onRequestOTP = async () => {
+    try {
+      const email = form.getFieldValue("email");
+      if (!email) {
+        message.error("Vui lòng nhập email trước khi yêu cầu OTP!");
+        return;
+      }
+      await verifyOTP({ email });
+      message.success("Gửi OTP thành công!");
+    } catch (error) {
+      message.error("Gửi OTP thất bại. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -20,7 +51,7 @@ const SignUpFeature: React.FC = () => {
         />
 
         {/* Form */}
-        <Form form={form} layout="vertical" onFinish={handleFinish}>
+        <Form form={form} layout="vertical" onFinish={onSignUp}>
           {/* First and Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
@@ -29,6 +60,7 @@ const SignUpFeature: React.FC = () => {
             >
               <Input placeholder="Họ" className="w-full" />
             </Form.Item>
+
             <Form.Item
               name="lastName"
               rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
@@ -42,15 +74,17 @@ const SignUpFeature: React.FC = () => {
             name="dob"
             rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
           >
-            <DatePicker placeholder="Ngày sinh" className="w-full" />
+            <DatePicker
+              placeholder="Ngày sinh"
+              className="w-full"
+              format="DD/MM/YYYY"
+            />
           </Form.Item>
 
           {/* Phone Number */}
           <Form.Item
             name="phone"
-            rules={[
-              { required: true, message: "Vui lòng nhập số điện thoại!" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
           >
             <Input placeholder="Số điện thoại" className="w-full" />
           </Form.Item>
@@ -68,6 +102,8 @@ const SignUpFeature: React.FC = () => {
               block
               type="default"
               className="bg-black text-white rounded"
+              loading={otpLoading}
+              onClick={onRequestOTP}
             >
               Nhận OTP
             </Button>
@@ -84,14 +120,22 @@ const SignUpFeature: React.FC = () => {
           {/* Confirm Password */}
           <Form.Item
             name="confirmPassword"
+            dependencies={["password"]}
             rules={[
               { required: true, message: "Vui lòng nhập xác nhận mật khẩu!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    "Xác nhận mật khẩu không khớp với mật khẩu!"
+                  );
+                },
+              }),
             ]}
           >
-            <Input.Password
-              placeholder="Xác nhận mật khẩu"
-              className="w-full"
-            />
+            <Input.Password placeholder="Xác nhận mật khẩu" className="w-full" />
           </Form.Item>
 
           {/* Confirm OTP */}
@@ -126,6 +170,7 @@ const SignUpFeature: React.FC = () => {
             block
             size="large"
             htmlType="submit"
+            loading={loading}
             className="mt-4 font-bold bg-black text-white rounded"
           >
             Xác nhận đăng ký
@@ -134,7 +179,10 @@ const SignUpFeature: React.FC = () => {
           {/* Additional Links */}
           <div className="mt-4 text-center">
             <span>
-              Bạn đã có tài khoản? <a href="/login" className="text-blue-500">Đăng nhập ngay</a>
+              Bạn đã có tài khoản?{" "}
+              <a href="/login" className="text-blue-500">
+                Đăng nhập ngay
+              </a>
             </span>
           </div>
         </Form>
