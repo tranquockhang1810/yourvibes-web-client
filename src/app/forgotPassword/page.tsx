@@ -1,10 +1,10 @@
 import ForgotPasswordFeature from '@/components/screens/forgotPassword/view/ForgotPasswordFeature'
 import React from 'react'
 
-const LoginPage = () => {
+const ForGotPasswordPage = () => {
   return (
     <ForgotPasswordFeature />
   )
 }
 
-export default LoginPage
+export default ForGotPasswordPage

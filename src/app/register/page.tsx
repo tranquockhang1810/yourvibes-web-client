@@ -1,10 +1,10 @@
 import SignUpFeature from '@/components/screens/register/view/SignUpFeature'
 import React from 'react'
 
-const LoginPage = () => {
+const RegsiterPage = () => {
   return (
     <SignUpFeature />
   )
 }
 
-export default LoginPage
+export default RegsiterPage

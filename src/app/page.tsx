@@ -1,5 +1,6 @@
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel'
 import Post from '@/components/common/post/views/Post'
+import MyHeader from '@/components/common/header/view/Header'
 import React from 'react'
 
 const HomePage = () => {
@@ -37,7 +38,8 @@ const HomePage = () => {
   }
 
   return (
-    <div className='w-full'>
+    <div className='w-full'> 
+    <MyHeader />
       <div className='flex items-center justify-center w-full'>
         <Post post={likedPost}>
           <Post isParentPost post={likedPost}/>
