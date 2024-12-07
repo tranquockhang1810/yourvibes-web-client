@@ -1,45 +1,54 @@
 "use client";
 import React, { useState } from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Input } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
-import { createElement } from "react"; // Để sử dụng các icon động
-import { FaHome, FaSearch, FaShoppingCart, FaBell, FaCog, FaUserCog, FaUser } from "react-icons/fa"; // Example icons from react-icons
+import { createElement } from "react";
+import {
+  FaHome,
+  FaSearch,
+  FaShoppingCart,
+  FaBell,
+  FaCog,
+  FaUser,
+} from "react-icons/fa";
+import { useAuth } from "@/context/auth/useAuth";
 
 const { Header } = Layout;
 
 const MyHeader = () => {
   const [visible, setVisible] = useState(false);
-
-  // Định nghĩa nội dung menu trực tiếp trong component
+  const [searchQuery, setSearchQuery] = useState("");
+const { localStrings } = useAuth();
   const content = {
     nav: [
       {
         link: "#home",
-        icon: FaHome, // Home icon
-      },
-      {
-        link: "#search",
-        icon: FaSearch, // Search icon
+        icon: FaHome,
       },
       {
         link: "#profile",
-        icon: FaUser, // User icon
+        icon: FaUser,
       },
       {
         link: "#notifications",
-        icon: FaBell, // Notification icon
+        icon: FaBell,
       },
       {
         link: "#settings",
-        icon: FaCog, // Settings icon
+        icon: FaCog,
       },
     ],
   };
 
-  const { nav } = content; // Lấy danh sách các mục menu từ content
+  const { nav } = content;
 
   const handleMenuClick = () => {
     setVisible(!visible);
+  };
+
+  const handleSearch = (e: any) => {
+    setSearchQuery(e.target.value);
+    console.log("Search query:", e.target.value);
   };
 
   return (
@@ -54,11 +63,30 @@ const MyHeader = () => {
           alignItems: "center",
         }}
       >
-        <img
-          src="/image/yourvibes_black.png"
-          alt="YourVibes"
-          style={{ height: "40px" }}
-        />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <img
+            src="/image/yourvibes_black.png"
+            alt="YourVibes"
+            style={{ height: "40px" }}
+          />
+
+          <Input
+            placeholder={localStrings.Search.Search}
+            value={searchQuery}
+            onChange={handleSearch}
+            style={{
+              width: "300px",
+              borderRadius: "8px",
+            }}
+          />
+        </div>
+
         <MenuOutlined
           type="menu"
           style={{
@@ -97,12 +125,11 @@ const MyHeader = () => {
                 fontSize: "16px",
               }}
             >
-              {/* Render icon dynamically using createElement */}
               <div
                 style={{
                   marginRight: "10px",
                   fontSize: "20px",
-                  color: "#1890ff", // Add color to the icons
+                  color: "#black",
                 }}
               >
                 {createElement(item.icon)}

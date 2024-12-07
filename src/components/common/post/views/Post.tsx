@@ -150,6 +150,7 @@ const Post: React.FC<IPost> = React.memo(({
   }, [post]);
 
   return (
+
     <Card
       style={{
         margin: 10,

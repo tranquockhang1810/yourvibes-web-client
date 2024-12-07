@@ -1,9 +1,12 @@
+"use client";
+
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel'
 import Post from '@/components/common/post/views/Post'
-import MyHeader from '@/components/common/header/view/Header'
-import React from 'react'
+import MyHeader from '@/components/common/header/view/Header' 
+import PostBar from '@/components/common/postBar/view/postBar';
 
 const HomePage = () => {
+  
 
   const likedPost: PostResponseModel = {
     "id": "3c56102f-f139-44b5-9314-feb7898c677a",
@@ -40,6 +43,7 @@ const HomePage = () => {
   return (
     <div className='w-full'> 
     <MyHeader />
+    <PostBar />
       <div className='flex items-center justify-center w-full'>
         <Post post={likedPost}>
           <Post isParentPost post={likedPost}/>
