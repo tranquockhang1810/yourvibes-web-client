@@ -278,4 +278,15 @@ export const ENGLocalizedStrings = {
     OTP: "OTP",
     ConformChangePassword: "Confirm change password",
   },
+  ForgotPassword: {
+    ForgotPassword: "Forgot password",
+    Phone: "Phone number",
+    Email: "Email",
+    SendOTP: "Enter OTP",
+    OTP: "OTP Code",
+    NewPassword: "New password",
+    ConfirmPassword: "Confirm password",
+    ConformChangePassword: "Confirm change password",
+    AlreadyAccount:"Already have an account?",
+  },
 }

@@ -84,6 +84,7 @@ export const VnLocalizedStrings = {
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
     },
   },
+
   Login: {
     LoginButton: "Đăng nhập",
     ForgotPasswordText: "Quên mật khẩu?",
@@ -92,6 +93,7 @@ export const VnLocalizedStrings = {
     Or: "Hoặc",
     LoginFailed: "Đăng nhập thất bại!",
   },
+
   SignUp: {
     SignUpButton: "Đăng ký",
     SignUpSuccess: "Đăng ký thành công! Vui lòng đăng nhập lại",
@@ -277,5 +279,16 @@ ChangePassword:{
   SendOTP: "Nhận OTP",
   OTP: "Mã OTP",
   ConformChangePassword: "Xác nhận thay đổi mật khẩu",
+},
+ForgotPassword: {
+  ForgotPassword: "Quên mật khẩu",
+  Phone: "Số điện thoại",
+  Email: "Email",
+  SendOTP: "Enter OTP",
+  OTP: "Mã OTP",
+  NewPassword: "Mật khẩu mới",
+  ConfirmPassword: "Xác nhận mật khẩu",
+  ConformChangePassword: "Xác nhận cập nhật mật khẩu",
+  AlreadyAccount:"Bạn đã nhớ tài khoản?",
 }
-};
+}

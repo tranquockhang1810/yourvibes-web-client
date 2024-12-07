@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Layout, Menu } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { createElement } from "react"; // Để sử dụng các icon động
-import { FaHome, FaSearch, FaShoppingCart, FaBell, FaCog, FaUserCog } from "react-icons/fa"; // Example icons from react-icons
+import { FaHome, FaSearch, FaShoppingCart, FaBell, FaCog, FaUserCog, FaUser } from "react-icons/fa"; // Example icons from react-icons
 
 const { Header } = Layout;
 
@@ -22,8 +22,8 @@ const MyHeader = () => {
         icon: FaSearch, // Search icon
       },
       {
-        link: "#avatar",
-        icon: FaUserCog, // Cart icon
+        link: "#profile",
+        icon: FaUser, // User icon
       },
       {
         link: "#notifications",

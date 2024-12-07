@@ -2,26 +2,26 @@
 import React from "react";
 import { Button, Checkbox, DatePicker, Form, Input, message } from "antd";
 import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
-
+import { useAuth } from "@/context/auth/useAuth";
 const ForgotPasswordFeature: React.FC = () => {
   const [form] = Form.useForm();
   const repo = new AuthenRepo(); // Khởi tạo AuthenRepo
-
+const { language, localStrings } = useAuth();
   const onRequestOTP = async () => {
     try {
       const email = form.getFieldValue("email");
       const phone = form.getFieldValue("phone");
       if (!email) {
-        message.error("Vui lòng nhập email trước khi yêu cầu OTP!");
+        message.error(localStrings.Form.RequiredMessages.EmailRequiredMessage);
         return;
       }
       if (!phone) {
-        message.error("Vui lòng nhập số điện thoại trúc khi yêu cầu OTP!");
+        message.error(localStrings.Form.RequiredMessages.PhoneRequiredMessage);
       }
       await repo.verifyOTP({ email });
-      message.success("Gửi OTP thành công!");
+      message.success(localStrings.SignUp.OTPSuccess);
     } catch (error) {
-      message.error("Gửi OTP thất bại. Vui lòng thử lại.");
+      message.error(localStrings.SignUp.OTPFailed);
     }
   };
 
@@ -34,7 +34,7 @@ const ForgotPasswordFeature: React.FC = () => {
       <div className="w-full max-w-lg p-8 border border-gray-300 rounded-lg shadow-md bg-white">
         {/* Title */}
         <h1 className="text-lg font-bold text-gray-600 mb-6 text-center">
-          ĐẶT LẠI MẬT KHẨU
+          {localStrings.ForgotPassword.ConfirmPassword}
         </h1>
 
         {/* Form */}
@@ -43,10 +43,10 @@ const ForgotPasswordFeature: React.FC = () => {
           <Form.Item
             name="phone"
             rules={[
-              { required: true, message: "Vui lòng nhập số điện thoại!" },
+              { required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage },
             ]}
           >
-            <Input placeholder="Số điện thoại" className="w-full" />
+            <Input placeholder= {localStrings.Form.Label.Phone} className="w-full" />
           </Form.Item>
 
           {/* Email and OTP */}
@@ -54,7 +54,7 @@ const ForgotPasswordFeature: React.FC = () => {
             <Form.Item
               name="email"
               className="col-span-2"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+              rules={[{ required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage }]}
             >
               <Input placeholder="Email" className="w-full" />
             </Form.Item>
@@ -64,16 +64,16 @@ const ForgotPasswordFeature: React.FC = () => {
               className="bg-black text-white rounded"
               onClick={onRequestOTP}
             >
-              Nhận OTP
+              {localStrings.ForgotPassword.SendOTP}
             </Button>
           </div>
 
           {/* Password */}
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
           >
-            <Input.Password placeholder="Mật khẩu" className="w-full" />
+            <Input.Password placeholder= {localStrings.ForgotPassword.NewPassword} className="w-full" />
           </Form.Item>
 
           {/* Confirm Password */}
@@ -81,21 +81,21 @@ const ForgotPasswordFeature: React.FC = () => {
             name="confirmPassword"
             dependencies={["password"]}
             rules={[
-              { required: true, message: "Vui lòng nhập xác nhận mật khẩu!" },
+              { required: true, message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    "Xác nhận mật khẩu không khớp với mật khẩu!"
+                    localStrings.Form.TypeMessage.ConfirmPasswordTypeMessage
                   );
                 },
               }),
             ]}
           >
             <Input.Password
-              placeholder="Xác nhận mật khẩu"
+              placeholder= {localStrings.ForgotPassword.ConfirmPassword}
               className="w-full"
             />
           </Form.Item>
@@ -103,9 +103,9 @@ const ForgotPasswordFeature: React.FC = () => {
           {/* Confirm OTP */}
           <Form.Item
             name="otp"
-            rules={[{ required: true, message: "Vui lòng nhập mã OTP!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
           >
-            <Input placeholder="Mã OTP" className="w-full" />
+            <Input placeholder= {localStrings.ForgotPassword.OTP} className="w-full" />
           </Form.Item>
 
           {/* Submit Button */}
@@ -116,15 +116,15 @@ const ForgotPasswordFeature: React.FC = () => {
             htmlType="submit"
             className="mt-4 font-bold bg-black text-white rounded"
           >
-            Xác nhận đặt lại mật khẩu
+          {localStrings.ForgotPassword.ConformChangePassword}
           </Button>
 
           {/* Additional Links */}
           <div className="mt-4 text-center">
             <span>
-              Bạn đã nhớ tài khoản?{" "}
+              {localStrings.ForgotPassword.AlreadyAccount}{" "}
               <a href="/login" className="text-blue-500">
-                Đăng nhập ngay
+                {localStrings.SignUp.LoginNow}
               </a>
             </span>
           </div>

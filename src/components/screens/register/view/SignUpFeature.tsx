@@ -3,11 +3,13 @@ import React from "react";
 import { Button, Checkbox, DatePicker, Form, Input, message } from "antd";
 import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import SignUpViewModel from "../viewModel/signUpViewModel";
+import { useAuth } from "@/context/auth/useAuth";
 
 const SignUpFeature: React.FC = () => {
   const [form] = Form.useForm();
   const repo = new AuthenRepo(); // Khởi tạo AuthenRepo
   const { handleSignUp, verifyOTP, loading, otpLoading } = SignUpViewModel(repo);
+	const { language, localStrings } = useAuth();
 
   const onSignUp = async (values: any) => {
     try {
@@ -56,26 +58,26 @@ const SignUpFeature: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
               name="firstName"
-              rules={[{ required: true, message: "Vui lòng nhập họ!" }]}
+              rules={[{ required: true, message: localStrings.Form.RequiredMessages.FamilyNameRequiredMessage } ]}
             >
-              <Input placeholder="Họ" className="w-full" />
+              <Input placeholder={localStrings.Form.Label.FamilyName} className="w-full" />
             </Form.Item>
 
             <Form.Item
               name="lastName"
-              rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
+              rules={[{ required: true, message: localStrings.Form.RequiredMessages.NameRequiredMessage }]}
             >
-              <Input placeholder="Tên" className="w-full" />
+              <Input placeholder={localStrings.Form.Label.Name} className="w-full" />
             </Form.Item>
           </div>
 
           {/* Date of Birth */}
           <Form.Item
             name="dob"
-            rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.BirthDayRequiredMessage }]}
           >
             <DatePicker
-              placeholder="Ngày sinh"
+              placeholder={localStrings.Form.Label.BirthDay}
               className="w-full"
               format="DD/MM/YYYY"
             />
@@ -84,9 +86,9 @@ const SignUpFeature: React.FC = () => {
           {/* Phone Number */}
           <Form.Item
             name="phone"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage }]}
           >
-            <Input placeholder="Số điện thoại" className="w-full" />
+            <Input placeholder={localStrings.Public.Phone} className="w-full" />
           </Form.Item>
 
           {/* Email and OTP */}
@@ -94,7 +96,7 @@ const SignUpFeature: React.FC = () => {
             <Form.Item
               name="email"
               className="col-span-2"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+              rules={[{ required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage }]}
             >
               <Input placeholder="Email" className="w-full" />
             </Form.Item>
@@ -105,16 +107,16 @@ const SignUpFeature: React.FC = () => {
               loading={otpLoading}
               onClick={onRequestOTP}
             >
-              Nhận OTP
+              {localStrings.Form.Label.GetOTP}
             </Button>
           </div>
 
           {/* Password */}
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
           >
-            <Input.Password placeholder="Mật khẩu" className="w-full" />
+            <Input.Password placeholder={localStrings.Form.Label.Password} className="w-full" />
           </Form.Item>
 
           {/* Confirm Password */}
@@ -122,28 +124,29 @@ const SignUpFeature: React.FC = () => {
             name="confirmPassword"
             dependencies={["password"]}
             rules={[
-              { required: true, message: "Vui lòng nhập xác nhận mật khẩu!" },
+              { required: true, message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    "Xác nhận mật khẩu không khớp với mật khẩu!"
+                    {
+                      message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage}
                   );
                 },
               }),
             ]}
           >
-            <Input.Password placeholder="Xác nhận mật khẩu" className="w-full" />
+            <Input.Password placeholder={localStrings.Form.Label.ConfirmPassword} className="w-full" />
           </Form.Item>
 
           {/* Confirm OTP */}
           <Form.Item
             name="otp"
-            rules={[{ required: true, message: "Vui lòng nhập mã OTP!" }]}
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
           >
-            <Input placeholder="Mã OTP" className="w-full" />
+            <Input placeholder={localStrings.Form.Label.OTP} className="w-full" />
           </Form.Item>
 
           {/* Terms and Conditions */}
@@ -155,12 +158,13 @@ const SignUpFeature: React.FC = () => {
                 validator: (_, value) =>
                   value
                     ? Promise.resolve()
-                    : Promise.reject("Bạn phải đồng ý với điều khoản!"),
+                    : Promise.reject(
+                        localStrings.Form.RequiredMessages.AgreeRequiredMessage),
               },
             ]}
           >
             <Checkbox>
-              Tôi đồng ý với Điều khoản dịch vụ và chính sách bảo mật
+              {localStrings.SignUp.AgreePolicies}
             </Checkbox>
           </Form.Item>
 
@@ -173,15 +177,15 @@ const SignUpFeature: React.FC = () => {
             loading={loading}
             className="mt-4 font-bold bg-black text-white rounded"
           >
-            Xác nhận đăng ký
+            {localStrings.SignUp.SignUpButton}
           </Button>
 
           {/* Additional Links */}
           <div className="mt-4 text-center">
             <span>
-              Bạn đã có tài khoản?{" "}
+              {localStrings.SignUp.AlreadyHaveAccount}{" "}
               <a href="/login" className="text-blue-500">
-                Đăng nhập ngay
+                {localStrings.SignUp.LoginNow}
               </a>
             </span>
           </div>
