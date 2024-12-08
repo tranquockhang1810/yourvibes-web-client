@@ -5,12 +5,21 @@ import { GoogleOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 
 import { useAuth } from "@/context/auth/useAuth";
+import LoginViewModel from "@/components/screens/login/viewModel/loginViewModel"; 
+import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
+
 const LoginPage = () => {
-  const onFinish = (values:any) => {
-    console.log("Submitted:", values);
+  const repo = new AuthenRepo();
+  const { login, loading } = LoginViewModel(repo, (user) => {
+    console.log("Logged in user:", user);
+  });
+
+  const onFinish = (values: any) => {
+    login(values); // Gọi hàm login từ ViewModel
   };
 
-	const { language, localStrings } = useAuth();
+  const { language, localStrings } = useAuth();
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-5">
       {/* Logo bên trái */}
@@ -34,8 +43,14 @@ const LoginPage = () => {
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage },
-              { type: "email", message: localStrings.Form.TypeMessage.EmailTypeMessage },
+              {
+                required: true,
+                message: localStrings.Form.RequiredMessages.EmailRequiredMessage,
+              },
+              {
+                type: "email",
+                message: localStrings.Form.TypeMessage.EmailTypeMessage,
+              },
             ]}
           >
             <Input placeholder="Email" />
@@ -44,7 +59,12 @@ const LoginPage = () => {
           {/* Password input */}
           <Form.Item
             name="password"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
+            rules={[
+              {
+                required: true,
+                message: localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+              },
+            ]}
           >
             <Input.Password placeholder={localStrings.Form.Label.Password} />
           </Form.Item>
@@ -62,8 +82,9 @@ const LoginPage = () => {
               type="primary"
               htmlType="submit"
               className="w-full bg-black text-white"
+              loading={loading} // Hiển thị trạng thái loading khi đang đăng nhập
             >
-            {localStrings.Login.LoginButton}
+              {localStrings.Login.LoginButton}
             </Button>
           </Form.Item>
 

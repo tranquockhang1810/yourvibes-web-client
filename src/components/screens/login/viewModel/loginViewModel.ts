@@ -3,7 +3,7 @@ import { LoginRequestModel } from "@/api/features/authenticate/model/LoginModel"
 import { useEffect, useState } from "react";
 // import Toast from "react-native-toast-message";
 // import * as Google from 'expo-auth-session/providers/google';
-// import ENV from "@/env-config";
+import ENV from "../../../../../env-config";
 import { useAuth } from "@/context/auth/useAuth";
 
 const LoginViewModel = (repo: AuthenRepo, onLogin: (user: any) => void) => {

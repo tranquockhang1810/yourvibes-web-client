@@ -4,10 +4,9 @@ import { PostResponseModel } from '@/api/features/post/models/PostResponseModel'
 import Post from '@/components/common/post/views/Post'
 import MyHeader from '@/components/common/header/view/Header' 
 import PostBar from '@/components/common/postBar/view/postBar';
+import LoginPage from './login/page';
 
 const HomePage = () => {
-  
-
   const likedPost: PostResponseModel = {
     "id": "3c56102f-f139-44b5-9314-feb7898c677a",
     "user_id": "7dfdf978-9706-4720-aa3f-382af4b14f70",
@@ -53,4 +52,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default LoginPage;

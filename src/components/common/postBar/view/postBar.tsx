@@ -23,7 +23,7 @@ const PostBar = () => {
       >
         <Avatar size={40} icon={<UserOutlined />} className="mr-5" />
         <div
-          className={`flex-1 mr-4 rounded-lg bg-white p-3 min-h-[35px] text-gray-500 border border-gray-300`} // Giảm chiều cao
+          className={`flex-1 mr-4 rounded-lg bg-white p-3 min-h-[35px] text-gray-500 border border-gray-300`}
         >
           {postContent || "Hôm nay bạn thế nào?"}
         </div>
@@ -55,7 +55,7 @@ const PostBar = () => {
           listType="picture"
           fileList={fileList}
           onChange={handleUploadChange}
-          beforeUpload={() => false} // Không upload thực tế
+          beforeUpload={() => false} 
         >
           <Button icon={<UploadOutlined />} className="mb-4">
             Tải ảnh lên
