@@ -51,6 +51,8 @@ export const ENGLocalizedStrings = {
     Reply: "Reply",
     ReportComment: "Report Comment",
     Day: "Day",
+    HideInfo: "has hidden personal information",
+    FriendOnly: "only friends can see",
   },
   Form: {
     Label: {
@@ -126,6 +128,13 @@ export const ENGLocalizedStrings = {
       DefaultPrivacy2: ", you can change the audience for this specific post.",
     },
     ChoosePrivacy: "Choose Privacy",
+  },
+  ObjectProfile: {
+    ProfilePrivacy: "Profile's privacy",
+    Contents: {
+      WhoCanSee: "Who can see your information?",
+      DefaultPrivacy2: ", but you can change the privacy for your account details.",
+    },
   },
   Post: {
     EditPost: "Edit post",
@@ -277,16 +286,5 @@ export const ENGLocalizedStrings = {
     SendOTP: "Send OTP",
     OTP: "OTP",
     ConformChangePassword: "Confirm change password",
-  },
-  ForgotPassword: {
-    ForgotPassword: "Forgot password",
-    Phone: "Phone number",
-    Email: "Email",
-    SendOTP: "Enter OTP",
-    OTP: "OTP Code",
-    NewPassword: "New password",
-    ConfirmPassword: "Confirm password",
-    ConformChangePassword: "Confirm change password",
-    AlreadyAccount:"Already have an account?",
   },
 }

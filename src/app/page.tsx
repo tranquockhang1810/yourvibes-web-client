@@ -5,6 +5,7 @@ import Post from '@/components/common/post/views/Post'
 import MyHeader from '@/components/common/header/view/Header' 
 import PostBar from '@/components/common/postBar/view/postBar';
 import LoginPage from './login/page';
+import { Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
 
 const HomePage = () => {
   const likedPost: PostResponseModel = {
@@ -21,7 +22,7 @@ const HomePage = () => {
     "content": "test post",
     "like_count": 1,
     "comment_count": 1,
-    "privacy": "public",
+    "privacy": Privacy.PUBLIC,
     "location": "",
     "is_advertisement": false,
     "status": true,
@@ -52,4 +53,4 @@ const HomePage = () => {
   )
 }
 
-export default LoginPage;
+export default HomePage;
