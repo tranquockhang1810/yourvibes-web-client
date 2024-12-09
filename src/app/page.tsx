@@ -52,4 +52,4 @@ const HomePage = () => {
   )
 }
 
-export default LoginPage;
+export default HomePage;
