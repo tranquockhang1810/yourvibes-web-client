@@ -50,6 +50,8 @@ export const VnLocalizedStrings = {
     Reply: "Trả lời",
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
+    HideInfo: "đã ẩn thông tin cá nhân",
+    FriendOnly: "chỉ bạn bè được xem"
   },
   Form: {
     Label: {
@@ -84,7 +86,6 @@ export const VnLocalizedStrings = {
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
     },
   },
-
   Login: {
     LoginButton: "Đăng nhập",
     ForgotPasswordText: "Quên mật khẩu?",
@@ -93,7 +94,6 @@ export const VnLocalizedStrings = {
     Or: "Hoặc",
     LoginFailed: "Đăng nhập thất bại!",
   },
-
   SignUp: {
     SignUpButton: "Đăng ký",
     SignUpSuccess: "Đăng ký thành công! Vui lòng đăng nhập lại",
@@ -119,16 +119,24 @@ export const VnLocalizedStrings = {
     PublicDescription: "Bất kỳ ai ở trên YourVibes",
     FriendDescription: "Chỉ bạn bè của bạn ở trên YourVibes",
     PrivateDescription: "Chỉ bạn có thể nhìn thấy",
-    PostPrivacy: "Đối tượng của bài viết",
+    PostPrivacy: "Quyền riêng tư của bài viết",
     Contents: {
       WhoCanSee: "Ai có thể nhìn thấy bài viết của bạn?",
       CanFind:
         "Bài viết của bạn có thể hiện thị trên trang cá nhân và trong kết quả tìm kiếm.",
       DefaultPrivacy1: "Tuy đối tượng mặc định là ",
       DefaultPrivacy2:
-        ", nhưng bạn có thể thay đổi đối tượng của riêng bài viết này.",
+        ", nhưng bạn có thể thay đổi Quyền riêng tư của riêng bài viết này.",
     },
     ChoosePrivacy: "Chọn Đối tượng",
+  },
+  ObjectProfile: {
+    ProfilePrivacy: "Quyền riêng tư của thông tin cá nhân",
+    Contents: {
+      WhoCanSee: "Ai có thể nhìn thấy thông tin của bạn?",
+      DefaultPrivacy2:
+        ", nhưng bạn có thể thay đổi quyền riêng tư cho thông tin tài khoản của mình.",
+    },
   },
   Post: {
     EditPost: "Chỉnh sửa bài đăng",
@@ -279,16 +287,5 @@ ChangePassword:{
   SendOTP: "Nhận OTP",
   OTP: "Mã OTP",
   ConformChangePassword: "Xác nhận thay đổi mật khẩu",
-},
-ForgotPassword: {
-  ForgotPassword: "Quên mật khẩu",
-  Phone: "Số điện thoại",
-  Email: "Email",
-  SendOTP: "Enter OTP",
-  OTP: "Mã OTP",
-  NewPassword: "Mật khẩu mới",
-  ConfirmPassword: "Xác nhận mật khẩu",
-  ConformChangePassword: "Xác nhận cập nhật mật khẩu",
-  AlreadyAccount:"Bạn đã nhớ tài khoản?",
 }
-}
+};

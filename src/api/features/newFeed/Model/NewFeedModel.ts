@@ -1,4 +1,5 @@
-import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
+import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel"
+
 export interface NewFeedRequestModel {
     limit?: number,
     page?: number

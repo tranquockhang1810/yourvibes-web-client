@@ -1,4 +1,5 @@
-import { FriendStatus, Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"
+import { FriendStatus, Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel"
+
 
 export interface LoginRequestModel {
   email?: string
@@ -20,7 +21,7 @@ export interface UserModel {
   birthday?: string,
   avatar_url?: string,
   capwall_url?: string,
-  validator?: Privacy,
+  privacy?: Privacy,
   auth_type?: string,
   auth_google_id?: string,
   post_count?: number,

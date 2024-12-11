@@ -1,4 +1,5 @@
-"use client";
+"use client";  // Đảm bảo rằng đây là một client-side component
+
 import React, { useState } from "react";
 import { Layout, Menu, Input } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
@@ -12,29 +13,36 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth/useAuth";
+import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
 
 const { Header } = Layout;
 
 const MyHeader = () => {
   const [visible, setVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-const { localStrings } = useAuth();
+  const { localStrings } = useAuth();
+  const router = useRouter(); // Khởi tạo useRouter từ next/navigation
+
   const content = {
     nav: [
       {
-        link: "#home",
+        link: "/home",
+        content: "Home",
         icon: FaHome,
       },
       {
-        link: "#profile",
+        link: "/profile",
+        content: "Profile",
         icon: FaUser,
       },
       {
-        link: "#notifications",
+        link: "/notifications",
+        content: "Notifications",
         icon: FaBell,
       },
       {
-        link: "#settings",
+        link: "/settings",
+        content: "Settings",
         icon: FaCog,
       },
     ],
@@ -49,6 +57,12 @@ const { localStrings } = useAuth();
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value);
     console.log("Search query:", e.target.value);
+  };
+
+  // Cập nhật lại hàm handleItemClick
+  const handleItemClick = (link: string) => {
+    router.push(link);  // Chuyển trang khi nhấn vào menu item
+    setVisible(false);   // Đóng menu khi nhấn vào item
   };
 
   return (
@@ -124,14 +138,17 @@ const { localStrings } = useAuth();
                 padding: "12px 20px",
                 fontSize: "16px",
               }}
+              onClick={() => handleItemClick(item.link)} // Gọi handleItemClick
             >
               <div
                 style={{
+                  display: "flex",
                   marginRight: "10px",
                   fontSize: "20px",
                   color: "#black",
                 }}
               >
+                {item.content}
                 {createElement(item.icon)}
               </div>
             </Menu.Item>

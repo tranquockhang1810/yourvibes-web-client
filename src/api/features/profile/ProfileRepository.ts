@@ -1,4 +1,4 @@
-import { TransferToFormData } from "@/src/utils/helper/TransferToFormData";
+
 import { ApiPath } from "../../ApiPath";
 import { BaseApiResponseModel } from "../../baseApiResponseModel/baseApiResponseModel";
 import client from "../../client";
@@ -7,6 +7,7 @@ import { UpdateProfileRequestModel } from "./model/UpdateProfileModel";
 import { ReportUserRequestModel } from "./model/ReportUser";
 import { GetFriendRequestModel } from "./model/GetFriendModel";
 import { FriendResponseModel, } from "./model/FriendReponseModel";
+import { TransferToFormData } from "@/utils/helper/TransferToFormData";
 
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
