@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/auth/useAuth';
@@ -26,7 +27,6 @@ const UserProfileViewModel = () => {
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
   const [friendCount, setFriendCount] = useState(0);
   const [resultCode, setResultCode] = useState(0);
-  const router = useRouter();
 
   const limit = 10;
 

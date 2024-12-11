@@ -136,12 +136,6 @@ const UpdateProfileScreen = () => {
         <Form.Item name="biography" label={localStrings.Form.Label.Biography}>
           <Input.TextArea placeholder={localStrings.Form.Label.Biography} />
         </Form.Item>
-
-        {/* <div className="text-center">
-          <Button type="primary" htmlType="submit" loading={loading}>
-            {localStrings.Public.Save}
-          </Button>
-        </div> */}
       </Form>
     </div>
   );
