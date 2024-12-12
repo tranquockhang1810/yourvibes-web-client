@@ -2,23 +2,24 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth/useAuth";
+import LoginViewModel from "../viewModel/loginViewModel";
+import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import "antd/dist/reset.css";
 
-import { useAuth } from "@/context/auth/useAuth";
-import LoginViewModel from "@/components/screens/login/viewModel/loginViewModel"; 
-import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
-
 const LoginPage = () => {
-  const repo = new AuthenRepo();
-  const { login, loading } = LoginViewModel(repo, (user) => {
+  const router = useRouter(); // Sử dụng useRouter trong component React
+  const { login, loading } = LoginViewModel(new AuthenRepo(), (user) => {
     console.log("Logged in user:", user);
+    router.push("/home"); // Điều hướng sau khi đăng nhập thành công
   });
 
-  const onFinish = (values: any) => {
-    login(values); // Gọi hàm login từ ViewModel
-  };
+  const { localStrings } = useAuth();
 
-  const { language, localStrings } = useAuth();
+  const onFinish = (values: any) => {
+    login(values); // Gọi hàm login với dữ liệu từ form
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-5">

@@ -1,6 +1,6 @@
 const ENV = { 
-    // SERVER_ENDPOINT: 'http://192.168.20.101:8080', //student
-    SERVER_ENDPOINT: 'http://192.168.43.180:8080',//4G;
+    SERVER_ENDPOINT: 'http://192.168.21.58:8080', //student
+    // SERVER_ENDPOINT: 'http://192.168.43.180:8080',//4G;
     // SERVER_ENDPOINT: 'http://192.168.110.81:8080',//Phòng
     // SERVER_ENDPOINT: 'http://192.168.88.132:8080',//VNPT
     // SERVER_ENDPOINT: 'http://10.5.50.54:8080',//Passio
