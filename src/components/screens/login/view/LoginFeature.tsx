@@ -1,38 +1,32 @@
 "use client";
 import React from "react";
-import { Form, Input, Button, message } from "antd"; // Thêm message
+import { Form, Input, Button, message } from "antd"; 
 import { GoogleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/auth/useAuth";
 import LoginViewModel from "../viewModel/loginViewModel";
 import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import "antd/dist/reset.css";
+import { useAuth } from "@/context/auth/useAuth";
 
 const LoginPage = () => {
-  const router = useRouter();
-  const { login, loading } = LoginViewModel(new AuthenRepo(), (user) => {
-    console.log("Logged in user:", user);
-    router.push("/home");
-  });
-
   const { localStrings } = useAuth();
+  const { login, loading } = LoginViewModel(new AuthenRepo());
 
   const onFinish = async (values: any) => {
     message.loading({
       content: "Đang đăng nhập, vui lòng đợi...",
-      key: "login", // Khóa để cập nhật hoặc xóa thông báo
+      key: "login",
     });
 
     await login(values);
 
     if (!loading) {
-      message.destroy("login"); // Xóa thông báo khi đăng nhập kết thúc
+      message.destroy("login");
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-5">
-      {/* Logo bên trái */}
       <div className="flex-1 flex items-center justify-center">
         <img
           src="/image/yourvibes_black.png"
@@ -41,7 +35,6 @@ const LoginPage = () => {
         />
       </div>
 
-      {/* Form đăng nhập bên phải */}
       <div className="flex-1 max-w-md p-8 border border-gray-300 rounded-lg shadow-lg bg-white">
         <Form
           name="login"
@@ -49,7 +42,6 @@ const LoginPage = () => {
           onFinish={onFinish}
           className="w-full"
         >
-          {/* Email input */}
           <Form.Item
             name="email"
             rules={[
@@ -66,7 +58,6 @@ const LoginPage = () => {
             <Input placeholder="Email" />
           </Form.Item>
 
-          {/* Password input */}
           <Form.Item
             name="password"
             rules={[
@@ -79,14 +70,12 @@ const LoginPage = () => {
             <Input.Password placeholder={localStrings.Form.Label.Password} />
           </Form.Item>
 
-          {/* Link quên mật khẩu */}
           <div className="mb-4 text-center text-xs">
             <a href="/forgotPassword" className="text-blue-500">
               {localStrings.Login.ForgotPasswordText}
             </a>
           </div>
 
-          {/* Nút đăng nhập */}
           <Form.Item>
             <Button
               type="primary"
@@ -98,7 +87,6 @@ const LoginPage = () => {
             </Button>
           </Form.Item>
 
-          {/* Đăng ký */}
           <div className="text-center">
             <span>
               {localStrings.Login.DontHaveAccout}{" "}
@@ -108,10 +96,8 @@ const LoginPage = () => {
             </span>
           </div>
 
-          {/* Hoặc */}
           <div className="mt-4 text-center text-sm">{localStrings.Login.Or}</div>
 
-          {/* Nút Google */}
           <div className="mt-4 text-center">
             <Button
               type="default"
