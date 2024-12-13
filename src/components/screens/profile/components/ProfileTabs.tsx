@@ -9,6 +9,7 @@ import { PostResponseModel } from '@/api/features/post/models/PostResponseModel'
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
 import SettingsTab from './SettingTabs';
+import ListFriends from './ListFriends';
 
 const ProfileTabs = ({
   // tabNum,
@@ -58,9 +59,14 @@ const ProfileTabs = ({
             label: localStrings.Public.Post,
             children: 'PosstLisst',
         },
-        // ...(userInfo?.id === user?.id ?[
         {
             key: '3',
+            label: localStrings.Public.Friend,
+            children: <ListFriends />,
+        },
+        // ...(userInfo?.id === user?.id ?[
+        {
+            key: '4',
             label: localStrings.Public.SetingProfile,
             children: <SettingsTab />,
         },

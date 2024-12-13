@@ -26,7 +26,7 @@ const MyHeader = () => {
   const content = {
     nav: [
       {
-        link: "/home",
+        link: "/",
         content: "Home",
         icon: FaHome,
       },

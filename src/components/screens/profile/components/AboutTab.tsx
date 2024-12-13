@@ -42,16 +42,18 @@ const AboutTab = ({
       }
   
   return (
-    <div>
+    <div className="flex justify-center items-center mt-4">
+        <div className='border rounded-md border-solidborder-gray-900  basis-2/4'>
         {loading ? (
             <Flex align="center" gap="middle">
                 <Spin indicator={<LoadingOutlined spin />} size="large" />
             </Flex>
         ):(
-            <div className='flex'>
-                <div className='p-5'>
-                    <div className='flex-1'>
-                        <div className='flex-1 flex-row justify-between'>
+            <div className='flex px-5'>
+                {/* // detail */}
+                <div className='py-2 w-60'>
+                    <div>
+                        <div>
                             <text className='font-bold text-lg'>{localStrings.Public.Detail}</text>
                             {isLoginUser(user?.id as string) && (
                                 <div className='flex-row'>
@@ -96,19 +98,23 @@ const AboutTab = ({
                     </div>
                 </div>
                 
-                <div className='p-5 flex-1'>
+                 {/* Divider */}
+    <div className='w-px bg-gray-300 h-auto mr-4'></div>
+
+                {/* friends  */}
+                <div className='py-2 flex-1'>
                     <div className='flex justufy-between mb-2'>
                        <div className='flex flex-col flex-1'>
                             <text className='font-bold text-lg'>{localStrings.Public.Friend}</text>
                             <text className='text-gray-500'>{user?.friend_count} {localStrings.Public.Friend}</text>
                         </div>
-                        <div className='self-end cursor-pointer'>
+                        <div className='cursor-pointer'>
                             <text style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
                             {localStrings.Public.FriendFind}
                             </text>
                         </div>
                     </div>
-                    <div className='flex-row'>
+                    <div className='flex flex-row'>
                         <div className='w-1/4 items-center mb-2 mx-1'
                             // onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
                         >
@@ -118,10 +124,12 @@ const AboutTab = ({
                             />
                             <text className='mt-2'>{user?.family_name} {user?.name}</text>
                         </div>
+                        
                     </div>
                 </div>
             </div>
         )}
+        </div>
     </div>
   )
 }
