@@ -27,25 +27,11 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       }
       const response = await repo.register(params);
       
-      // if (response && !response?.error) {
-      //   Toast.show({
-      //     type: "success",
-      //     text1: localStrings.SignUp.SignUpSuccess,
-      //   });
-      //   router.push(`/login?email=${data?.email}&password=${data?.password}`);
-      // } else {
-      //   Toast.show({
-      //     type: "error",
-      //     text1: localStrings.SignUp.SignUpFailed,
-      //     text2: response?.error?.message,
-      //   });
-      // }
+      if (response && !response?.error) {
+      }
     } catch (error) {
       console.error("Error:", error);
-      // Toast.show({
-      //   type: "error",
-      //   text1: localStrings.SignUp.SignUpFailed,
-      // });
+
     } finally {
       setLoading(false);
     }
@@ -58,32 +44,11 @@ const SignUpViewModel = (repo: AuthenRepo) => {
       const response = await repo.verifyOTP(data);
       console.log(response);
 
-      // if (!response?.error) {
-      //   Toast.show({
-      //     type: "success",
-      //     text1: localStrings.SignUp.OTPSuccess,
-      //   });
-      // } else {
-      //   if (response?.error?.code === 60009) {
-      //     Toast.show({
-      //       type: "error",
-      //       text1: localStrings.SignUp.OTPAlreadySent,
-      //       text2: response?.error?.message,
-      //     });
-      //   } else {
-      //     Toast.show({
-      //       type: "error",
-      //       text1: localStrings.SignUp.OTPFailed,
-      //       text2: response?.error?.message,
-      //     });
-      //   }
-      // }
+      if (!response?.error) {
+      }
     } catch (error) {
       console.error(error);
-      // Toast.show({
-      //   type: "error",
-      //   text1: localStrings.SignUp.OTPFailed,
-      // });
+
     } finally {
       setOtpLoading(false);
     }

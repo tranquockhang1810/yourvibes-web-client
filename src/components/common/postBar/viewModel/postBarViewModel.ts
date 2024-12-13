@@ -38,6 +38,13 @@ const usePostBarViewModel = () => {
     setIsModalVisible(true);
   };
 
+  const handleRemoveImage = (file: any) => {
+    const index = fileList.indexOf(file);
+    if (index !== -1) {
+      setFileList(fileList.filter((item) => item !== file));
+    }
+  };
+
   return {
     postContent,
     setPostContent,
@@ -48,6 +55,7 @@ const usePostBarViewModel = () => {
     handleCancel,
     handleUploadChange,
     handleBoxClick,
+    handleRemoveImage,
   };
 };
 
