@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd"; // Thêm message
 import { GoogleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
@@ -9,16 +9,25 @@ import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import "antd/dist/reset.css";
 
 const LoginPage = () => {
-  const router = useRouter(); // Sử dụng useRouter trong component React
+  const router = useRouter();
   const { login, loading } = LoginViewModel(new AuthenRepo(), (user) => {
     console.log("Logged in user:", user);
-    router.push("/home"); // Điều hướng sau khi đăng nhập thành công
+    router.push("/home");
   });
 
   const { localStrings } = useAuth();
 
-  const onFinish = (values: any) => {
-    login(values); // Gọi hàm login với dữ liệu từ form
+  const onFinish = async (values: any) => {
+    message.loading({
+      content: "Đang đăng nhập, vui lòng đợi...",
+      key: "login", // Khóa để cập nhật hoặc xóa thông báo
+    });
+
+    await login(values);
+
+    if (!loading) {
+      message.destroy("login"); // Xóa thông báo khi đăng nhập kết thúc
+    }
   };
 
   return (
@@ -83,7 +92,7 @@ const LoginPage = () => {
               type="primary"
               htmlType="submit"
               className="w-full bg-black text-white"
-              loading={loading} // Hiển thị trạng thái loading khi đang đăng nhập
+              loading={loading}
             >
               {localStrings.Login.LoginButton}
             </Button>
