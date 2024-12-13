@@ -10,6 +10,7 @@ import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
 import SettingsTab from './SettingTabs';
 import ListFriends from './ListFriends';
+import PostList from './PostList';
 
 const ProfileTabs = ({
   // tabNum,
@@ -57,20 +58,25 @@ const ProfileTabs = ({
         {
             key: '2',
             label: localStrings.Public.Post,
-            children: 'PosstLisst',
+            children: <PostList 
+              loading={false} 
+              posts={[]} 
+              loadMorePosts={() => {}} 
+              user={userInfo} 
+            />,
         },
         {
             key: '3',
             label: localStrings.Public.Friend,
             children: <ListFriends />,
         },
-        // ...(userInfo?.id === user?.id ?[
+        ...(userInfo?.id === user?.id ?[
         {
             key: '4',
             label: localStrings.Public.SetingProfile,
             children: <SettingsTab />,
         },
-        // ]: []),
+        ]: []),
     ];
 
   return (

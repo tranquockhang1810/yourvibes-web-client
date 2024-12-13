@@ -54,12 +54,12 @@ const AboutTab = ({
                 <div className='py-2 w-60'>
                     <div>
                         <div>
-                            <text className='font-bold text-lg'>{localStrings.Public.Detail}</text>
+                            <p className='font-bold text-lg'>{localStrings.Public.Detail}</p>
                             {isLoginUser(user?.id as string) && (
                                 <div className='flex-row'>
-                                    <text className='pr-5'>icon
+                                    <p className='pr-5'>
                                         {renderPrivacyIcon()}
-                                    </text>
+                                    </p>
                                     <EditFilled />
                                 </div>
                             )}
@@ -67,32 +67,32 @@ const AboutTab = ({
                         {resultCode === 20001 ? (
                             <div>
                             {/* // email */}
-                            <div className='flex-row   mb-2'>
+                            <div className='flex flex-row mb-2'>
                                 <MailFilled />
-                                <text className='ml-2'>{localStrings.Public.Mail}:{""} <text className='font-bold'>{user?.email}</text>
-                                </text>
+                                <p className='ml-2'>{localStrings.Public.Mail}:{""} <span className='font-bold'>{user?.email}</span>
+                                </p>
                             </div>
                             {/* // phone */}
-                            <div className='flex-row mb-2'>
+                            <div className='flex flex-row mb-2'>
                             <PhoneFilled />
-                            <text className='ml-2'>{localStrings.Public.Phone}:{""} <text className='font-bold'>{user?.phone_number}</text></text>
+                             <p className='ml-2'>{localStrings.Public.Phone}:{""} <span className='font-bold'>{user?.phone_number}</span></p>
                             </div>    
                             {/* // birthday */}
-                            <div className='flex-row  mb-2'>
+                            <div className='flex flex-row  mb-2'>
                             <CreditCardFilled />
-                                <text className='ml-2'>{localStrings.Public.Birthday}:{""} <text className='font-bold'>{DateTransfer(user?.birthday)}</text></text>
+                                <p className='ml-2'>{localStrings.Public.Birthday}:{""} <span className='font-bold'>{DateTransfer(user?.birthday)}</span></p>
                             </div>
                             {/* // created_at */}
-                            <div className='flex-row  mb-2'>
+                            <div className='flex flex-row  mb-2'>
                             <CreditCardFilled />
-                                <text className='ml-2'>{localStrings.Public.Active}:{""} <text className='font-bold'>{DateTransfer(user?.created_at)}</text></text>
+                                <p className='ml-2'>{localStrings.Public.Active}:{""} <span className='font-bold'>{DateTransfer(user?.created_at)}</span></p>
                             </div>
                             </div>
                         )
                             :resultCode === 50016 ?(
-                                <text className='text-center'> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`}</text>
+                                <p className='text-center'> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`}</p>
                             ):resultCode === 50015 ? (
-                                <text className='text-center'>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</text>
+                                <p className='text-center'>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</p>
                             ):null
                             }
                     </div>
@@ -105,13 +105,13 @@ const AboutTab = ({
                 <div className='py-2 flex-1'>
                     <div className='flex justufy-between mb-2'>
                        <div className='flex flex-col flex-1'>
-                            <text className='font-bold text-lg'>{localStrings.Public.Friend}</text>
-                            <text className='text-gray-500'>{user?.friend_count} {localStrings.Public.Friend}</text>
+                            <p className='font-bold text-lg'>{localStrings.Public.Friend}</p>
+                            <p className='text-gray-500'>{user?.friend_count} {localStrings.Public.Friend}</p>
                         </div>
                         <div className='cursor-pointer'>
-                            <text style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
+                            <p style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
                             {localStrings.Public.FriendFind}
-                            </text>
+                            </p>
                         </div>
                     </div>
                     <div className='flex flex-row'>
@@ -122,7 +122,9 @@ const AboutTab = ({
                             src={user?.avatar_url}
                             className='w-12 h-12 rounded-full bg-gray-300 mr-2'
                             />
-                            <text className='mt-2'>{user?.family_name} {user?.name}</text>
+                            <p className='mt-2'>
+                                {user?.family_name} {user?.name}
+                            </p>
                         </div>
                         
                     </div>

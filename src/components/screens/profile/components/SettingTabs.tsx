@@ -26,12 +26,12 @@ const SettingsTab = () => {
 
   useEffect(() => {
     updatedForm.setFieldsValue({
-      name:" user?.name",
-      family_name: "user?.family_name",
-      email: "user?.email",
-      birthday: "dayjs(user?.birthday).format('DD/MM/YYYY')",
-      phone_number: "user?.phone_number",
-      biography: "user?.biography",
+      name: user?.name,
+      family_name: user?.family_name,
+      email: user?.email,
+      birthday: dayjs(user?.birthday).format('DD/MM/YYYY'),
+      phone_number: user?.phone_number,
+      biography: user?.biography,
     });
   }, [user]);
 
