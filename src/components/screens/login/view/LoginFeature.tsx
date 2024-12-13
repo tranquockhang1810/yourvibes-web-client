@@ -1,24 +1,34 @@
 "use client";
 import React from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd"; // Thêm message
 import { GoogleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth/useAuth";
+import LoginViewModel from "../viewModel/loginViewModel";
+import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import "antd/dist/reset.css";
 
-import { useAuth } from "@/context/auth/useAuth";
-import LoginViewModel from "@/components/screens/login/viewModel/loginViewModel"; 
-import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
-
 const LoginPage = () => {
-  const repo = new AuthenRepo();
-  const { login, loading } = LoginViewModel(repo, (user) => {
+  const router = useRouter();
+  const { login, loading } = LoginViewModel(new AuthenRepo(), (user) => {
     console.log("Logged in user:", user);
+    router.push("/home");
   });
 
-  const onFinish = (values: any) => {
-    login(values); // Gọi hàm login từ ViewModel
-  };
+  const { localStrings } = useAuth();
 
-  const { language, localStrings } = useAuth();
+  const onFinish = async (values: any) => {
+    message.loading({
+      content: "Đang đăng nhập, vui lòng đợi...",
+      key: "login", // Khóa để cập nhật hoặc xóa thông báo
+    });
+
+    await login(values);
+
+    if (!loading) {
+      message.destroy("login"); // Xóa thông báo khi đăng nhập kết thúc
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-5">
@@ -82,7 +92,7 @@ const LoginPage = () => {
               type="primary"
               htmlType="submit"
               className="w-full bg-black text-white"
-              loading={loading} // Hiển thị trạng thái loading khi đang đăng nhập
+              loading={loading}
             >
               {localStrings.Login.LoginButton}
             </Button>
