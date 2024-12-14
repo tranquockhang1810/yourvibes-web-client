@@ -1,4 +1,4 @@
-"use client";  // Đảm bảo rằng đây là một client-side component
+"use client"; // Đảm bảo rằng đây là một client-side component
 
 import React, { useState } from "react";
 import { Layout, Menu, Input } from "antd";
@@ -26,7 +26,7 @@ const MyHeader = () => {
   const content = {
     nav: [
       {
-        link: "/",
+        link: "/home",
         content: "Home",
         icon: FaHome,
       },
@@ -61,8 +61,8 @@ const MyHeader = () => {
 
   // Cập nhật lại hàm handleItemClick
   const handleItemClick = (link: string) => {
-    router.push(link);  // Chuyển trang khi nhấn vào menu item
-    setVisible(false);   // Đóng menu khi nhấn vào item
+    router.push(link); // Chuyển trang khi nhấn vào menu item
+    setVisible(false); // Đóng menu khi nhấn vào item
   };
 
   return (
@@ -88,6 +88,7 @@ const MyHeader = () => {
             src="/image/yourvibes_black.png"
             alt="YourVibes"
             style={{ height: "40px" }}
+            onClick={() => router.push("/home")}
           />
 
           <Input
