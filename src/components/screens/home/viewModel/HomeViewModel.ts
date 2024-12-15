@@ -1,8 +1,7 @@
 import { NewFeedResponseModel } from "@/api/features/newFeed/Model/NewFeedModel";
 import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo"
 import { useAuth } from "@/context/auth/useAuth"; 
-import { useState } from "react";
-// import Toast from "react-native-toast-message";
+import { useState } from "react"; 
 
 const HomeViewModel = (repo: NewFeedRepo) => {
   const [newFeeds, setNewFeeds] = useState<NewFeedResponseModel[]>([]);
@@ -32,20 +31,10 @@ const HomeViewModel = (repo: NewFeedRepo) => {
         setTotal(totalRecords);
         setPage(currentPage);
         setHasMore(currentPage * currentLimit < totalRecords);
-      } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: "Get NewFeeds Failed",
-        //   text2: response?.error?.message,
-        // });
+      } else { 
       }
     } catch (error: any) {
-      console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: "Get NewFeeds Failed catch",
-    //     text2: error?.message,
-    //   });
+      console.error(error); 
     } finally {
       setLoading(false);
     }
@@ -57,25 +46,11 @@ const HomeViewModel = (repo: NewFeedRepo) => {
       const res = await repo.deleteNewFeed(id);
        // Cập nhậtlại danh sách
       setNewFeeds(newFeeds => newFeeds.filter(post => post.id !== id));
-      if (!res?.error) {
-        // Toast.show({
-        //   type: "success",
-        //   text1: localStrings.DeletePost.DeleteSuccess
-        // })
-      } else {
-        // Toast.show({
-        //   type: "error",
-        //   text1: localStrings.DeletePost.DeleteFailed,
-        //   text2: res?.error?.message
-        // })
+      if (!res?.error) { 
+      } else { 
       }
     } catch (err: any) {
-      console.error(err);
-    //   Toast.show({
-    //     type: "error",
-    //     text1: localStrings.DeletePost.DeleteFailed,
-    //     text2: err.message
-    //   })
+      console.error(err); 
     } finally {
       setLoading(false);
     }

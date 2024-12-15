@@ -34,7 +34,7 @@ const { language, localStrings } = useAuth();
       <div className="w-full max-w-lg p-8 border border-gray-300 rounded-lg shadow-md bg-white">
         {/* Title */}
         <h1 className="text-lg font-bold text-gray-600 mb-6 text-center">
-          {localStrings.ForgotPassword.ConfirmPassword}
+          {localStrings.Login.ForgotPasswordText}
         </h1>
 
         {/* Form */}
@@ -64,7 +64,7 @@ const { language, localStrings } = useAuth();
               className="bg-black text-white rounded"
               onClick={onRequestOTP}
             >
-              {localStrings.ForgotPassword.SendOTP}
+              {localStrings.Form.Label.GetOTP}
             </Button>
           </div>
 
@@ -73,7 +73,7 @@ const { language, localStrings } = useAuth();
             name="password"
             rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
           >
-            <Input.Password placeholder= {localStrings.ForgotPassword.NewPassword} className="w-full" />
+            <Input.Password placeholder= {localStrings.Form.Label.Password} className="w-full" />
           </Form.Item>
 
           {/* Confirm Password */}
@@ -95,7 +95,7 @@ const { language, localStrings } = useAuth();
             ]}
           >
             <Input.Password
-              placeholder= {localStrings.ForgotPassword.ConfirmPassword}
+              placeholder= {localStrings.Form.Label.ConfirmPassword}
               className="w-full"
             />
           </Form.Item>
@@ -105,7 +105,7 @@ const { language, localStrings } = useAuth();
             name="otp"
             rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
           >
-            <Input placeholder= {localStrings.ForgotPassword.OTP} className="w-full" />
+            <Input placeholder= {localStrings.Form.Label.OTP} className="w-full" />
           </Form.Item>
 
           {/* Submit Button */}
@@ -116,13 +116,13 @@ const { language, localStrings } = useAuth();
             htmlType="submit"
             className="mt-4 font-bold bg-black text-white rounded"
           >
-          {localStrings.ForgotPassword.ConformChangePassword}
+          {localStrings.Form.Label.ConfirmPassword}
           </Button>
 
           {/* Additional Links */}
           <div className="mt-4 text-center">
             <span>
-              {localStrings.ForgotPassword.AlreadyAccount}{" "}
+              {localStrings.SignUp.AlreadyHaveAccount}{" "}
               <a href="/login" className="text-blue-500">
                 {localStrings.SignUp.LoginNow}
               </a>
