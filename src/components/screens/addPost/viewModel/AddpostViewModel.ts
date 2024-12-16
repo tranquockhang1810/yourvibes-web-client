@@ -4,24 +4,13 @@ import { PostRepo } from "@/api/features/post/PostRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import { useState } from "react";
-import { useDropzone } from "react-dropzone";
 
 const AddPostViewModel = (repo: PostRepo, router: any) => {
   const { localStrings } = useAuth();
   const { clearSavedPost } = usePostContext();
   const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState('');
-  const [selectedImageFiles, setSelectedImageFiles] = useState<File[]>([]);
   const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
-
-  const onDrop = (acceptedFiles: File[]) => {
-    setSelectedImageFiles(acceptedFiles);
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: { 'image/*': [] },
-    onDrop,
-  });
 
   const createPost = async (data: CreatePostRequestModel) => {
     try {
@@ -29,7 +18,6 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
       const response = await repo.createPost(data);
       if (!response?.error) {
         setPostContent('');
-        setSelectedImageFiles([]);
         clearSavedPost!();
         router.push("/profile?tabNum=1");
       } else {
@@ -47,12 +35,8 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
     createPost,
     postContent,
     setPostContent,
-    selectedImageFiles,
-    setSelectedImageFiles,
     privacy,
     setPrivacy,
-    getRootProps,
-    getInputProps,
   };
 };
 

@@ -14,8 +14,9 @@ import {
 import {
   CloseOutlined,
   PictureOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/auth/useAuth";
 import AddPostViewModel from "@/components/screens/addPost/viewModel/AddpostViewModel";
@@ -42,47 +43,57 @@ const AddPostScreen = () => {
     privacy,
     setPrivacy,
   } = AddPostViewModel(defaultPostRepo, router);
-  
-  const [selectedImageFiles, setSelectedImageFiles] = useState<UploadFile[]>([]); // Change the type to UploadFile[]
 
-  
-  // Hàm upload ảnh
-  const pickImage = async ({ file }: UploadChangeParam) => {
+  const [selectedMediaFiles, setSelectedMediaFiles] = useState<UploadFile[]>(
+    []
+  );
+
+  // Hàm upload ảnh hoặc video
+  const pickMedia = async ({ file }: UploadChangeParam) => {
     setLoading(true);
     try {
       if (file.originFileObj) {
-        const newImage: UploadFile = {
-          uid: file.uid, // uid từ file gốc
-          name: file.name, // name từ file gốc
-          status: "done",
-          url: URL.createObjectURL(file.originFileObj), // Tạo URL từ Blob
-          originFileObj: file.originFileObj, // Giữ lại đối tượng gốc
-          lastModified: file.originFileObj.lastModified, // Thêm thuộc tính lastModified
-          lastModifiedDate: new Date(file.originFileObj.lastModified), // Thêm lastModifiedDate
-        };
-        setSelectedImageFiles((prev) => [...prev, newImage]);
+        // Kiểm tra nếu file.type có giá trị hợp lệ
+        if (file.type) {
+          const fileType = file.type.split("/")[0];
+          if (fileType === "image" || fileType === "video") {
+            const newMedia: UploadFile = {
+              uid: file.uid,
+              name: file.name,
+              status: "done",
+              url: URL.createObjectURL(file.originFileObj),
+              originFileObj: file.originFileObj,
+            };
+            setSelectedMediaFiles((prev) => [...prev, newMedia]);
+          } else {
+            console.error("File type not supported");
+          }
+        } else {
+          console.error("File type is undefined");
+        }
       } else {
         console.error("File object is missing originFileObj property");
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading media:", error);
     } finally {
       setLoading(false);
     }
-  };
-  
+  };  
 
-  // Hàm xoá ảnh
-  const removeImage = (file: UploadFile) => {
-    setSelectedImageFiles((prev) => prev.filter((item) => item.uid !== file.uid));
+  // Hàm xoá ảnh hoặc video
+  const removeMedia = (file: UploadFile) => {
+    setSelectedMediaFiles((prev) =>
+      prev.filter((item) => item.uid !== file.uid)
+    );
   };
 
   // Xử lý đăng bài viết
   const handleSubmitPost = async () => {
-    if (!postContent.trim() && selectedImageFiles.length === 0) return;
+    if (!postContent.trim() && selectedMediaFiles.length === 0) return;
 
     const mediaFiles = await convertMediaToFiles(
-      selectedImageFiles.map((file) => file.originFileObj)
+      selectedMediaFiles.map((file) => file.originFileObj)
     );
 
     const newPost = {
@@ -118,15 +129,25 @@ const AddPostScreen = () => {
       setPrivacy(savedPost.savedPrivacy);
     }
   }, [savedPost]);
+  // Hàm giải thoát tài nguyên URL khi không cần thiết nữa =))
+  useEffect(() => {
+    return () => {
+      selectedMediaFiles.forEach((file) => {
+        if (file.url) URL.revokeObjectURL(file.url);
+      });
+    };
+  }, [selectedMediaFiles]);
+  
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+      >
         <Button
           icon={<CloseOutlined />}
           type="text"
-          onClick={() => router.back()} // Quay lại trang trước đó
+          onClick={() => router.back()}
         />
         <Text strong style={{ fontSize: "18px", marginLeft: "10px" }}>
           {localStrings.AddPost.NewPost}
@@ -134,7 +155,13 @@ const AddPostScreen = () => {
       </div>
 
       {/* Avatar và ô nhập */}
-      <div style={{ display: "flex", alignItems: "flex-start", marginBottom: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          marginBottom: "20px",
+        }}
+      >
         <Avatar
           src={
             user?.avatar_url ||
@@ -144,7 +171,8 @@ const AddPostScreen = () => {
         />
         <div style={{ marginLeft: "10px", flex: 1 }}>
           <Text strong>
-            {user?.family_name + " " + user?.name || localStrings.Public.UnknownUser}
+            {user?.family_name + " " + user?.name ||
+              localStrings.Public.UnknownUser}
           </Text>
           <Form.Item>
             <TextArea
@@ -157,20 +185,35 @@ const AddPostScreen = () => {
         </div>
       </div>
 
-      {/* Khu vực upload ảnh */}
+      {/* Khu vực upload ảnh hoặc video */}
       <Upload
         listType="picture-card"
         multiple
-        fileList={selectedImageFiles}
-        onRemove={removeImage}
-        beforeUpload={() => false} // Ngăn tải lên tự động
-        onChange={pickImage}
+        accept="image/*,video/*"
+        fileList={selectedMediaFiles}
+        onRemove={removeMedia}
+        beforeUpload={() => false}
+        onChange={pickMedia}
       >
-        {loading ? <Spin /> : <PictureOutlined />}
+        {loading ? (
+          <Spin />
+        ) : (
+          <div>
+            <PictureOutlined
+              style={{ fontSize: "24px", marginRight: "10px" }}
+            />
+            <VideoCameraOutlined style={{ fontSize: "24px" }} />
+          </div>
+        )}
       </Upload>
 
-      {/* Buttons */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "20px",
+        }}
+      >
         <Space>
           <Text type="secondary">{localStrings.AddPost.PrivacyText}</Text>
           <Button
@@ -178,7 +221,7 @@ const AddPostScreen = () => {
             onClick={() => {
               savedPost?.setSavedPostContent!(postContent);
               savedPost?.setSavedPrivacy!(privacy);
-              savedPost?.setSavedSelectedImageFiles!(selectedImageFiles);
+              savedPost?.setSavedSelectedImageFiles!(selectedMediaFiles);
               router.push("/object");
             }}
           >
@@ -196,5 +239,7 @@ const AddPostScreen = () => {
     </div>
   );
 };
+
+
 
 export default AddPostScreen;
