@@ -150,7 +150,6 @@ const Post: React.FC<IPost> = React.memo(({
   }, [post]);
 
   return (
-
     <Card
       style={{
         margin: 10,
@@ -162,7 +161,7 @@ const Post: React.FC<IPost> = React.memo(({
         <Row gutter={[8, 8]} className='m-2'>
           <Col xs={4} md={2}
             className='hover:cursor-pointer'
-            onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+            onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
           >
             <Avatar
               src={likedPost?.user?.avatar_url}
@@ -174,7 +173,7 @@ const Post: React.FC<IPost> = React.memo(({
               <Col
                 span={24}
                 className='hover:cursor-pointer hover:underline'
-                onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+                onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
               >
                 <span style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</span>
               </Col>

@@ -68,10 +68,6 @@ const usePostDetailsViewModel = (
         });
       }
     } catch (error) {
-      // Toast.show({
-      //   type: "error",
-      //   text1: `${localStrings.PostDetails.ErrorReplies}`,
-      // });
       console.error("Error fetching replies:", error);
     }
   };
@@ -80,55 +76,55 @@ const usePostDetailsViewModel = (
     fetchComments();
   }, []);
 
-  // const handleAction = (comment: CommentsResponseModel) => {
-  //   const options = [
-  //     `${localStrings.PostDetails.ReportComment}`,
-  //     `${localStrings.PostDetails.EditComment}`,
-  //     `${localStrings.PostDetails.DeleteComment}`,
-  //     `${localStrings.PostDetails.Cancel}`,
-  //   ];
-  //   const reply = replyMap[comment?.id];
+  const handleAction = (comment: CommentsResponseModel) => {
+    const options = [
+      `${localStrings.PostDetails.ReportComment}`,
+      `${localStrings.PostDetails.EditComment}`,
+      `${localStrings.PostDetails.DeleteComment}`,
+      `${localStrings.PostDetails.Cancel}`,
+    ];
+    const reply = replyMap[comment?.id];
 
-  //   if (comment && comment.user?.id !== user?.id) {
-  //     options.splice(1, 1);
-  //   } else if (reply && reply.length > 0 && reply[0].user?.id !== user?.id) {
-  //     options.splice(1, 1);
-  //   }
+    if (comment && comment.user?.id !== user?.id) {
+      options.splice(1, 1);
+    } else if (reply && reply.length > 0 && reply[0].user?.id !== user?.id) {
+      options.splice(1, 1);
+    }
 
-  //   showActionSheetWithOptions(
-  //     {
-  //       title: `${localStrings.PostDetails.ActionOptions}`,
-  //       options: options,
-  //       cancelButtonIndex: options.length - 1,
-  //       cancelButtonTintColor: "#F95454",
-  //     },
-  //     (buttonIndex) => {
-  //       switch (buttonIndex) {
-  //         case 0:
-  //           const commentToReport = comments.find(
-  //             (cmt) => cmt.id === comment.id
-  //           );
-  //           if (commentToReport) {
-  //             router.push(`/report?commentId=${comment.id}`);
-  //           }
-  //           break;
+    showActionSheetWithOptions(
+      {
+        title: `${localStrings.PostDetails.ActionOptions}`,
+        options: options,
+        cancelButtonIndex: options.length - 1,
+        cancelButtonTintColor: "#F95454",
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            const commentToReport = comments.find(
+              (cmt) => cmt.id === comment.id
+            );
+            if (commentToReport) {
+              router.push(`/report?commentId=${comment.id}`);
+            }
+            break;
 
-  //         case 1:
-  //           setEditCommentContent(comment.content);
-  //           setCurrentCommentId(comment.id);
-  //           setEditModalVisible(true);
-  //           break;
+          case 1:
+            setEditCommentContent(comment.content);
+            setCurrentCommentId(comment.id);
+            setEditModalVisible(true);
+            break;
 
-  //         case 2:
-  //           handleDelete(comment.id);
-  //           break;
+          case 2:
+            handleDelete(comment.id);
+            break;
 
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //   );
-  // };
+          default:
+            break;
+        }
+      }
+    );
+  };
 
   const handleLike = async (commentOrReplyId: string) => {
     const isLike =
@@ -223,17 +219,9 @@ const usePostDetailsViewModel = (
           });
           setComments(updatedComments);
         }
-        // Toast.show({
-        //   type: "success",
-        //   text1: `${localStrings.PostDetails.EditCommentSuccess}`,
-        // });
         fetchComments();
       }
     } catch (error) {
-      // Toast.show({
-      //   type: "error",
-      //   text1: `${localStrings.PostDetails.EditCommentFailed}`,
-      // });
     }
   };
 
@@ -243,72 +231,64 @@ const usePostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
 
-  // const handleDelete = (commentId: string) => {
-  //   showActionSheetWithOptions(
-  //     {
-  //       title: `${localStrings.PostDetails.DeleteComment}`,
-  //       options: [
-  //         `${localStrings.PostDetails.Yes}`,
-  //         `${localStrings.PostDetails.No}`,
-  //       ],
-  //       cancelButtonIndex: 1,
-  //       cancelButtonTintColor: "#F95454",
-  //     },
-  //     (buttonIndex) => {
-  //       if (buttonIndex === 0) {
-  //         defaultCommentRepo
-  //           .deleteComment(commentId)
-  //           .then(() => {
-  //             // Cập nhật trạng thái comments
-  //             setComments((prevComments) =>
-  //               prevComments.filter((comment) => comment.id !== commentId)
-  //             );
+  const handleDelete = (commentId: string) => {
+    showActionSheetWithOptions(
+      {
+        title: `${localStrings.PostDetails.DeleteComment}`,
+        options: [
+          `${localStrings.PostDetails.Yes}`,
+          `${localStrings.PostDetails.No}`,
+        ],
+        cancelButtonIndex: 1,
+        cancelButtonTintColor: "#F95454",
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          defaultCommentRepo
+            .deleteComment(commentId)
+            .then(() => {
+              // Cập nhật trạng thái comments
+              setComments((prevComments) =>
+                prevComments.filter((comment) => comment.id !== commentId)
+              );
 
-  //             // Cập nhật trạng thái replyMap
-  //             if (replyMap[commentId]) {
-  //               setReplyMap((prevReplyMap) => {
-  //                 const updatedReplies = prevReplyMap[commentId].filter(
-  //                   (reply) => reply.id !== commentId
-  //                 );
-  //                 return { ...prevReplyMap, [commentId]: updatedReplies };
-  //               });
-  //             } else {
-  //               // Nếu không có replies, cập nhật trạng thái replyMap để xóa commentId
-  //               setReplyMap((prevReplyMap) => {
-  //                 const updatedReplyMap = { ...prevReplyMap };
-  //                 delete updatedReplyMap[commentId];
-  //                 return updatedReplyMap;
-  //               });
-  //             }
+              // Cập nhật trạng thái replyMap
+              if (replyMap[commentId]) {
+                setReplyMap((prevReplyMap) => {
+                  const updatedReplies = prevReplyMap[commentId].filter(
+                    (reply) => reply.id !== commentId
+                  );
+                  return { ...prevReplyMap, [commentId]: updatedReplies };
+                });
+              } else {
+                // Nếu không có replies, cập nhật trạng thái replyMap để xóa commentId
+                setReplyMap((prevReplyMap) => {
+                  const updatedReplyMap = { ...prevReplyMap };
+                  delete updatedReplyMap[commentId];
+                  return updatedReplyMap;
+                });
+              }
 
-  //             // Cập nhật lại danh sách replies của comment
-  //             const parentId = replyToCommentId || replyToReplyId;
-  //             if (parentId) {
-  //               const updatedReplies = replyMap[parentId].filter(
-  //                 (reply) => reply.id !== commentId
-  //               );
-  //               setReplyMap((prevReplyMap) => ({
-  //                 ...prevReplyMap,
-  //                 [parentId]: updatedReplies,
-  //               }));
-  //               fetchReplies(postId, parentId);
-  //             }
+              // Cập nhật lại danh sách replies của comment
+              const parentId = replyToCommentId || replyToReplyId;
+              if (parentId) {
+                const updatedReplies = replyMap[parentId].filter(
+                  (reply) => reply.id !== commentId
+                );
+                setReplyMap((prevReplyMap) => ({
+                  ...prevReplyMap,
+                  [parentId]: updatedReplies,
+                }));
+                fetchReplies(postId, parentId);
+              }
 
-  //             Toast.show({
-  //               type: "success",
-  //               text1: `${localStrings.PostDetails.DeteleReplySuccess}`,
-  //             });
-  //           })
-  //           .catch((error) => {
-  //             Toast.show({
-  //               type: "error",
-  //               text1: `${localStrings.PostDetails.DeteleReplyFailed}`,
-  //             });
-  //           });
-  //       }
-  //     }
-  //   );
-  // };
+            })
+            .catch((error) => {
+            });
+        }
+      }
+    );
+  };
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
@@ -320,26 +300,14 @@ const usePostDetailsViewModel = (
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-          // Toast.show({
-          //   type: "success",
-          //   text1: `${localStrings.PostDetails.CommentSuccess}`,
-          // });
 
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
         } else {
-          // Toast.show({
-          //   type: "error",
-          //   text1: `${localStrings.PostDetails.CommentFailed}`,
-          // });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
-        // Toast.show({
-        //   type: "error",
-        //   text1: `${localStrings.PostDetails.CommentFailed}`,
-        // });
       } finally {
         setNewComment("");
         textInputRef.current?.blur();
@@ -357,43 +325,26 @@ const usePostDetailsViewModel = (
         parent_id: parentId,
       };
 
-      // try {
-      //   const response = await defaultCommentRepo.createComment(commentData);
-      //   if (!response.error) {
-      //     Toast.show({
-      //       type: "success",
-      //       text1: `${localStrings.PostDetails.ReplySuccess}`,
-      //     });
-
-      //     const newComment = { ...response.data, replies: [] };
-      //     setComments((prev) => {
-      //       const parentComment = prev.find(
-      //         (comment) => comment.id === parentId
-      //       );
-      //       return [...prev];
-      //     });
-      //     fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
-      //   } else {
-      //     Toast.show({
-      //       type: "error",
-      //       text1: `${localStrings.PostDetails.ReplyFailed}`,
-      //     });
-      //   }
-      // } catch (error) {
-      //   console.error("Error adding comment:", error);
-      //   Toast.show({
-      //     type: "error",
-      //     text1: `${localStrings.PostDetails.ReplyFailed}`,
-      //   });
-      // }
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-          // Toast.show({
-          //   type: "success",
-          //   text1: `${localStrings.PostDetails.ReplySuccess}`,
-          // });
 
+          const newComment = { ...response.data, replies: [] };
+          setComments((prev) => {
+            const parentComment = prev.find(
+              (comment) => comment.id === parentId
+            );
+            return [...prev];
+          });
+          fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+        } else {
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
+      try {
+        const response = await defaultCommentRepo.createComment(commentData);
+        if (!response.error) {
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => {
             const parentComment = prev.find(
@@ -412,17 +363,9 @@ const usePostDetailsViewModel = (
           }));
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
         } else {
-          // Toast.show({
-          //   type: "error",
-          //   text1: `${localStrings.PostDetails.ReplyFailed}`,
-          // });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
-        // Toast.show({
-        //   type: "error",
-        //   text1: `${localStrings.PostDetails.ReplyFailed}`,
-        // });
       } finally {
         setNewComment("");
         setReplyToReplyId(null);
@@ -447,8 +390,8 @@ const usePostDetailsViewModel = (
     setReplyToReplyId,
     fetchReplies,
     handleUpdate,
-    // handleDelete,
-    // handleAction,
+    handleDelete,
+    handleAction,
     isEditModalVisible,
     setEditModalVisible,
     editCommentContent,

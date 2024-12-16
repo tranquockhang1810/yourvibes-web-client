@@ -5,8 +5,7 @@ import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
-import { useRouter } from "next/navigation";
-import PostBar from "@/components/common/postBar/view/postBar";
+import { useRouter } from "next/navigation"; 
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
@@ -15,7 +14,7 @@ const Homepage = () => {
   const { user, localStrings } = useAuth();
   const router = useRouter();
 
-  const renderAddPost = useCallback(() => {
+const renderAddPost = useCallback(() => {
     return (
       <div
         onClick={() => router.push("/addPost")}
@@ -28,6 +27,8 @@ const Homepage = () => {
           border: `1px solid ${lightGray}`,
           borderRadius: "10px",
           cursor: "pointer",
+          width: "100%", 
+          maxWidth: "600px", 
         }}
       >
         <img
@@ -49,7 +50,8 @@ const Homepage = () => {
         </div>
       </div>
     );
-  }, [user]);
+  }, [user, backgroundColor, lightGray, localStrings]);
+  
 
   const renderFooter = () => {
     if (!loading) return null;

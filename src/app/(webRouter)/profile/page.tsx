@@ -1,3 +1,4 @@
+"use client"
 import ProfileFeature from '@/components/screens/profile/views/ProfileFeature';
 import React from 'react';
 

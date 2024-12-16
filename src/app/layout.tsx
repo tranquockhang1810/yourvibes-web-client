@@ -1,5 +1,5 @@
 import { PostProvider } from "@/context/post/usePostContext";
-import { AuthProvider } from "../context/auth/useAuth";
+import { AuthProvider} from "../context/auth/useAuth";
 import { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import LoginPage from "./login/page";
@@ -18,6 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const { brandPrimary } = useColor();
+  
   return (
     <html lang="en">
       <AntdRegistry>

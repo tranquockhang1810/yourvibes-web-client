@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Input, Button, Modal, Upload } from "antd";
-import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import { UserOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
 import usePostBarViewModel from "../viewModel/postBarViewModel";
 
 const PostBar = () => {
@@ -14,6 +14,13 @@ const PostBar = () => {
     handleUploadChange,
     handleBoxClick,
   } = usePostBarViewModel();
+
+  const uploadButton = (
+    <button style={{ border: 0, background: 'none' }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
 
   return (
     <div className="flex justify-center items-center mt-4">
@@ -51,28 +58,15 @@ const PostBar = () => {
           className="mb-4"
         />
         <Upload
+          className="pt-4"
           action="//jsonplaceholder.typicode.com/posts/"
-          listType="picture"
+          listType="picture-card"
           fileList={fileList}
           onChange={handleUploadChange}
           beforeUpload={() => false} 
         >
-          <Button icon={<UploadOutlined />} className="mb-4">
-            Tải ảnh lên
-          </Button>
+          {fileList.length >= 8 ? null : uploadButton}
         </Upload>
-
-        {/* Hiển thị ảnh đã tải lên */}
-        <div className="mt-4 flex flex-wrap">
-          {fileList.map((file) => (
-            <img
-              key={file.uid}
-              src={URL.createObjectURL(file.originFileObj)}
-              alt="Uploaded preview"
-              className="w-[120px] h-[120px] mr-3 mb-3 rounded-lg"
-            />
-          ))}
-        </div>
       </Modal>
     </div>
   );

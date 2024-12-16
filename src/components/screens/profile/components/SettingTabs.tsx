@@ -9,6 +9,7 @@ import { on } from 'events';
 import UpdateProfileScreen from '../../updateProfile/view/UpdateProfile';
 import dayjs from 'dayjs';
 import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
+import ProfileViewModel from '../viewModel/ProfileViewModel';
 
 const SettingsTab = () => {
   const router = useRouter();
@@ -23,47 +24,61 @@ const SettingsTab = () => {
   const [showUpdateProfile, setShowUpdateProfile] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
+  const {updateProfile} = ProfileViewModel();
 
   useEffect(() => {
     updatedForm.setFieldsValue({
-      name:" user?.name",
-      family_name: "user?.family_name",
-      email: "user?.email",
-      birthday: "dayjs(user?.birthday).format('DD/MM/YYYY')",
-      phone_number: "user?.phone_number",
-      biography: "user?.biography",
+      name: user?.name,
+      family_name: user?.family_name,
+      email: user?.email,
+      birthday: dayjs(user?.birthday).format('DD/MM/YYYY'),
+      phone_number: user?.phone_number,
+      biography: user?.biography,
     });
   }, [user]);
 
-//   const handleImageChange = (file, type) => {
-//     const reader = new FileReader();
-//     reader.onloadend = () => {
-//       if (type === 'avatar') setNewAvatar({ url: reader.result, name: file.name, type: file.type });
-//       else setNewCapwall({ url: reader.result, name: file.name, type: file.type });
-//     };
-//     reader.readAsDataURL(file);
-//     return false; // prevent auto upload
-//   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const values = updatedForm.getFieldsValue();
-      const updatedProfileData = {
-        ...values,
-        avatar_url: newAvatar?.url ? newAvatar : undefined,
-        capwall_url: newCapwall?.url ? newCapwall : undefined,
-        birthday: dayjs(values.birthday, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-      };
-      await defaultProfileRepo.updateProfile(updatedProfileData);
-    //   Toast.success(localStrings.UpdateProfile.Success);
-      router.push('/profile'); // Navigate to profile page after successful update
-    } catch (error) {
-    //   Toast.error(localStrings.UpdateProfile.Failure);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const pickAvatarImage = async (file: File) => {
+  //   // Kiểm tra loại tệp (nếu cần)
+  //   const isImage = file.type.startsWith('image/');
+  //   if (!isImage) {
+  //     // Nếu không phải ảnh, trả về false để không cho phép tải lên
+  //     return false;
+  //   }
+  
+  //   // Tạo URL cho ảnh mới
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setNewAvatar({
+  //       url: reader.result as string, // Đặt URL của ảnh mới
+  //       name: file.name,    // Tên tệp
+  //       type: file.type,    // Loại tệp
+  //     });
+  //   };
+  //   reader.readAsDataURL(file); // Đọc tệp dưới dạng URL
+  
+  //   return false; // Ngừng tải ảnh lên server (nếu không cần upload)
+  // };
+  
+  // const pickCapwallImage = async (file: File) => {
+  //   const isImage = file.type.startsWith('image/');
+  //   if (!isImage) {
+  //     return false;
+  //   }
+  
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setNewCapwall({
+  //       url: reader.result as string, // Đặt URL của ảnh mới
+  //       name: file.name,
+  //       type: file.type,
+  //     });
+  //   };
+  //   reader.readAsDataURL(file);
+  
+  //   return false;
+  // };
+  
 
   const handleOk = () => {
     setShowLogout(false);
@@ -76,6 +91,8 @@ const SettingsTab = () => {
 
   const UpdateProfile = () => {
     setShowUpdateProfile(false);
+    const data = updatedForm.getFieldsValue();
+    updateProfile(data);
     // hàm update profile
   }
 
@@ -110,10 +127,11 @@ const SettingsTab = () => {
       <div className="flex flex-col p-4">
         {/* Cover Image */}
         <div className="relative">
-          <img src={newCapwall?.url || user?.capwall_url || "/image/yourvibes_black.png"} alt="cover" className="w-full h-48 object-cover rounded-md" />
+          <img src={newCapwall?.url || user?.capwall_url} alt="cover" className="w-full h-48 object-cover rounded-md" />
           <div className="absolute top-4 left-4">
-            <Upload showUploadList={false} >
-              {/* beforeUpload={(file) => handleImageChange(file, 'capwall')} */}
+            <Upload showUploadList={false} 
+            // beforeUpload={pickCapwallImage}
+             >
               <Button icon={<CameraOutlined />} />
             </Upload>
           </div>
@@ -129,8 +147,9 @@ const SettingsTab = () => {
           <div className="relative">
             <img src={newAvatar?.url || user?.avatar_url || 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg'} alt="avatar" className="w-32 h-32 rounded-full object-cover" />
             <div className="absolute top-0 left-0">
-              <Upload showUploadList={false}>
-                  {/* beforeUpload={(file) => handleImageChange(file, 'avatar')}> */}
+              <Upload showUploadList={false} 
+              // beforeUpload={pickAvatarImage}
+              >
                 <Button icon={<CameraOutlined />} />
               </Upload>
             </div>
@@ -146,7 +165,7 @@ const SettingsTab = () => {
         </div>
   
         {/* Form */}
-        <Form form={updatedForm} layout="vertical" onFinish={handleSubmit}>
+        <Form form={updatedForm} layout="vertical" onFinish={updateProfile}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="family_name" label={localStrings.Form.Label.FamilyName} rules={[{ required: true }]}>

@@ -1,16 +1,33 @@
 "use client";
-import { Button, Form, Input, Avatar, Typography, Upload, Spin, Space } from "antd";
-import { CloseOutlined, PictureOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Form,
+  Input,
+  Avatar,
+  Typography,
+  Upload,
+  Spin, 
+  GetProp,
+  Image, 
+} from "antd";
+import {
+  CloseOutlined,
+  PictureOutlined,
+  PlusOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import AddPostViewModel from "../viewModel/AddpostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile } from "antd/es/upload";
+import { UploadFile, UploadProps } from "antd/es/upload"; 
 
 const { TextArea } = Input;
 const { Text } = Typography;
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AddPostScreen = () => {
   const { user, localStrings } = useAuth();
@@ -23,15 +40,18 @@ const AddPostScreen = () => {
     createLoading,
     privacy,
     setPrivacy,
-    handleImageChange,
-    handleSelectImage,
-    pickMedia,
-    removeMedia,
     handleSubmitPost,
     selectedMediaFiles,
     setSelectedMediaFiles,
     image,
     setImage,
+    handleChange,
+    handlePreview,
+    fileList,
+    previewImage,
+    previewOpen,
+    setPreviewOpen,
+    setPreviewImage,
   } = AddPostViewModel(defaultPostRepo, router);
 
   // Hiển thị chế độ quyền riêng tư
@@ -48,6 +68,12 @@ const AddPostScreen = () => {
     }
   };
 
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
   return (
     <div style={{ padding: "20px" }}>
       <div
@@ -94,46 +120,28 @@ const AddPostScreen = () => {
       </div>
 
       <Upload
-        listType="picture-card"
-        multiple
+        className="pt-4"
         accept="image/*,video/*"
-        fileList={selectedMediaFiles}
-        onRemove={removeMedia}
+        listType="picture-card"
+        fileList={fileList}
+        onChange={handleChange}
+        onPreview={handlePreview}
         beforeUpload={() => false}
-        onChange={pickMedia}
       >
-        {createLoading ? (
-          <Spin />
-        ) : (
-          <div>
-            <PictureOutlined
-              style={{ fontSize: "24px", marginRight: "10px" }}
-            />
-            <VideoCameraOutlined style={{ fontSize: "24px" }} />
-          </div>
-        )}
+        {fileList.length >= 8 ? null : uploadButton}
       </Upload>
 
-      <div style={{ marginTop: "20px" }}>
-        {selectedMediaFiles.map((file) => (
-          <div key={file.uid} style={{ marginBottom: "10px" }}>
-            {file.type && file.type.split("/")[0] === "image" ? (
-              <img
-                src={file.url}
-                alt={file.name}
-                style={{ width: "100px", height: "100px", objectFit: "cover" }}
-              />
-            ) : file.type && file.type.split("/")[0] === "video" ? (
-              <video
-                controls
-                style={{ width: "100px", height: "100px", objectFit: "cover" }}
-              >
-                <source src={file.url} />
-              </video>
-            ) : null}
-          </div>
-        ))}
-      </div>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "14px" }}>
