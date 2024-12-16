@@ -36,7 +36,7 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
   return (
     <Slider {...settings}>
       {mediaItems?.map((media, index) => {
-        const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov'); // Kiểm tra nếu là video
+        const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov');
         return isVideo ? (
           <video
             key={index}

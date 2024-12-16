@@ -14,6 +14,9 @@ import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoShareSocialOutline } from 'react-icons/io5';
 import EditPostViewModel from '@/components/features/editpost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/api/features/post/PostRepo';
+import MediaView from '@/components/foundation/MediaView';
+import HomeViewModel from '@/components/screens/home/viewModel/HomeViewModel';
+import { defaultNewFeedRepo } from '@/api/features/newFeed/NewFeedRepo';
 
 interface IPost {
   post?: PostResponseModel,
@@ -43,7 +46,7 @@ const Post: React.FC<IPost> = React.memo(({
     shareLoading,
     deletePost,
   } = EditPostViewModel(defaultPostRepo);
-  // const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
+  const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
   const renderPrivacyIcon = () => {
     switch (likedPost?.privacy) {
@@ -250,7 +253,7 @@ const Post: React.FC<IPost> = React.memo(({
               {likedPost?.content && (
                 <span className='pl-2'>{likedPost?.content}</span>
               )}
-              {/* {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />} */}
+              {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
             </Col>
           ))}
       </Row>
