@@ -71,7 +71,6 @@ const Homepage = () => {
       {/* Content */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {renderAddPost()}
-
         {newFeeds?.length > 0 ? (
           newFeeds.map((item) => (
             <div key={item?.id}>
