@@ -1,30 +1,13 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Upload,
-  Avatar,
-  Typography,
-  Spin,
-  Space,
-} from "antd";
-import {
-  CloseOutlined,
-  PictureOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { Button, Form, Input, Avatar, Typography, Upload, Spin, Space } from "antd";
+import { CloseOutlined, PictureOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-
 import { useAuth } from "@/context/auth/useAuth";
-import AddPostViewModel from "@/components/screens/addPost/viewModel/AddpostViewModel";
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
-import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { usePostContext } from "@/context/post/usePostContext";
+import AddPostViewModel from "../viewModel/AddpostViewModel";
+import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile, UploadChangeParam } from "antd/es/upload";
+import { UploadFile } from "antd/es/upload";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -33,8 +16,6 @@ const AddPostScreen = () => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
   const {
     postContent,
     setPostContent,
@@ -42,69 +23,16 @@ const AddPostScreen = () => {
     createLoading,
     privacy,
     setPrivacy,
+    handleImageChange,
+    handleSelectImage,
+    pickMedia,
+    removeMedia,
+    handleSubmitPost,
+    selectedMediaFiles,
+    setSelectedMediaFiles,
+    image,
+    setImage,
   } = AddPostViewModel(defaultPostRepo, router);
-
-  const [selectedMediaFiles, setSelectedMediaFiles] = useState<UploadFile[]>(
-    []
-  );
-
-  // Hàm upload ảnh hoặc video
-  const pickMedia = async ({ file }: UploadChangeParam) => {
-    setLoading(true);
-    try {
-      if (file.originFileObj) {
-        // Kiểm tra nếu file.type có giá trị hợp lệ
-        if (file.type) {
-          const fileType = file.type.split("/")[0];
-          if (fileType === "image" || fileType === "video") {
-            const newMedia: UploadFile = {
-              uid: file.uid,
-              name: file.name,
-              status: "done",
-              url: URL.createObjectURL(file.originFileObj),
-              originFileObj: file.originFileObj,
-            };
-            setSelectedMediaFiles((prev) => [...prev, newMedia]);
-          } else {
-            console.error("File type not supported");
-          }
-        } else {
-          console.error("File type is undefined");
-        }
-      } else {
-        console.error("File object is missing originFileObj property");
-      }
-    } catch (error) {
-      console.error("Error uploading media:", error);
-    } finally {
-      setLoading(false);
-    }
-  };  
-
-  // Hàm xoá ảnh hoặc video
-  const removeMedia = (file: UploadFile) => {
-    setSelectedMediaFiles((prev) =>
-      prev.filter((item) => item.uid !== file.uid)
-    );
-  };
-
-  // Xử lý đăng bài viết
-  const handleSubmitPost = async () => {
-    if (!postContent.trim() && selectedMediaFiles.length === 0) return;
-
-    const mediaFiles = await convertMediaToFiles(
-      selectedMediaFiles.map((file) => file.originFileObj)
-    );
-
-    const newPost = {
-      content: postContent,
-      privacy,
-      location: "HCM",
-      media: mediaFiles.length ? mediaFiles : undefined,
-    };
-
-    await createPost(newPost);
-  };
 
   // Hiển thị chế độ quyền riêng tư
   const renderPrivacyText = () => {
@@ -119,25 +47,6 @@ const AddPostScreen = () => {
         return localStrings.Public.Everyone.toLowerCase();
     }
   };
-
-  // Xử lý dữ liệu lưu trữ khi component được render
-  useEffect(() => {
-    if (savedPost.savedPostContent) {
-      setPostContent(savedPost.savedPostContent);
-    }
-    if (savedPost.savedPrivacy) {
-      setPrivacy(savedPost.savedPrivacy);
-    }
-  }, [savedPost]);
-  // Hàm giải thoát tài nguyên URL khi không cần thiết nữa =))
-  useEffect(() => {
-    return () => {
-      selectedMediaFiles.forEach((file) => {
-        if (file.url) URL.revokeObjectURL(file.url);
-      });
-    };
-  }, [selectedMediaFiles]);
-  
 
   return (
     <div style={{ padding: "20px" }}>
@@ -154,7 +63,6 @@ const AddPostScreen = () => {
         </Text>
       </div>
 
-      {/* Avatar và ô nhập */}
       <div
         style={{
           display: "flex",
@@ -185,7 +93,6 @@ const AddPostScreen = () => {
         </div>
       </div>
 
-      {/* Khu vực upload ảnh hoặc video */}
       <Upload
         listType="picture-card"
         multiple
@@ -195,7 +102,7 @@ const AddPostScreen = () => {
         beforeUpload={() => false}
         onChange={pickMedia}
       >
-        {loading ? (
+        {createLoading ? (
           <Spin />
         ) : (
           <div>
@@ -207,39 +114,41 @@ const AddPostScreen = () => {
         )}
       </Upload>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "20px",
-        }}
-      >
-        <Space>
-          <Text type="secondary">{localStrings.AddPost.PrivacyText}</Text>
-          <Button
-            type="link"
-            onClick={() => {
-              savedPost?.setSavedPostContent!(postContent);
-              savedPost?.setSavedPrivacy!(privacy);
-              savedPost?.setSavedSelectedImageFiles!(selectedMediaFiles);
-              router.push("/object");
-            }}
-          >
-            {renderPrivacyText()}
-          </Button>
-        </Space>
+      <div style={{ marginTop: "20px" }}>
+        {selectedMediaFiles.map((file) => (
+          <div key={file.uid} style={{ marginBottom: "10px" }}>
+            {file.type && file.type.split("/")[0] === "image" ? (
+              <img
+                src={file.url}
+                alt={file.name}
+                style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              />
+            ) : file.type && file.type.split("/")[0] === "video" ? (
+              <video
+                controls
+                style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              >
+                <source src={file.url} />
+              </video>
+            ) : null}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ fontSize: "14px" }}>
+          <Text>{renderPrivacyText()}</Text>
+        </div>
         <Button
           type="primary"
-          loading={createLoading}
           onClick={handleSubmitPost}
+          disabled={!postContent.trim() && selectedMediaFiles.length === 0}
         >
-          {localStrings.AddPost.PostNow}
+          {createLoading ? <Spin /> : localStrings.AddPost.PostNow}
         </Button>
       </div>
     </div>
   );
 };
-
-
 
 export default AddPostScreen;

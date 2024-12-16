@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect } from "react"; 
+import React, { useCallback, useEffect } from "react";
 import useColor from "@/hooks/useColor";
 import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
@@ -18,7 +18,7 @@ const Homepage = () => {
   const renderAddPost = useCallback(() => {
     return (
       <div
-      onClick={() => router.push("/addPost")}
+        onClick={() => router.push("/addPost")}
         style={{
           padding: "10px",
           display: "flex",
@@ -42,7 +42,8 @@ const Homepage = () => {
         />
         <div style={{ marginLeft: "10px", flex: 1 }}>
           <p>
-            {user?.family_name + " " + user?.name || localStrings.Public.Username}
+            {user?.family_name + " " + user?.name ||
+              localStrings.Public.Username}
           </p>
           <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
@@ -66,26 +67,29 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div className="flex justify-center items-center mt-4">
+      <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
+        {/* Content */}
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {renderAddPost()}
+          {newFeeds?.length > 0 ? (
+            newFeeds.map((item) => (
+              <div key={item?.id}>
+                <Post post={item}>
+                  {item?.parent_post && (
+                    <Post post={item?.parent_post} isParentPost />
+                  )}
+                </Post>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: "center", marginTop: "20px" }}>
+              No posts available
+            </p>
+          )}
 
-      {/* Content */}
-      <div style={{ flex: 1, overflowY: "auto" }}>
-        {renderAddPost()}
-        {newFeeds?.length > 0 ? (
-          newFeeds.map((item) => (
-            <div key={item?.id}>
-              <Post post={item}>
-                {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-              </Post>
-            </div>
-          ))
-        ) : (
-          <p style={{ textAlign: "center", marginTop: "20px" }}>
-            No posts available
-          </p>
-        )}
-
-        {renderFooter()}
+          {renderFooter()}
+        </div>
       </div>
     </div>
   );
