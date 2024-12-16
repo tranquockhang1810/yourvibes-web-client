@@ -2,12 +2,13 @@
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { defaultPostRepo } from '@/api/features/post/PostRepo';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
+import { UpdateProfileRequestModel } from '@/api/features/profile/model/UpdateProfileModel';
 import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
 import { useAuth } from '@/context/auth/useAuth';
 import React, { useEffect, useState } from 'react'
 
 const ProfileViewModel = () => {
-  const { user, localStrings } = useAuth();
+  const { user, localStrings, onUpdateProfile } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -18,7 +19,6 @@ const ProfileViewModel = () => {
   const [friendCount, setFriendCount] = useState(0);
   const [selectedFriendName, setSelectedFriendName] = useState<string>("");
   const [search, setSearch] = useState<string>("");
-  const [profileLoading, setProfileLoading] = useState(false);
   const [resultCode, setResultCode] = useState(0);
   const getFriendCount = () => friendCount;
   const fetchUserPosts = async (newPage: number = 1) => {
@@ -48,19 +48,10 @@ const ProfileViewModel = () => {
         setPage(currentPage);
         setHasMore(currentPage * currentLimit < totalRecords);
       } else {
-        // Toast.show({
-        //   type: "error",
-        //   text1: localStrings.Profile.Posts.GetPostsFailed,
-        //   text2: response?.error?.message,
-        // });
+        console.error(response?.message);
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: "error",
-    //     text1: localStrings.Profile.Posts.GetPostsFailed,
-    //     text2: error?.message,
-    //   });
     } finally {
       setLoading(false);
     }
@@ -101,10 +92,6 @@ const ProfileViewModel = () => {
   }
   catch (error: any) {
     console.error(error);
-    // Toast.show({
-    //   type: "error",
-    //   text1: error?.message || "Không có dữ liệu phản hồi từ server.",
-    // });
   }
 }
 useEffect(() => {
@@ -118,29 +105,36 @@ useEffect(() => {
 //Privacy setting
 const fetchUserProfile = async (id: string) => {
   try {
-    setProfileLoading(true);
-    const response = await defaultProfileRepo.getProfile(id);   
+    setLoading(true);
+    const response = await defaultProfileRepo.getProfile(id);
+    
     if (!response?.error) {
       setResultCode(response?.code);
     } else {
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Info.GetInfoFailed,
-    //     text2: response?.error?.message,
-    //   });
     }
   } catch (error: any) {
     console.error(error);
-    // Toast.show({
-    //   type: 'error',
-    //   text1: localStrings.Profile.Info.GetInfoFailed,
-    //   text2: error?.message,
-    // });
   } finally {
-    setProfileLoading(false);
+    setLoading(false);
   }
 }
 
+//update Profile
+const updateProfile = async (data: UpdateProfileRequestModel) => {
+  try {
+    setLoading(true);
+    const response = await defaultProfileRepo.updateProfile(data);
+    if (!response?.error) {
+      onUpdateProfile(response?.data);
+    } else {
+    }
+  } catch (error: any) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+}
+  
   return {
     loading,
     posts,
@@ -155,9 +149,9 @@ const fetchUserProfile = async (id: string) => {
     page,
     getFriendCount,
     fetchMyFriends,
-    profileLoading,
     fetchUserProfile,
     resultCode,
+    updateProfile
   };
 };
 

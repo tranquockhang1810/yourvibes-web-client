@@ -5,6 +5,8 @@ import Post from '@/components/common/post/views/Post'
 import MyHeader from '@/components/common/header/view/Header' 
 import PostBar from '@/components/common/postBar/view/postBar'; 
 import { Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
+import { useAuth } from '@/context/auth/useAuth';
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const likedPost: PostResponseModel = {
@@ -37,7 +39,7 @@ const HomePage = () => {
       }
     ],
     "is_liked": false
-  }
+  }  
 
   return (
     <div className='w-full'> 

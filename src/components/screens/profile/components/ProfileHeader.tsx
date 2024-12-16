@@ -7,6 +7,8 @@ import UserProfileViewModel from '../viewModel/UserProfileViewModel'
 import { FriendStatus } from '@/api/baseApiResponseModel/baseApiResponseModel'
 import { Button, Flex, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons';
+import { FaUserCheck, FaUserPlus } from 'react-icons/fa'
+import { ImCross } from 'react-icons/im'
 
 const ProfileHeader = ({
     total,
@@ -21,152 +23,155 @@ const ProfileHeader = ({
 }) => {
     const {lightGray, brandPrimary, backgroundColor} = useColor()
     const {localStrings, language, isLoginUser} = useAuth()
-    // const {
-    //     sendFriendRequest,
-    //     sendRequestLoading,
-    //     refuseFriendRequest,
-    //     cancelFriendRequest,
-    //     acceptFriendRequest,
-    //     unFriend,
-    //     newFriendStatus,
-    //     setNewFriendStatus,
-    //   } = UserProfileViewModel();
-
-    //   const renderFriendButton = useCallback(() => {
-    //     switch (newFriendStatus) {
-    //       case FriendStatus.NotFriend:
-    //         return (
-    //           <Button
-    //             type="default"
-    //             onClick={() => {
-    //               sendFriendRequest(user?.id as string);
-    //             }}
-    //           >
-    //             <div style={{ flexDirection: "row", alignItems: "center" }}>
-    //               {/* <FontAwesomeIcon name="user-plus" size={16} color={brandPrimary} /> */}
-    //               <text
-    //                 style={{
-    //                   color: brandPrimary,
-    //                   fontSize: 16,
-    //                   fontWeight: "bold",
-    //                 }}
-    //               >
-    //                 {localStrings.Public.AddFriend}
-    //               </text>
-    //             </div>
-    //           </Button>
-    //         );
-    //       case FriendStatus.IsFriend:
-    //         return (
-    //           <Button type="primary">
-    //             <div style={{ flexDirection: "row", alignItems: "center" }}>
-    //               {/* <FontAwesomeIcon
-    //                 name="user-check"
-    //                 size={16}
-    //                 color={backgroundColor}
-    //             //   /> */}
-    //               <text
-    //                 style={{
-    //                   color: backgroundColor,
-    //                   fontSize: 16,
-    //                   fontWeight: "bold",
-    //                 }}
-    //               >
-    //                 {localStrings.Public.Friend}
-    //               </text>
-    //             </div>
-    //           </Button>
-    //         );
-    //       case FriendStatus.SendFriendRequest:
-    //         return (
-    //           <div style={{ marginTop: 10 }}>
-    //             <text
-    //               style={{
-    //                 marginBottom: 10,
-    //                 fontSize: 14,
-    //                 fontWeight: "bold",
-    //               }}
-    //             >
-    //               {localStrings.Profile.Friend.SendARequest}
-    //             </text>
-    //             <Button
-    //               type="default"
-    //               onClick={() => {
-    //                 cancelFriendRequest(user?.id as string);
-    //               }}
-    //               loading={sendRequestLoading}
-    //             >
-    //               <div style={{ flexDirection: "row", alignItems: "center" }}>
-    //                 {/* <Entypo name="cross" size={24} color={brandPrimary} /> */}
-    //                 <text
-    //                   style={{
-    //                     color: brandPrimary,
-    //                     fontSize: 16,
-    //                     fontWeight: "bold",
-    //                   }}
-    //                 >
-    //                   {localStrings.Public.CancelFriendRequest}
-    //                 </text>
-    //               </div>
-    //             </Button>
-    //           </div>
-    //         );
-    //       case FriendStatus.ReceiveFriendRequest:
-    //         return (
-    //           <div style={{ marginTop: 10 }}>
-    //             <text
-    //               style={{
-    //                 marginBottom: 10,
-    //                 fontSize: 14,
-    //                 fontWeight: "bold",
-    //               }}
-    //             >
-    //               {localStrings.Profile.Friend.SendYouARequest}
-    //             </text>
-    //             <div
-    //               style={{
-    //                 flexDirection: "row",
-    //                 alignItems: "center",
-    //                 display: "flex",
-    //                 justifyContent: "space-between",
-    //               }}
-    //             >
-    //               <Button
-    //                 style={{ width: "48%" }}
-    //                 type="primary"
-    //                 onClick={() => {
-    //                   acceptFriendRequest(user?.id as string);
-    //                 }}
-    //                 loading={sendRequestLoading}
-    //               >
-    //                 {localStrings.Public.AcceptFriendRequest}
-    //               </Button>
-    //               <Button
-    //                 style={{ width: "48%" }}
-    //                 type="default"
-    //                 onClick={() => {
-    //                   refuseFriendRequest(user?.id as string);
-    //                 }}
-    //               >
-    //                 {localStrings.Public.RefuseFriendRequest}
-    //               </Button>
-    //             </div>
-    //           </div>
-    //         );
-    //       default:
-    //         return (
-    //           <Button type="default" onClick={() => {}}>
-    //             <text style={{ color: brandPrimary, fontSize: 16 }}>
-    //               {localStrings.Public.AddFriend}
-    //             </text>
-    //           </Button>
-    //         );
-    //     }
-    //   }, [newFriendStatus, localStrings, sendRequestLoading]);
     
-    //   useEffect(() => {
-    //     if (user) setNewFriendStatus(user?.friend_status);
-    //   }, [user]);
+    const {
+        sendFriendRequest,
+        sendRequestLoading,
+        refuseFriendRequest,
+        cancelFriendRequest,
+        acceptFriendRequest,
+        unFriend,
+        newFriendStatus,
+        setNewFriendStatus,
+      } = UserProfileViewModel();
+
+      const renderFriendButton = useCallback(() => {
+        switch (newFriendStatus) {
+          case FriendStatus.NotFriend:
+            return (
+              <Button
+                type="default"
+                onClick={() => {
+                  sendFriendRequest(user?.id as string);
+                }}
+              >
+                <div className='flex flex-row items-center'>
+                  <FaUserPlus  name="user-plus" size={16} color={brandPrimary} />
+                  <text
+                    style={{
+                      color: brandPrimary,
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      marginLeft: 5,
+                    }}
+                  >
+                    {localStrings.Public.AddFriend}
+                  </text>
+                </div>
+              </Button>
+            );
+          case FriendStatus.IsFriend:
+            return (
+              <Button type="primary">
+                <div className='flex flex-row items-center'>
+                <FaUserCheck 
+                    name="user-check"
+                    size={16}
+                    color={backgroundColor}
+                  />
+                  <text
+                    style={{
+                      color: backgroundColor,
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      marginLeft: 5
+                    }}
+                  >
+                    {localStrings.Public.Friend}
+                  </text>
+                </div>
+              </Button>
+            );
+          case FriendStatus.SendFriendRequest:
+            return (
+              <div style={{ marginTop: 10 }}>
+                <text
+                  style={{
+                    marginBottom: 10,
+                    fontSize: 14,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {localStrings.Profile.Friend.SendARequest}
+                </text>
+                <Button
+                  type="default"
+                  onClick={() => {
+                    cancelFriendRequest(user?.id as string);
+                  }}
+                  loading={sendRequestLoading}
+                >
+                  <div style={{ flexDirection: "row", alignItems: "center" }}>
+                  <ImCross name="cross" size={24} color={brandPrimary} />
+                    <text
+                      style={{
+                        color: brandPrimary,
+                        fontSize: 16,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {localStrings.Public.CancelFriendRequest}
+                    </text>
+                  </div>
+                </Button>
+              </div>
+            );
+          case FriendStatus.ReceiveFriendRequest:
+            return (
+              <div style={{ marginTop: 10 }}>
+                <text
+                  style={{
+                    marginBottom: 10,
+                    fontSize: 14,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {localStrings.Profile.Friend.SendYouARequest}
+                </text>
+                <div
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Button
+                    style={{ width: "48%" }}
+                    type="primary"
+                    onClick={() => {
+                      acceptFriendRequest(user?.id as string);
+                    }}
+                    loading={sendRequestLoading}
+                  >
+                    {localStrings.Public.AcceptFriendRequest}
+                  </Button>
+                  <Button
+                    style={{ width: "48%" }}
+                    type="default"
+                    onClick={() => {
+                      refuseFriendRequest(user?.id as string);
+                    }}
+                  >
+                    {localStrings.Public.RefuseFriendRequest}
+                  </Button>
+                </div>
+              </div>
+            );
+          default:
+            return (
+              <Button type="default" onClick={() => {}}>
+                <text style={{ color: brandPrimary, fontSize: 16 }}>
+                  {localStrings.Public.AddFriend}
+                </text>
+              </Button>
+            );
+        }
+      }, [newFriendStatus, localStrings, sendRequestLoading]);
+    
+      useEffect(() => {
+        if (user) setNewFriendStatus(user?.friend_status);
+      }, [user]);
   return (
     <div>
         {loading ? (
@@ -176,11 +181,11 @@ const ProfileHeader = ({
         ): (
             <>
             {/* Cover Image */}
-            <div className="w-full h-48" style={{backgroundColor: lightGray}} >
+            <div className="w-full h-60" style={{backgroundColor: lightGray}} >
                   <img
                     src={user?.capwall_url}
                     alt="Cover"
-                    className="w-full h-full"
+                    className="w-full h-full object-scale-down"
                   />
                 </div>
 
@@ -189,7 +194,7 @@ const ProfileHeader = ({
                 <img
                     src={user?.avatar_url ||'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg'}
                     alt="Profile"
-                    className="w-22 h-22 rounded-full mx-auto"
+                    className="w-52 h-52 rounded-full mx-auto"
                     style={{ backgroundColor: lightGray }}
                 />
                 </div>
@@ -219,8 +224,8 @@ const ProfileHeader = ({
         
                 {/* Friend Button */}
                 {!isLoginUser(user?.id as string) && (
-                  <div className="mt-2">
-                    {/* {renderFriendButton()} */}
+                  <div className="mt-2 flex justify-center">
+                    {renderFriendButton()}
                   </div>
                 )}
           </>

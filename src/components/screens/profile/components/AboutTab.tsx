@@ -5,37 +5,43 @@ import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseM
 import { useAuth } from '@/context/auth/useAuth';
 import useColor from '@/hooks/useColor';
 import { Flex, Spin } from 'antd';
-import { CreditCardFilled, EditFilled, LoadingOutlined, MailFilled, PhoneFilled } from '@ant-design/icons';
+import { CreditCardFilled, LoadingOutlined, MailFilled, PhoneFilled } from '@ant-design/icons';
 import React from 'react'
 import { DateTransfer } from '@/utils/helper/DateTransfer';
-import { FaGlobe, FaLock, FaUsers } from 'react-icons/fa';
+import { FaGlobe, FaLock } from 'react-icons/fa';
 import { IoMdPeople } from 'react-icons/io';
-import router from 'next/router';
+import { AiFillEdit } from 'react-icons/ai';
+import { useRouter } from 'next/navigation';
 
 const AboutTab = ({
     user,
     loading,
-    // friendCount,
-    // friends,
+    friendCount,
+    friends,
     resultCode,
 }:{
     user: UserModel;
     loading: boolean;
-    // friendCount: number;
-    // friends: FriendResponseModel[];
+    friendCount: number;
+    friends: FriendResponseModel[];
     resultCode: number;
 }) => {
+    const router = useRouter();
     const {brandPrimaryTap,lightGray} = useColor();
     const {isLoginUser, localStrings } = useAuth();
+    console.log('user', user, 'resultCode', resultCode);
+
+    
+    
   
     const renderPrivacyIcon = () => {
         switch (user?.privacy) {
           case Privacy.PUBLIC:
-            return <FaGlobe size={18} color={brandPrimaryTap} />;
+            return <FaGlobe size={20} color={brandPrimaryTap} />;
           case Privacy.FRIEND_ONLY:
-            return <IoMdPeople size={18} color={brandPrimaryTap} />;
+            return <IoMdPeople size={20} color={brandPrimaryTap} />;
           case Privacy.PRIVATE:
-            return <FaLock name="lock-closed" size={18} color={brandPrimaryTap} />;
+            return <FaLock name="lock-closed" size={20} color={brandPrimaryTap} />;
           default:
             return null;
         }
@@ -53,14 +59,14 @@ const AboutTab = ({
                 {/* // detail */}
                 <div className='py-2 w-60'>
                     <div>
-                        <div>
-                            <p className='font-bold text-lg'>{localStrings.Public.Detail}</p>
+                        <div className='flex justify-between mb-2'>
+                            <span className='font-bold text-lg'>{localStrings.Public.Detail}</span>
                             {isLoginUser(user?.id as string) && (
-                                <div className='flex-row'>
-                                    <p className='pr-5'>
+                                <div className='flex flex-row items-center'>
+                                    <span className='pr-2'>
                                         {renderPrivacyIcon()}
-                                    </p>
-                                    <EditFilled />
+                                    </span>
+                                    <AiFillEdit  size={24} className='pr-2'/>
                                 </div>
                             )}
                         </div>
@@ -99,14 +105,17 @@ const AboutTab = ({
                 </div>
                 
                  {/* Divider */}
-    <div className='w-px bg-gray-300 h-auto mr-4'></div>
+                <div className='w-px bg-gray-300 h-auto mr-4'></div>
 
                 {/* friends  */}
                 <div className='py-2 flex-1'>
                     <div className='flex justufy-between mb-2'>
                        <div className='flex flex-col flex-1'>
-                            <p className='font-bold text-lg'>{localStrings.Public.Friend}</p>
-                            <p className='text-gray-500'>{user?.friend_count} {localStrings.Public.Friend}</p>
+                            <span className='font-bold text-lg'>{localStrings.Public.Friend}</span>
+                            <span className='text-gray-500'>
+                                {/* {user?.friend_count}  */}
+                                {friendCount}
+                                {localStrings.Public.Friend}</span>
                         </div>
                         <div className='cursor-pointer'>
                             <p style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
@@ -115,18 +124,22 @@ const AboutTab = ({
                         </div>
                     </div>
                     <div className='flex flex-row'>
-                        <div className='w-1/4 items-center mb-2 mx-1'
-                            // onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+                        {friends.map((friend, index) => (
+                            <div key={index} className='w-1/4 items-center mb-2 mx-1'
+                            onClick={() => router.push(`/user/${friend?.id}`)}
                         >
                             <img
-                            src={user?.avatar_url}
+                            src={friend?.avatar_url}
                             className='w-12 h-12 rounded-full bg-gray-300 mr-2'
                             />
                             <p className='mt-2'>
-                                {user?.family_name} {user?.name}
+                                {friend?.family_name} {friend?.name}
                             </p>
-                        </div>
+                        </div>))}
                         
+                    </div>
+                    <div className='flex justify-center' onClick={() => router.push('#')}>
+                        {localStrings.Public.FriendView}
                     </div>
                 </div>
             </div>

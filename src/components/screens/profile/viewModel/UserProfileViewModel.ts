@@ -74,11 +74,11 @@ const UserProfileViewModel = () => {
         setResultCode(response?.code);
         setNewFriendStatus(response?.data?.friend_status || FriendStatus.NotFriend);
       } else {
-        // Toast.error(`${localStrings.Profile.Info.GetInfoFailed}: ${response?.error?.message}`);
+       
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.error(`${localStrings.Profile.Info.GetInfoFailed}: ${error?.message}`);
+    
     } finally {
       setProfileLoading(false);
     }
@@ -98,25 +98,14 @@ const UserProfileViewModel = () => {
       const response = await defaultProfileRepo.sendFriendRequest(id);
       
       if (!response?.error) {
-        // Toast.show({
-        //   type: 'success',
-        //   text1: localStrings.Profile.Friend.SendRequestSuccess,
-        // });
+       
         setNewFriendStatus(FriendStatus.SendFriendRequest);
       } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: localStrings.Profile.Friend.SendRequestFailed,
-        //   text2: response?.error?.message,
-        // });
+       
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Friend.SendRequestFailed,
-    //     text2: error?.message,
-    //   });
+    
     } finally {
       setSendRequestLoading(false);
     }
@@ -128,25 +117,14 @@ const UserProfileViewModel = () => {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.cancelFriendRequest(id);
       if (!response?.error) {
-        // Toast.show({
-        //   type: 'success',
-        //   text1: localStrings.Profile.Friend.CancelRequestSuccess,
-        // });
+       
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: localStrings.Profile.Friend.CancelRequestFailed,
-        //   text2: response?.error?.message,
-        // });
+       
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Friend.CancelRequestFailed,
-    //     text2: error?.message,
-    //   });
+   
     } finally {
       setSendRequestLoading(false);
     }
@@ -158,25 +136,14 @@ const UserProfileViewModel = () => {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.refuseFriendRequest(id);
       if (!response?.error) {
-        // Toast.show({
-        //   type: 'success',
-        //   text1: localStrings.Profile.Friend.FriendResponseSuccess,
-        // });
+        
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: localStrings.Profile.Friend.FriendResponseFailed,
-        //   text2: response?.error?.message,
-        // });
+        
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Friend.FriendResponseFailed,
-    //     text2: error?.message,
-    //   });
+   
     } finally {
       setSendRequestLoading(false);
     }
@@ -188,25 +155,14 @@ const UserProfileViewModel = () => {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.acceptFriendRequest(id);
       if (!response?.error) {
-        // Toast.show({
-        //   type: 'success',
-        //   text1: localStrings.Profile.Friend.FriendResponseSuccess,
-        // });
+       
         setNewFriendStatus(FriendStatus.IsFriend);
       } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: localStrings.Profile.Friend.FriendResponseFailed,
-        //   text2: response?.error?.message,
-        // });
+       
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Friend.FriendResponseFailed,
-    //     text2: error?.message,
-    //   });
+    
     } finally {
       setSendRequestLoading(false);
     }
@@ -218,27 +174,13 @@ const UserProfileViewModel = () => {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.unfriend(id); 
       if (!response?.error) {
-        // Toast.show({
-        //   type: 'success',
-        //   text1: localStrings.Profile.Friend.UnfriendSuccess,
-        // });
-        
+       
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
-        // Toast.show({
-        //   type: 'error',
-        //   text1: localStrings.Profile.Friend.UnfriendFailed,
-        //   text2: response?.error?.message,
-          
-        // });
+    
       }
     } catch (error: any) {
       console.error(error);
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: localStrings.Profile.Friend.UnfriendFailed,
-    //     text2: error?.message,
-    //   });
     } finally {
       setSendRequestLoading(false);
     }
@@ -272,7 +214,6 @@ const UserProfileViewModel = () => {
       }}
     } catch (error: any) {
       console.error(error);
-    //   Toast.error(error?.message || 'Không có dữ liệu phản hồi từ server.');
     }
   };
 

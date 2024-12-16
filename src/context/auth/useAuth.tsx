@@ -37,7 +37,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const onLogin = (user: any) => {
-    console.log('Đăng nhập thành công:', user); 
     localStorage.setItem('user', JSON.stringify(user.user));
     localStorage.setItem('accesstoken', user.access_token);
     // localStorage.setItem('refreshtoken', user.refreshtoken);
@@ -47,7 +46,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   const onUpdateProfile = (user: any) => {
-    console.log('Cập nhật thông tin người dùng:', user);
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify(user));
     // localStorage.setItem('refreshtoken', user.refreshtoken);
@@ -67,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   const isLoginUser = (userId: string) => {
-    return user?.id === userId; 
+    return user?.id === userId;
   }
 
   useEffect(() => {
@@ -75,17 +73,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [language]);
 
   useEffect(() => {
+    // const checkAuthStatus = () => {
+    //   const storedUser = localStorage.getItem('user');
+    //   const storedAccessToken = localStorage.getItem('accesstoken');
+
+    //   if (storedUser && storedAccessToken) {
+    //     setUser(JSON.parse(storedUser));
+    //     setIsAuthenticated(true);
+    //   } else {
+    //     setIsAuthenticated(false);
+    //   }
+    // };
     const checkAuthStatus = () => {
       const storedUser = localStorage.getItem('user');
       const storedAccessToken = localStorage.getItem('accesstoken');
-      console.log('Trạng thái xác thực:', { storedUser, storedAccessToken });
-      if (storedUser && storedAccessToken) {
-        setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
-      } else {
+    
+      try {
+        if (storedUser && storedAccessToken) {
+          setUser(JSON.parse(storedUser));
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Failed to parse stored user data:", error);
+        localStorage.removeItem('user'); // Xóa dữ liệu lỗi nếu có
         setIsAuthenticated(false);
       }
     };
+    
 
     checkAuthStatus();
   }, []);
