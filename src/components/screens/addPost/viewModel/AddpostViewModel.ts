@@ -59,25 +59,35 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
   
     const validFiles = fileList
       .map((file) => file.originFileObj)
-      .filter((file): file is RcFile => !!file);  // Đảm bảo lấy các file hợp lệ
+      .filter((file): file is RcFile => !!file);
   
-    const mediaFiles = await convertMediaToFiles(validFiles);  // Chuyển đổi thành media files hợp lệ
+    const mediaFiles = await convertMediaToFiles(validFiles);
+  
+    // Chuyển đổi mediaFiles sang dạng file
+    const mediaFilesAsFiles = mediaFiles.map((file) => {
+      if (file.uri) {
+        const blob = new Blob([file.uri], { type: file.type });
+        return new File([blob], file.name, { type: file.type });
+      } else {
+        console.log(`File ${file.name} không có URI, bỏ qua`);
+        return null;
+      }
+    }).filter((file) => file !== null);
   
     const formData = TransferToFormData({
       content: postContent,
       privacy,
-      media: mediaFiles,  // Đảm bảo truyền đúng media files
+      media: mediaFilesAsFiles,
     });
   
     const createPostRequestModel: CreatePostRequestModel = {
       content: postContent,
-      privacy,
-      media: mediaFiles, // Đảm bảo truyền đúng media
+      privacy: privacy,
+      media: mediaFilesAsFiles, // Đảm bảo rằng media được truyền đúng
     };
   
     await createPost(createPostRequestModel);
   };
-  
 
   const handlePreview = async (file: UploadFile) => {
     let preview = file.url || file.preview;

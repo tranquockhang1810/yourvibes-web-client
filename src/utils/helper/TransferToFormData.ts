@@ -8,36 +8,16 @@ export const TransferToFormData = (data: any) => {
     if (data[key] === undefined) {
       continue;
     } else if (Array.isArray(data[key])) {
-      if (key === 'media') {
-        const mediaFiles = data[key].map(async (item: CustomUploadFile) => {
-          if (item.uri) {
-            const response = await fetch(item.uri);
-            const blob = await response.blob();
-            return { blob, filename: item.name };
-          }
-          return null;
-        });
-
-        Promise.all(mediaFiles).then((files) => {
-          files.forEach((item) => {
-            if (item) {
-              formData.append(key, item.blob, item.filename);
-            }
-          });
-        });
-      } else {
-        data[key].forEach((item: any) => {
-          formData.append(key, item as any);
-        });
-      }
+      data[key].forEach((item: any) => {
+        formData.append(key, item as any);
+      });
     } else {
       formData.append(key, data[key] as any);
     }
   }
 
   return formData;
-};
-
+}
 
 interface CustomUploadFile extends UploadFile {
   uri?: string; 
