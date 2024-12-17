@@ -45,6 +45,7 @@ const Post: React.FC<IPost> = React.memo(({
     sharePost,
     shareLoading,
     deletePost,
+    updatePost,
   } = EditPostViewModel(defaultPostRepo);
   const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
@@ -74,13 +75,19 @@ const Post: React.FC<IPost> = React.memo(({
     }
   };
 
-  const renderLikeIcon = useCallback(() => {
-    if (likedPost?.is_liked) {
-      return <FaHeart size={24} color={"red"} />;
-    } else {
-      return <FaRegHeart size={24} color={brandPrimaryTap} />;
+  const handleLikeClick = useCallback(() => {
+    if (likedPost?.id) {
+      likePost(likedPost.id);
     }
-  }, [likedPost?.is_liked]);
+  }, [likedPost?.id, likePost]);
+  
+  const renderLikeIcon = () => {
+    if (likedPost?.is_liked) {
+      return <FaHeart size={24} color={"red"} onClick={handleLikeClick} />;
+    } else {
+      return <FaRegHeart size={24} color={brandPrimaryTap} onClick={handleLikeClick} />;
+    }
+  };
 
   const items: MenuProps['items'] = useMemo(() => {
     if (user?.id === likedPost?.user?.id)
@@ -90,7 +97,9 @@ const Post: React.FC<IPost> = React.memo(({
           label: localStrings.Post.EditPost,
           type: 'item',
           onClick: () => {
-            router.push(`/edit-post/${post?.id}`);
+            if (post && post.id) {
+              router.push(`/editPost/${post.id}`);
+            }
           }
         },
         {

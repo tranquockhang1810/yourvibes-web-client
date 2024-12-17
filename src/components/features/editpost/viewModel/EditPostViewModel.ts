@@ -4,7 +4,6 @@ import { SharePostRequestModel } from "@/api/features/post/models/SharePostReque
 import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostRequestModel";
 import { PostRepo } from "@/api/features/post/PostRepo"
 import { useAuth } from "@/context/auth/useAuth";
-//import { ImagePickerAsset } from "expo-image-picker";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { message } from "antd";
@@ -35,7 +34,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         setOriginalImageFiles([]);
         setMediaIds([]);
         setPrivacy(Privacy.PUBLIC);
-        // router.push("/profile?tabNum=1");
+        router.push("/profile?tabNum=1");
       } else {
         message.error({
           content: localStrings.UpdatePost.UpdatePostFailed
@@ -110,7 +109,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         message.success({
           content: localStrings.DeletePost.DeleteSuccess
         })
-        // router.push('/profile?tabNum=1');
+        router.push('/profile?tabNum=1');
       } else {
         message.error({
           content: localStrings.DeletePost.DeleteFailed
