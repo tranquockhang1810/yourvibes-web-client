@@ -65,19 +65,12 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
 
   const { showModal, setShowModal } = ReportViewModel();
   const router = useRouter();
-  const [currentCommentId, setCurrentCommentId] = useState<string>("");
 
-  const reportComment = (commentId: string) => () => {
+
+  const [currentCommentId, setCurrentCommentId] = useState<string>("");
+  const reportComment = (commentId: string) => {
+    setCurrentCommentId(commentId);
     setShowModal(true);
-    <Modal
-      centered
-      title={localStrings.Public.ReportFriend}
-      open={showModal}
-      onCancel={() => setShowModal(false)}
-      footer={null}
-    >
-      <ReportScreen commentId={commentId} setShowModal={setShowModal} />
-    </Modal>
   };
 
   const fetchPost = async (postId: string) => {
@@ -193,7 +186,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             strokeWidth: 2,
                             marginRight: 50,
                           }}
-                          onClick={reportComment(comment.id)}
+                          onClick={() => reportComment(comment.id)}
                         />
                       )}
                     </Col>
@@ -307,15 +300,15 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             />
                           ) : (
                             <FaFlag
-                            size={16}
-                            color="gray"
-                            style={{
-                              stroke: "black",
-                              strokeWidth: 2,
-                              marginRight: 50,
-                            }}
-                            onClick={reportComment(reply.id)}
-                          />
+                              size={16}
+                              color="gray"
+                              style={{
+                                stroke: "black",
+                                strokeWidth: 2,
+                                marginRight: 50,
+                              }}
+                              onClick={() => reportComment(reply.id)}
+                            />
                           )}
                         </Col>
                         <Col span={4} className="hover:cursor-pointer">
@@ -393,7 +386,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       opacity: 0.5,
                                     }}
                                   >
-                                    {/* {likeCount[nestedReply.id]} */}
+                                    {likeCount[nestedReply.id]}
                                   </span>
                                 </Col>
                                 {userId === nestedReply.user?.id ? (
@@ -435,15 +428,15 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                     />
                                   ) : (
                                     <FaFlag
-                                    size={16}
-                                    color="gray"
-                                    style={{
-                                      stroke: "black",
-                                      strokeWidth: 2,
-                                      marginRight: 50,
-                                    }}
-                                    onClick={reportComment(nestedReply.id)}
-                                  />
+                                      size={16}
+                                      color="gray"
+                                      style={{
+                                        stroke: "black",
+                                        strokeWidth: 2,
+                                        marginRight: 50,
+                                      }}
+                                      onClick={() => reportComment(nestedReply.id)}
+                                    />
                                   )}
                                 </Col>
                                 <Col span={4} className="hover:cursor-pointer">
@@ -547,6 +540,16 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
           />
         </Modal>
       )}
+      {/* Modal hiển thị khi nhấn FaFlag */}
+      <Modal
+        centered
+        title={localStrings.Public.ReportFriend}
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        footer={null}
+      >
+        <ReportScreen commentId={currentCommentId} setShowModal={setShowModal} />
+      </Modal>
     </div>
   );
 };
