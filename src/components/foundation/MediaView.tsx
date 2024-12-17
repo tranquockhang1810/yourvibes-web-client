@@ -19,52 +19,56 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    adaptiveHeight: true, // Đảm bảo chiều cao phù hợp với từng slide
     dotsClass: "slick-dots slick-thumb",
     customPaging: (i: number) => (
       <div
         style={{
-          backgroundColor: i === 0 ? brandPrimary : lightGray,
+          backgroundColor: lightGray,
           width: 10,
           height: 10,
           borderRadius: '50%',
-          display: 'inline-block',
         }}
       />
     ),
   };
 
   return (
-    <Slider {...settings}>
-      {mediaItems?.map((media, index) => {
-        const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov');
-        return isVideo ? (
-          <video
-            key={index}
-            style={{
-              height: 250,
-              width: '100%',
-              objectFit: 'cover',
-            }}
-            src={media?.media_url || ""}
-            controls
-            loop
-            muted
-            autoPlay
-          />
-        ) : (
-          <img
-            key={index}
-            src={media?.media_url || ""}
-            alt={`media-${index}`}
-            style={{
-              height: 250,
-              width: '100%',
-              objectFit: 'cover',
-            }}
-          />
-        );
-      })}
-    </Slider>
+    <div style={{ position: 'relative', maxWidth: '100%', overflow: 'hidden' }}>
+      <Slider {...settings}>
+        {mediaItems?.map((media, index) => {
+          const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov');
+          return (
+            <div key={index}>
+              {isVideo ? (
+                <video
+                  style={{
+                    height: 'auto',
+                    maxWidth: '100%',
+                    objectFit: 'cover',
+                  }}
+                  src={media?.media_url || ""}
+                  controls
+                  loop
+                  muted
+                  autoPlay
+                />
+              ) : (
+                <img
+                  src={media?.media_url || ""}
+                  alt={`media-${index}`}
+                  style={{
+                    height: 'auto',
+                    maxWidth: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
+      </Slider>
+    </div>
   );
 });
 
