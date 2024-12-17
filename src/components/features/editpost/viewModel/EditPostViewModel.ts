@@ -35,7 +35,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         setOriginalImageFiles([]);
         setMediaIds([]);
         setPrivacy(Privacy.PUBLIC);
-        router.push("/(tabs)/profile?tabNum=1");
+        // router.push("/profile?tabNum=1");
       } else {
         message.error({
           content: localStrings.UpdatePost.UpdatePostFailed
@@ -110,7 +110,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         message.success({
           content: localStrings.DeletePost.DeleteSuccess
         })
-        router.push('/(tabs)/profile?tabNum=1');
+        // router.push('/profile?tabNum=1');
       } else {
         message.error({
           content: localStrings.DeletePost.DeleteFailed
@@ -152,7 +152,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         message.success({
           content: localStrings.Post.SharePostSuccess
         })
-        router.push('/(tabs)/profile?tabNum=1');
+        router.push('/profile?tabNum=1');
       } else {
         message.error({
           content: localStrings.Post.SharePostFailed

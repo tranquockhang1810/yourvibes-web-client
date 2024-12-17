@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react"; 
-import { useAuth } from "@/context/auth/useAuth"; 
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useAuth } from "@/context/auth/useAuth";
 //Comments
 import { CommentsResponseModel } from "@/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
@@ -8,17 +8,16 @@ import { UpdateCommentsRequestModel } from "@/api/features/comment/models/Update
 //LikeComments
 import { defaultLikeCommentRepo } from "@/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/api/features/likeComment/models/LikeCommentResponses";
-//UserLikePost
-import { useRouter } from "next/router";
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
-import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
-
+import { useRouter } from "next/navigation";
+import { InputRef } from "antd";
+ 
 const usePostDetailsViewModel = (
   postId: string,
   replyToCommentId: string | null
 ) => {
-  // const { showActionSheetWithOptions } = useActionSheet();
+  //const { showActionSheetWithOptions } = useActionSheet();
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
+  const router = useRouter();
 
   const [replyMap, setReplyMap] = useState<{
     [key: string]: CommentsResponseModel[];
@@ -31,13 +30,13 @@ const usePostDetailsViewModel = (
   const [setReplyToCommentId] = useState<string | null>(null);
 
   const [likeIcon, setLikeIcon] = useState("heart-outline");
-  // const textInputRef = useRef<TextInput>(null);
+  const textInputRef = useRef<InputRef>(null);
   const [renderLikeIconState, setRenderLikeIconState] = useState(false);
 
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
-  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+
   const { user, localStrings } = useAuth();
 
   const fetchComments = async () => {
@@ -92,39 +91,39 @@ const usePostDetailsViewModel = (
       options.splice(1, 1);
     }
 
-    // showActionSheetWithOptions(
-    //   {
-    //     title: `${localStrings.PostDetails.ActionOptions}`,
-    //     options: options,
-    //     cancelButtonIndex: options.length - 1,
-    //     cancelButtonTintColor: "#F95454",
-    //   },
-    //   (buttonIndex) => {
-    //     switch (buttonIndex) {
-    //       case 0:
-    //         const commentToReport = comments.find(
-    //           (cmt) => cmt.id === comment.id
-    //         );
-    //         if (commentToReport) {
-    //           router.push(`/report?commentId=${comment.id}`);
-    //         }
-    //         break;
+    showActionSheetWithOptions(
+      {
+        title: `${localStrings.PostDetails.ActionOptions}`,
+        options: options,
+        cancelButtonIndex: options.length - 1,
+        cancelButtonTintColor: "#F95454",
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            const commentToReport = comments.find(
+              (cmt) => cmt.id === comment.id
+            );
+            if (commentToReport) {
+              router.push(`/report?commentId=${comment.id}`);
+            }
+            break;
 
-    //       case 1:
-    //         setEditCommentContent(comment.content);
-    //         setCurrentCommentId(comment.id);
-    //         setEditModalVisible(true);
-    //         break;
+          case 1:
+            setEditCommentContent(comment.content);
+            setCurrentCommentId(comment.id);
+            setEditModalVisible(true);
+            break;
 
-    //       case 2:
-    //         handleDelete(comment.id);
-    //         break;
+          case 2:
+            handleDelete(comment.id);
+            break;
 
-    //       default:
-    //         break;
-    //     }
-    //   }
-    // );
+          default:
+            break;
+        }
+      }
+    );
   };
 
   const handleLike = async (commentOrReplyId: string) => {
@@ -233,70 +232,62 @@ const usePostDetailsViewModel = (
   }, [isEditModalVisible]);
 
   const handleDelete = (commentId: string) => {
-    // showActionSheetWithOptions(
-    //   {
-    //     title: `${localStrings.PostDetails.DeleteComment}`,
-    //     options: [
-    //       `${localStrings.PostDetails.Yes}`,
-    //       `${localStrings.PostDetails.No}`,
-    //     ],
-    //     cancelButtonIndex: 1,
-    //     cancelButtonTintColor: "#F95454",
-    //   },
-    //   (buttonIndex) => {
-    //     if (buttonIndex === 0) {
-    //       defaultCommentRepo
-    //         .deleteComment(commentId)
-    //         .then(() => {
-    //           // Cập nhật trạng thái comments
-    //           setComments((prevComments) =>
-    //             prevComments.filter((comment) => comment.id !== commentId)
-    //           );
+    showActionSheetWithOptions(
+      {
+        title: `${localStrings.PostDetails.DeleteComment}`,
+        options: [
+          `${localStrings.PostDetails.Yes}`,
+          `${localStrings.PostDetails.No}`,
+        ],
+        cancelButtonIndex: 1,
+        cancelButtonTintColor: "#F95454",
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          defaultCommentRepo
+            .deleteComment(commentId)
+            .then(() => {
+              // Cập nhật trạng thái comments
+              setComments((prevComments) =>
+                prevComments.filter((comment) => comment.id !== commentId)
+              );
 
-    //           // Cập nhật trạng thái replyMap
-    //           if (replyMap[commentId]) {
-    //             setReplyMap((prevReplyMap) => {
-    //               const updatedReplies = prevReplyMap[commentId].filter(
-    //                 (reply) => reply.id !== commentId
-    //               );
-    //               return { ...prevReplyMap, [commentId]: updatedReplies };
-    //             });
-    //           } else {
-    //             // Nếu không có replies, cập nhật trạng thái replyMap để xóa commentId
-    //             setReplyMap((prevReplyMap) => {
-    //               const updatedReplyMap = { ...prevReplyMap };
-    //               delete updatedReplyMap[commentId];
-    //               return updatedReplyMap;
-    //             });
-    //           }
+              // Cập nhật trạng thái replyMap
+              if (replyMap[commentId]) {
+                setReplyMap((prevReplyMap) => {
+                  const updatedReplies = prevReplyMap[commentId].filter(
+                    (reply) => reply.id !== commentId
+                  );
+                  return { ...prevReplyMap, [commentId]: updatedReplies };
+                });
+              } else {
+                // Nếu không có replies, cập nhật trạng thái replyMap để xóa commentId
+                setReplyMap((prevReplyMap) => {
+                  const updatedReplyMap = { ...prevReplyMap };
+                  delete updatedReplyMap[commentId];
+                  return updatedReplyMap;
+                });
+              }
 
-    //           // Cập nhật lại danh sách replies của comment
-    //           const parentId = replyToCommentId || replyToReplyId;
-    //           if (parentId) {
-    //             const updatedReplies = replyMap[parentId].filter(
-    //               (reply) => reply.id !== commentId
-    //             );
-    //             setReplyMap((prevReplyMap) => ({
-    //               ...prevReplyMap,
-    //               [parentId]: updatedReplies,
-    //             }));
-    //             fetchReplies(postId, parentId);
-    //           }
+              // Cập nhật lại danh sách replies của comment
+              const parentId = replyToCommentId || replyToReplyId;
+              if (parentId) {
+                const updatedReplies = replyMap[parentId].filter(
+                  (reply) => reply.id !== commentId
+                );
+                setReplyMap((prevReplyMap) => ({
+                  ...prevReplyMap,
+                  [parentId]: updatedReplies,
+                }));
+                fetchReplies(postId, parentId);
+              }
 
-    //           Toast.show({
-    //             type: "success",
-    //             text1: `${localStrings.PostDetails.DeteleReplySuccess}`,
-    //           });
-    //         })
-    //         .catch((error) => {
-    //           Toast.show({
-    //             type: "error",
-    //             text1: `${localStrings.PostDetails.DeteleReplyFailed}`,
-    //           });
-    //         });
-    //     }
-    //   }
-    // );
+            })
+            .catch((error) => {
+            });
+        }
+      }
+    );
   };
 
   const handleAddComment = async (comment: string) => {
@@ -319,6 +310,7 @@ const usePostDetailsViewModel = (
         console.error("Error adding comment:", error);
       } finally {
         setNewComment("");
+        textInputRef.current?.blur();
       }
     }
   };
@@ -344,6 +336,22 @@ const usePostDetailsViewModel = (
             );
             return [...prev];
           });
+          fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+        } else {
+        }
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      }
+      try {
+        const response = await defaultCommentRepo.createComment(commentData);
+        if (!response.error) {
+          const newComment = { ...response.data, replies: [] };
+          setComments((prev) => {
+            const parentComment = prev.find(
+              (comment) => comment.id === parentId
+            );
+            return [...prev];
+          });
           // Cập nhật lại danh sách reply cho comment cha
           const updatedReplies = [
             ...(replyMap[parentId || ""] || []),
@@ -361,24 +369,10 @@ const usePostDetailsViewModel = (
       } finally {
         setNewComment("");
         setReplyToReplyId(null);
+        textInputRef.current?.blur();
       }
     }
   };
-
-  const fetchUserLikePosts = async (postId: string) => {
-    const response = await defaultPostRepo.getPostLikes({
-      postId: postId,
-      page: 1,
-      limit: 10,
-    });
-    console.log(postId, "post id");
-    console.log("ai like bài này: ", response);
-  setUserLikePost(response?.data);
-  };
-
-  useEffect(() => {
-    fetchUserLikePosts(postId);
-  }, [postId]);
 
   return {
     comments,
@@ -387,6 +381,7 @@ const usePostDetailsViewModel = (
     newComment,
     replyToCommentId,
     replyToReplyId,
+    textInputRef,
     handleLike,
     handleAddComment,
     handleAddReply,
@@ -406,9 +401,11 @@ const usePostDetailsViewModel = (
     replyMap,
     likeIcon,
     fetchComments,
-    userLikePost,
-    fetchUserLikePosts,
   };
 };
 
 export default usePostDetailsViewModel;
+
+function showActionSheetWithOptions(arg0: { title: string; options: string[]; cancelButtonIndex: number; cancelButtonTintColor: string; }, arg1: (buttonIndex: any) => void) {
+  throw new Error("Function not implemented.");
+}
