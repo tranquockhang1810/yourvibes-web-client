@@ -15,14 +15,16 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const { localStrings } = useAuth();
+  console.log('PostList', posts, "user", user);
+  
 
-  // const renderFooter = useCallback(() => {
-  //   return loading ? (
-  //     <div className="flex justify-center py-4">
-  //       <Spin size="large" />
-  //     </div>
-  //   ) : null;
-  // }, [loading]);
+  const renderFooter = useCallback(() => {
+    return loading ? (
+      <div className="flex justify-center py-4">
+        <Spin size="large" />
+      </div>
+    ) : null;
+  }, [loading]);
 
   return (
     <div className={`flex flex-col bg-${grayBackground} p-4`}>
@@ -55,6 +57,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
           </List.Item>
         )}
         // loading={loading}
+        // loadMore={renderFooter()}
       />
     </div>
   );

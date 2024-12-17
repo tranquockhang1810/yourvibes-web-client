@@ -16,8 +16,8 @@ const SettingsTab = () => {
   const { brandPrimary } = useColor();
   const { onLogout, changeLanguage, user, localStrings } = useAuth();
   const [updatedForm] = Form.useForm();
-  const [newAvatar, setNewAvatar] = useState({ url: "", name: "", type: "" });
-  const [newCapwall, setNewCapwall] = useState({ url: "", name: "", type: "" });
+  const [newAvatar, setNewAvatar] = useState<{ url: string; name: string; type: string; file?: File }>({ url: "", name: "", type: "" });
+  const [newCapwall, setNewCapwall] = useState<{ url: string; name: string; type: string; file?: File }>({ url: "", name: "", type: "" });
   const [showPicker, setShowPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
@@ -38,48 +38,42 @@ const SettingsTab = () => {
   }, [user]);
 
 
-  // const pickAvatarImage = async (file: File) => {
-  //   // Kiểm tra loại tệp (nếu cần)
-  //   const isImage = file.type.startsWith('image/');
-  //   if (!isImage) {
-  //     // Nếu không phải ảnh, trả về false để không cho phép tải lên
-  //     return false;
-  //   }
+  const pickAvatarImage = (file: File) => {
+    // Kiểm tra loại tệp (nếu cần)
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      // Nếu không phải ảnh, trả về false để không cho phép tải lên
+      return false;
+    }
   
-  //   // Tạo URL cho ảnh mới
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setNewAvatar({
-  //       url: reader.result as string, // Đặt URL của ảnh mới
-  //       name: file.name,    // Tên tệp
-  //       type: file.type,    // Loại tệp
-  //     });
-  //   };
-  //   reader.readAsDataURL(file); // Đọc tệp dưới dạng URL
+    // Cập nhật trạng thái với thông tin tệp
+    setNewAvatar({
+      url: URL.createObjectURL(file),  // Tạo URL tạm thời từ tệp
+      name: file.name,                 // Tên tệp
+      type: file.type,    
+      file: file                // Loại tệp
+    });
   
-  //   return false; // Ngừng tải ảnh lên server (nếu không cần upload)
-  // };
+    return true;  // Trả về true để tệp có thể được tải lên
+  };
   
-  // const pickCapwallImage = async (file: File) => {
-  //   const isImage = file.type.startsWith('image/');
-  //   if (!isImage) {
-  //     return false;
-  //   }
+  const pickCapwallImage = (file: File) => {
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      return false;
+    }
   
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setNewCapwall({
-  //       url: reader.result as string, // Đặt URL của ảnh mới
-  //       name: file.name,
-  //       type: file.type,
-  //     });
-  //   };
-  //   reader.readAsDataURL(file);
+    // Cập nhật trạng thái với thông tin tệp
+    setNewCapwall({
+      url: URL.createObjectURL(file),  // Tạo URL tạm thời từ tệp
+      name: file.name,
+      type: file.type,
+      file: file   
+    });
   
-  //   return false;
-  // };
+    return true;
+  };
   
-
   const handleOk = () => {
     setShowLogout(false);
     onLogout();
@@ -91,10 +85,20 @@ const SettingsTab = () => {
 
   const UpdateProfile = () => {
     setShowUpdateProfile(false);
-    const data = updatedForm.getFieldsValue();
+  
+    setNewAvatar({ url: '', name: '', type: '' });
+    setNewCapwall({ url: '', name: '', type: '' });
+    // Lấy dữ liệu từ form và chuẩn bị các trường ảnh
+    const data = {
+      ...updatedForm.getFieldsValue(),
+      avatar_url: newAvatar?.file,  // Sử dụng tệp avatar thực tế
+      capwall_url: newCapwall?.file,  // Sử dụng tệp capwall thực tế
+    };
+  
+    // Gọi hàm updateProfile với dữ liệu đã chuẩn bị
     updateProfile(data);
-    // hàm update profile
-  }
+  };
+  
 
   const handleLogout = () => {
     setShowLogout(true);
@@ -130,7 +134,7 @@ const SettingsTab = () => {
           <img src={newCapwall?.url || user?.capwall_url} alt="cover" className="w-full h-48 object-cover rounded-md" />
           <div className="absolute top-4 left-4">
             <Upload showUploadList={false} 
-            // beforeUpload={pickCapwallImage}
+            beforeUpload={pickCapwallImage}
              >
               <Button icon={<CameraOutlined />} />
             </Upload>
@@ -148,7 +152,7 @@ const SettingsTab = () => {
             <img src={newAvatar?.url || user?.avatar_url || 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg'} alt="avatar" className="w-32 h-32 rounded-full object-cover" />
             <div className="absolute top-0 left-0">
               <Upload showUploadList={false} 
-              // beforeUpload={pickAvatarImage}
+              beforeUpload={pickAvatarImage}
               >
                 <Button icon={<CameraOutlined />} />
               </Upload>
@@ -262,5 +266,4 @@ const SettingsTab = () => {
 };
 
 export default SettingsTab;
-
 

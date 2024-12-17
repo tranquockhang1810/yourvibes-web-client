@@ -62,8 +62,6 @@ const ProfileTabs = ({
             key: '3',
             label: localStrings.Public.Friend,
             children: <ListFriends 
-              user={userInfo} 
-              loading={loading} 
               friends={friends} 
               page={1} 
               setPage={() => {}} 

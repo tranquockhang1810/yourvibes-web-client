@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 const ProfileFeature = () => {
     const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
+
   
   const {
     loading,
@@ -27,6 +28,7 @@ const ProfileFeature = () => {
 
   useEffect(() => {
     fetchUserProfile(user?.id as string);
+    fetchUserPosts();
   }, [user]);
 
   return (

@@ -197,7 +197,7 @@ const Post: React.FC<IPost> = React.memo(({
 
             <Col xs={2} md={1}
               className='hover:cursor-pointer'
-            //onClick={showAction}
+            // onClick={showAction}
             >
               <Dropdown
                 trigger={['click']}

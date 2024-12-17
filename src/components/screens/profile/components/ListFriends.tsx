@@ -6,15 +6,8 @@ import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
 
 const ListFriends = ({
-    user,
-    loading,
     friends,
-    page,
-    setPage,
-    totalPage,
 }:{
-    user: UserModel;
-    loading: boolean;
     friends: FriendResponseModel[];
     page: number;
     setPage: (page: number) => void;

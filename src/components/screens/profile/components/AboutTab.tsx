@@ -29,7 +29,6 @@ const AboutTab = ({
     const router = useRouter();
     const {brandPrimaryTap,lightGray} = useColor();
     const {isLoginUser, localStrings } = useAuth();
-    console.log('user', user, 'resultCode', resultCode);
 
     
     

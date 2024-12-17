@@ -2,13 +2,14 @@ import { NotificationResponseModel } from '@/api/features/notification/models/No
 import { useAuth } from '@/context/auth/useAuth';
 import { getTimeDiff } from '@/utils/helper/DateTransfer';
 import { Avatar, List } from 'antd';
+import { useRouter } from 'next/navigation';
 import React from 'react'
 import { IoArrowRedoCircle, IoChatbubbleEllipses, IoHeartCircle, IoNotificationsCircle, IoPersonCircle } from 'react-icons/io5';
 
-const NotificationItem = ({notifications}:{notifications : NotificationResponseModel}) => {
+const NotificationItem = ({ notifications, onUpdate  }: { notifications: NotificationResponseModel, onUpdate: () => void}) => {
+    const router = useRouter();
     const {from, from_url, content, created_at, notification_type = '', status, content_id} = notifications;
     const {localStrings} = useAuth();
-    // const type = mapNotifiCationType(notification_type || '');
     const typeMap: Record<string, { icon: React.ReactNode; color: string; type: string }> = {
         like_post: { icon: <IoHeartCircle />, color: "text-red-500", type: `${localStrings.Notification.Items.LikePost}`},
         new_share: { icon: <IoArrowRedoCircle />, color: "text-blue-500", type: `${localStrings.Notification.Items.SharePost}` },
@@ -25,22 +26,22 @@ const NotificationItem = ({notifications}:{notifications : NotificationResponseM
         type:  `${localStrings.Notification.Notification}`
       };
     
-    //   const handleClick = () => {
-    //     onUpdate();
-    //     if (notification_type === "friend_request" || notification_type === "accept_friend_request") {
-    //       router.push(`/user/${content_id}`);
-    //     } else if (
-    //       ["like_post", "new_comment", "new_share", "new_post"].includes(
-    //         notification_type
-    //       )
-    //     ) {
-    //       router.push(`/postDetails?postId=${content_id}`);
-    //     }
-    //   };
+      const handleClick = () => {
+        onUpdate();
+        if (notification_type === "friend_request" || notification_type === "accept_friend_request") {
+          router.push(`/user/${content_id}`);
+        } else if (
+          ["like_post", "new_comment", "new_share", "new_post"].includes(
+            notification_type
+          )
+        ) {
+          router.push(`/postDetails?postId=${content_id}`);
+        }
+      };
     
       return (
         <List.Item
-        //   onClick={handleClick}
+          onClick={handleClick}
           className={`${status ? "bg-white" : "bg-gray-100"}`}
         >
           <div className="flex items-center">

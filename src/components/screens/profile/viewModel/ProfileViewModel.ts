@@ -124,6 +124,7 @@ const updateProfile = async (data: UpdateProfileRequestModel) => {
   try {
     setLoading(true);
     const response = await defaultProfileRepo.updateProfile(data);
+    
     if (!response?.error) {
       onUpdateProfile(response?.data);
     } else {

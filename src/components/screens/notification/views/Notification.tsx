@@ -23,46 +23,12 @@ const { Text } = Typography;
 
 const NotificationScreen = () => {
   const { brandPrimary, backgroundColor } = useColor();
-  const { loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
+  const { notifications, loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
   const { localStrings } = useAuth();
 
-  const notifications = [
-    {
-      id: '1',
-      from: 'Thanh Phương',
-      from_url: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
-      content: ':)))))',
-      created_at: '2024-12-10T14:48:00.000Z',
-      notification_type: 'like_post',
-      status: false,
-      content_id: '101',
-    },
-    {
-      id: '2',
-      from: 'Phera',
-      from_url: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
-      content: '.................',
-      created_at: '2024-12-09T09:15:00.000Z',
-      notification_type: 'new_comment',
-      status: true,
-      content_id: '102',
-    },
-    {
-      id: '3',
-      from: 'Gem',
-      from_url: 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg',
-      content: 'Hello',
-      created_at: '2024-11-27T11:25:00.000Z',
-      notification_type: 'new_share',
-      status: false,
-      content_id: '103',
-    },
-  ];
-  
-
-//   useEffect(() => {
-//     fetchNotifications();
-//   }, [fetchNotifications]);
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   // Render footer for loading state
   const renderFooter = () => {
@@ -97,16 +63,16 @@ const NotificationScreen = () => {
 
             {/* Content */}
             <div className="flex-grow overflow-auto border-t border-gray-300">
-                <div className="h-full overflow-auto" onScroll={loadMoreNotifi}>
+                <div className="h-full overflow-auto">
                 <List
                     dataSource={notifications}
                     renderItem={(item) => (
                     <NotificationItem
                         notifications={item}
+                        onUpdate={() => updateNotification(item)}
                     />
                     )}
                     footer={renderFooter()}
-                    loading={loading}
                     className="h-full"
                 />
                 </div>
