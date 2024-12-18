@@ -15,7 +15,6 @@ export const TransferToFormData = (data: any) => {
       formData.append(key, data[key] as any);
     }
   }
-
   return formData;
 }
 
@@ -28,19 +27,26 @@ export const convertMediaToFiles = async (media: RcFile[]) => {
     media.map(async (mediaItem, index) => {
       const { name, type } = mediaItem;
 
-      const fileType = type || (name.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg');
-
-      const fileExtension = fileType.split('/')[1];
+      const fileExtension = type.split('/')[1];
       const fileName = `${name}.${fileExtension}`;
 
+      const fileReader = new FileReader();
       const file: CustomUploadFile = {
         uid: index.toString(),
         name: fileName,
-        type: fileType,
-        uri: URL.createObjectURL(mediaItem),
+        type: type,
       };
 
-      return file;
+      return new Promise((resolve) => {
+        fileReader.onload = () => {
+          const result = fileReader.result;
+          if (result !== null) {
+            file.uri = result as string;
+          }
+          resolve(file);
+        };
+        fileReader.readAsDataURL(mediaItem);
+      });
     })
   );
 
