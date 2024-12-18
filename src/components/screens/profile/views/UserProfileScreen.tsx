@@ -30,7 +30,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!id) return;
     fetchUserProfile(id);
-    setTab(0);
   }, [id]);
 
   return (

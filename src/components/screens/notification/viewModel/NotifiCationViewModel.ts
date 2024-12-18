@@ -33,19 +33,11 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
                 setHasMore(currentPage * currentLimit < totalRecords);
 
             } else {
-                // Toast.show({
-                //     type: 'error',
-                //     text1: "Get Notifications Failed",
-                //     text2: response?.error?.message,
-                // });
+                console.error(response?.message);
             }
         } catch (error: any) {
             console.error(error);
-            // Toast.show({
-            //     type: 'error',
-            //     text1: "Get Notifications Failed catch",
-            //     text2: error?.message,
-            // });
+           
         } finally {
             setLoading(false);
         }
@@ -53,11 +45,7 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
 
     const updateNotification = async (data: NotificationResponseModel) => {
         if (!data.id) {
-            // Toast.show({
-            //     type: 'error',
-            //     text1: "Update Notification Failed",
-            //     text2: "Notification Id is required",
-            // });
+            
             return;
         }
 
@@ -67,19 +55,9 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             if (!response?.error) {
                 fetchNotifications();
             } else {
-                // Toast.show({
-                //     type: 'error',
-                //     text1: "Update Notification Failed",
-                //     text2: response?.error?.message,
-                // });
             }
         } catch (error: any) {
             console.error(error);
-            // Toast.show({
-            //     type: 'error',
-            //     text1: "Update Notification Failed catch",
-            //     text2: error?.message,
-            // });
         } finally {
             setLoading(false);
         }
@@ -92,19 +70,9 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             if (!response?.error) {
                 fetchNotifications();
             } else {
-                // Toast.show({
-                //     type: 'error',
-                //     text1: "Update All Notification Failed",
-                //     text2: response?.error?.message,
-                // });
             }
         } catch (error: any) {
             console.error(error);
-            // Toast.show({
-            //     type: 'error',
-            //     text1: "Update All Notification Failed catch",
-            //     text2: error?.message,
-            // });
         } finally {
             setLoading(false);
         }

@@ -23,6 +23,8 @@ const ProfileHeader = ({
 }) => {
     const {lightGray, brandPrimary, backgroundColor} = useColor()
     const {localStrings, language, isLoginUser} = useAuth()
+
+    
     
     const {
         sendFriendRequest,
@@ -101,13 +103,14 @@ const ProfileHeader = ({
                   }}
                   loading={sendRequestLoading}
                 >
-                  <div style={{ flexDirection: "row", alignItems: "center" }}>
+                  <div className='flex flex-row items-center'>
                   <ImCross name="cross" size={24} color={brandPrimary} />
                     <text
                       style={{
                         color: brandPrimary,
                         fontSize: 16,
                         fontWeight: "bold",
+                        marginLeft: 5,
                       }}
                     >
                       {localStrings.Public.CancelFriendRequest}
@@ -185,12 +188,12 @@ const ProfileHeader = ({
                   <img
                     src={user?.capwall_url}
                     alt="Cover"
-                    className="w-full h-full object-scale-down"
+                    className="w-full h-72 object rounded-md"
                   />
                 </div>
 
                 {/* Profile Image */}
-                <div className="mt-[-60px] text-center">
+                <div className="mt-[-40px] text-center">
                 <img
                     src={user?.avatar_url ||'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg'}
                     alt="Profile"

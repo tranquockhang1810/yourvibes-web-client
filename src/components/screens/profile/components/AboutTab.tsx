@@ -29,7 +29,6 @@ const AboutTab = ({
     const router = useRouter();
     const {brandPrimaryTap,lightGray} = useColor();
     const {isLoginUser, localStrings } = useAuth();
-    console.log('user', user, 'resultCode', resultCode);
 
     
     
@@ -130,7 +129,7 @@ const AboutTab = ({
                         >
                             <img
                             src={friend?.avatar_url}
-                            alt="Friend's profile picture"
+                            alt={`${friend?.family_name} ${friend?.name}`}
                             className='w-12 h-12 rounded-full bg-gray-300 mr-2'
                             />
                             <p className='mt-2'>

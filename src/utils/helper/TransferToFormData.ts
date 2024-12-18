@@ -30,11 +30,14 @@ export const convertMediaToFiles = async (media: RcFile[]) => {
 
       const fileType = type || (name.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg');
 
+      const fileExtension = fileType.split('/')[1];
+      const fileName = `${name}.${fileExtension}`;
+
       const file: CustomUploadFile = {
-        uid: index.toString(), // Add the uid property
-        name: name || `media_${index}.${fileType.split('/')[1]}`,
+        uid: index.toString(),
+        name: fileName,
         type: fileType,
-        uri: URL.createObjectURL(mediaItem), // Add the custom uri property
+        uri: URL.createObjectURL(mediaItem),
       };
 
       return file;
