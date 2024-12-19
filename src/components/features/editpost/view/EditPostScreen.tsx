@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react"; 
 import { Input, Button, Image } from "antd";
 import useColor from "@/hooks/useColor";
 import { useAuth } from "@/context/auth/useAuth";
@@ -12,14 +11,24 @@ import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostRequestModel";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { IoMdClose } from "react-icons/io";
+import { useRouter } from "next/router";
 
 const EditPostScreen = ({ id }: { id: string }) => {
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // Hoặc một loading indicator
+  }
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
   const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } =
     useColor();
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const {
     postContent,
     setPostContent,
@@ -133,9 +142,9 @@ const EditPostScreen = ({ id }: { id: string }) => {
             alignItems: "center",
           }}
         >
-          <Button onClick={() => navigate(-1)} style={{ border: "none" }}>
-            <IoMdClose name="close" size={24} color={brandPrimary} />
-          </Button>
+      <Button onClick={() => router.back()} style={{ border: "none" }}>
+        <IoMdClose name="close" size={24} color={brandPrimary} />
+      </Button>
           <h2>{localStrings.Post.EditPost}</h2>
         </div>
       </div>
@@ -228,7 +237,11 @@ const EditPostScreen = ({ id }: { id: string }) => {
               {loading ? (
                 <Input size="small" disabled />
               ) : (
-                <IoMdClose name="image-outline" size={30} color={brandPrimary} />
+                <IoMdClose
+                  name="image-outline"
+                  size={30}
+                  color={brandPrimary}
+                />
               )}
             </Button>
           </div>
