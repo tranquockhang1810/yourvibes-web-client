@@ -27,6 +27,8 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
   }, [loading]);
 
   return (
+    <div className="flex justify-center items-center mt-4">
+      <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
     <div className={`flex flex-col bg-${grayBackground} p-4`}>
       {/* Add Post Button */}
       <div
@@ -59,6 +61,8 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
         // loading={loading}
         // loadMore={renderFooter()}
       />
+    </div>
+  </div>
     </div>
   );
 };

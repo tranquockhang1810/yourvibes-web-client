@@ -11,7 +11,6 @@ import { usePostContext } from "@/context/post/usePostContext";
 import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostRequestModel";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
-import Toast from "react-toastify";
 import { IoMdClose } from "react-icons/io";
 
 const EditPostScreen = ({ id }: { id: string }) => {

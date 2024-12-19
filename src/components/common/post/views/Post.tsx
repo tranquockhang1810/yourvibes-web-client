@@ -17,6 +17,7 @@ import { defaultPostRepo } from '@/api/features/post/PostRepo';
 import MediaView from '@/components/foundation/MediaView';
 import HomeViewModel from '@/components/screens/home/viewModel/HomeViewModel';
 import { defaultNewFeedRepo } from '@/api/features/newFeed/NewFeedRepo';
+import EditPostScreen from '@/components/features/editpost/view/EditPostScreen';
 
 interface IPost {
   post?: PostResponseModel,
@@ -48,7 +49,7 @@ const Post: React.FC<IPost> = React.memo(({
     updatePost,
   } = EditPostViewModel(defaultPostRepo);
   const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
-
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const renderPrivacyIcon = () => {
     switch (likedPost?.privacy) {
       case Privacy.PUBLIC:
@@ -98,7 +99,7 @@ const Post: React.FC<IPost> = React.memo(({
           type: 'item',
           onClick: () => {
             if (post && post.id) {
-              router.push(`/editPost/${post.id}`);
+              setIsEditModalVisible(true);
             }
           }
         },
@@ -266,6 +267,13 @@ const Post: React.FC<IPost> = React.memo(({
             </Col>
           ))}
       </Row>
+      <Modal
+        visible={isEditModalVisible}
+        width={800}
+        footer={null}
+        closable={false}
+      >{post?.id && <EditPostScreen id={post.id} />}
+      </Modal>
     </Card >
   );
 })

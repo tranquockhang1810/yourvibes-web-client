@@ -9,6 +9,7 @@ import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { GetProp } from "antd";
 import { RcFile } from "antd/es/upload";
 import { TransferToFormData } from "@/utils/helper/TransferToFormData";
+import { Select } from "antd"; 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
