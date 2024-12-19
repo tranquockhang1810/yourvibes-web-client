@@ -61,21 +61,23 @@ const NotificationItem = ({ notifications, onUpdate  }: { notifications: Notific
     
             {/* Notification Content */}
             <div className="flex-1">
-              <p className="text-sm text-gray-800">
+              <span className="text-sm text-gray-800">
                 <span className="font-semibold">{from}</span>{" "}
                 {notificationDetails.type}
-              </p>
+              </span>
+              <br />
               {content && (
-                <p
+                <span
                   className="text-sm text-gray-600 truncate"
                   title={content}
                 >
                   {content}
-                </p>
+                </span>
               )}
-              <p className="text-xs text-gray-400 mt-1">
+              <br />
+              <span className="text-xs text-gray-400 mt-1">
                 {getTimeDiff(created_at, localStrings)}
-              </p>
+              </span>
             </div>
           </div>
         </List.Item>

@@ -19,8 +19,6 @@ import { defaultNotificationRepo } from '@/api/features/notification/NotifiCatio
 import { useAuth } from '@/context/auth/useAuth';
 
 
-const { Text } = Typography;
-
 const NotificationScreen = () => {
   const { brandPrimary, backgroundColor } = useColor();
   const { notifications, loading, fetchNotifications,  loadMoreNotifi, updateNotification,updateAllNotification } = NotifiCationViewModel(defaultNotificationRepo);
@@ -28,7 +26,8 @@ const NotificationScreen = () => {
 
   useEffect(() => {
     fetchNotifications();
-  }, [fetchNotifications]);
+  }, []);
+
 
   // Render footer for loading state
   const renderFooter = () => {
@@ -49,9 +48,9 @@ const NotificationScreen = () => {
                 style={{ backgroundColor }}
             >
                 <Space>
-                <Text className="font-bold text-lg">
+                <span className="font-bold text-lg">
                     {localStrings.Notification.Notification}
-                </Text>
+                </span>
                 </Space>
 
                 <Button
@@ -72,7 +71,6 @@ const NotificationScreen = () => {
                         onUpdate={() => updateNotification(item)}
                     />
                     )}
-                    footer={renderFooter()}
                     className="h-full"
                 />
                 </div>

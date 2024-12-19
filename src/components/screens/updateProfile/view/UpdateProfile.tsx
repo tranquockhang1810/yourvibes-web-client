@@ -1,20 +1,23 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, Row, Col, Space, Upload, message } from 'antd';
+import { Button, Form, Input, Row, Col, Space, Upload, message, Typography } from 'antd';
 
 import { UploadOutlined, CameraOutlined, CloseOutlined } from '@ant-design/icons';
-import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router
 import { useAuth } from '@/context/auth/useAuth';
 import dayjs from 'dayjs';
 import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
+import UpdateProfileViewModel from '../viewModel/UpdateProfileViewModel';
+import { useRouter } from 'next/navigation';
+
+const { Text } = Typography;
 
 const UpdateProfileScreen = () => {
   const { user, localStrings } = useAuth();
   const [updatedForm] = Form.useForm();
-  const [newAvatar, setNewAvatar] = useState({ url: "", name: "", type: "" });
-  const [newCapwall, setNewCapwall] = useState({ url: "", name: "", type: "" });
-  const [showPicker, setShowPicker] = useState(false);
+  const [newAvatar, setNewAvatar] = useState<{ url: string; name: string; type: string; file?: File }>({ url: "", name: "", type: "" });
+  const [newCapwall, setNewCapwall] = useState<{ url: string; name: string; type: string; file?: File }>({ url: "", name: "", type: "" });
   const [loading, setLoading] = useState(false);
+  const { updateProfile } = UpdateProfileViewModel(defaultProfileRepo);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,48 +31,87 @@ const UpdateProfileScreen = () => {
     });
   }, [user]);
 
-//   const handleImageChange = (file, type) => {
-//     const reader = new FileReader();
-//     reader.onloadend = () => {
-//       if (type === 'avatar') setNewAvatar({ url: reader.result, name: file.name, type: file.type });
-//       else setNewCapwall({ url: reader.result, name: file.name, type: file.type });
-//     };
-//     reader.readAsDataURL(file);
-//     return false; // prevent auto upload
-//   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const values = updatedForm.getFieldsValue();
-      const updatedProfileData = {
-        ...values,
-        avatar_url: newAvatar?.url ? newAvatar : undefined,
-        capwall_url: newCapwall?.url ? newCapwall : undefined,
-        birthday: dayjs(values.birthday, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-      };
-      await defaultProfileRepo.updateProfile(updatedProfileData);
-    //   Toast.success(localStrings.UpdateProfile.Success);
-      router.push('/profile'); // Navigate to profile page after successful update
-    } catch (error) {
-    //   Toast.error(localStrings.UpdateProfile.Failure);
-    } finally {
-      setLoading(false);
+  const pickAvatarImage = (file: File) => {
+    // Kiểm tra loại tệp (nếu cần)
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      // Nếu không phải ảnh, trả về false để không cho phép tải lên
+      return false;
     }
+  
+    // Cập nhật trạng thái với thông tin tệp
+    setNewAvatar({
+      url: URL.createObjectURL(file),  // Tạo URL tạm thời từ tệp
+      name: file.name,                 // Tên tệp
+      type: file.type,    
+      file: file                // Loại tệp
+    });
+  
+    return true;  // Trả về true để tệp có thể được tải lên
+  };
+  
+  const pickCapwallImage = (file: File) => {
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      return false;
+    }
+  
+    // Cập nhật trạng thái với thông tin tệp
+    setNewCapwall({
+      url: URL.createObjectURL(file),  // Tạo URL tạm thời từ tệp
+      name: file.name,
+      type: file.type,
+      file: file   
+    });
+  
+    return true;
+  };
+
+
+
+  const UpdateProfile = () => {
+    // {loading === true ? message.loading('Updating profile...') : 
+    //       message.success('Profile updated!')
+    //       setShowUpdateProfile(false);
+    //     }
+    setLoading(true);
+    setNewAvatar({ url: '', name: '', type: '' });
+    setNewCapwall({ url: '', name: '', type: '' });
+    // Lấy dữ liệu từ form và chuẩn bị các trường ảnh
+    const data = {
+      ...updatedForm.getFieldsValue(),
+      avatar_url: newAvatar?.file,  // Sử dụng tệp avatar thực tế
+      capwall_url: newCapwall?.file,  // Sử dụng tệp capwall thực tế
+    };
+    
+    // Gọi hàm updateProfile với dữ liệu đã chuẩn bị
+    updateProfile(data);
+    router.back();
+
   };
 
   return (
-    <div className="flex flex-col p-4 w-20 h-50">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold">{localStrings.UpdateProfile.UpdateProfile}</h2>
+    <div className="p-2.5">
+      <div className="mb-2 flex items-center">
+        <Button
+          icon={<CloseOutlined />}
+          type="text"
+          onClick={() => router.back()}
+        />
+        <Text strong style={{ fontSize: "18px", marginLeft: "10px" }}>
+          {localStrings.UpdateProfile.UpdateProfile}
+        </Text>
+
       </div>
+
 
       {/* Cover Image */}
       <div className="relative mb-6">
-        <img src={newCapwall?.url || user?.capwall_url} alt="cover" className="w-full h-48 object-cover rounded-md" />
+        <img src={newCapwall?.url || user?.capwall_url} alt="cover" className="w-full h-72" />
         <div className="absolute top-4 left-4">
-          <Upload showUploadList={false} >
-            {/* beforeUpload={(file) => handleImageChange(file, 'capwall')} */}
+          <Upload showUploadList={false} beforeUpload={pickCapwallImage} >
+            
             <Button icon={<CameraOutlined />} />
           </Upload>
         </div>
@@ -82,11 +124,10 @@ const UpdateProfileScreen = () => {
 
       {/* Profile Image */}
       <div className="flex justify-center mb-6">
-        <div className="relative">
-          <img src={newAvatar?.url || user?.avatar_url} alt="avatar" className="w-32 h-32 rounded-full object-cover" />
-          <div className="absolute top-0 left-0">
-            <Upload showUploadList={false}>
-                {/* beforeUpload={(file) => handleImageChange(file, 'avatar')}> */}
+        <div className="relative rounded-full border border-gray-950">
+          <img src={newAvatar?.url || user?.avatar_url} alt="avatar" className="w-48 h-48 rounded-full" />
+          <div className="absolute top-0 left-2.5">
+            <Upload showUploadList={false} beforeUpload={pickAvatarImage}>
               <Button icon={<CameraOutlined />} />
             </Upload>
           </div>
@@ -99,7 +140,7 @@ const UpdateProfileScreen = () => {
       </div>
 
       {/* Form */}
-      <Form form={updatedForm} layout="vertical" onFinish={handleSubmit}>
+      <Form form={updatedForm} layout="vertical" onFinish={UpdateProfile}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="family_name" label={localStrings.Form.Label.FamilyName} rules={[{ required: true }]}>
@@ -137,6 +178,7 @@ const UpdateProfileScreen = () => {
           <Input.TextArea placeholder={localStrings.Form.Label.Biography} />
         </Form.Item>
       </Form>
+      <Button className='items-center' type="primary" onClick={UpdateProfile} loading={loading}>{localStrings.Public.Save}</Button>
     </div>
   );
 };

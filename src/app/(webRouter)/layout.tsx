@@ -5,10 +5,8 @@ export default function layout({ children }: {
 }): JSX.Element {
     return (
         <div className="mb-10">
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1 }}>
                 <MyHeader />
-            </div>
-            <div style={{ paddingTop: '60px' }}>
+            <div style={{ paddingTop: '60px', paddingLeft: '53px'}}>
                 {children}
             </div>
         </div>

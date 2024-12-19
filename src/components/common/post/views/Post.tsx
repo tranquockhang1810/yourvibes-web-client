@@ -14,6 +14,9 @@ import { BsFillPeopleFill } from 'react-icons/bs';
 import { IoShareSocialOutline } from 'react-icons/io5';
 import EditPostViewModel from '@/components/features/editpost/viewModel/EditPostViewModel';
 import { defaultPostRepo } from '@/api/features/post/PostRepo';
+import MediaView from '@/components/foundation/MediaView';
+import HomeViewModel from '@/components/screens/home/viewModel/HomeViewModel';
+import { defaultNewFeedRepo } from '@/api/features/newFeed/NewFeedRepo';
 
 interface IPost {
   post?: PostResponseModel,
@@ -42,8 +45,9 @@ const Post: React.FC<IPost> = React.memo(({
     sharePost,
     shareLoading,
     deletePost,
+    updatePost,
   } = EditPostViewModel(defaultPostRepo);
-  // const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
+  const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo)
 
   const renderPrivacyIcon = () => {
     switch (likedPost?.privacy) {
@@ -71,13 +75,19 @@ const Post: React.FC<IPost> = React.memo(({
     }
   };
 
-  const renderLikeIcon = useCallback(() => {
-    if (likedPost?.is_liked) {
-      return <FaHeart size={24} color={"red"} />;
-    } else {
-      return <FaRegHeart size={24} color={brandPrimaryTap} />;
+  const handleLikeClick = useCallback(() => {
+    if (likedPost?.id) {
+      likePost(likedPost.id);
     }
-  }, [likedPost?.is_liked]);
+  }, [likedPost?.id, likePost]);
+  
+  const renderLikeIcon = () => {
+    if (likedPost?.is_liked) {
+      return <FaHeart size={24} color={"red"} onClick={handleLikeClick} />;
+    } else {
+      return <FaRegHeart size={24} color={brandPrimaryTap} onClick={handleLikeClick} />;
+    }
+  };
 
   const items: MenuProps['items'] = useMemo(() => {
     if (user?.id === likedPost?.user?.id)
@@ -87,7 +97,9 @@ const Post: React.FC<IPost> = React.memo(({
           label: localStrings.Post.EditPost,
           type: 'item',
           onClick: () => {
-            router.push(`/edit-post/${post?.id}`);
+            if (post && post.id) {
+              router.push(`/editPost/${post.id}`);
+            }
           }
         },
         {
@@ -150,7 +162,6 @@ const Post: React.FC<IPost> = React.memo(({
   }, [post]);
 
   return (
-
     <Card
       style={{
         margin: 10,
@@ -162,7 +173,7 @@ const Post: React.FC<IPost> = React.memo(({
         <Row gutter={[8, 8]} className='m-2'>
           <Col xs={4} md={2}
             className='hover:cursor-pointer'
-            onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+            onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
           >
             <Avatar
               src={likedPost?.user?.avatar_url}
@@ -174,7 +185,7 @@ const Post: React.FC<IPost> = React.memo(({
               <Col
                 span={24}
                 className='hover:cursor-pointer hover:underline'
-                onClick={() => router.push(`/(tabs)/user/${likedPost?.user?.id}`)}
+                onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
               >
                 <span style={{ fontWeight: 'bold', fontSize: 14 }}>{likedPost?.user?.family_name} {likedPost?.user?.name}</span>
               </Col>
@@ -251,7 +262,7 @@ const Post: React.FC<IPost> = React.memo(({
               {likedPost?.content && (
                 <span className='pl-2'>{likedPost?.content}</span>
               )}
-              {/* {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />} */}
+              {likedPost?.media && likedPost?.media?.length > 0 && <MediaView mediaItems={likedPost?.media} />}
             </Col>
           ))}
       </Row>

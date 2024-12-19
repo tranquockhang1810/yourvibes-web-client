@@ -67,6 +67,8 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
         try {
             setLoading(true);
             const response = await repo.updateAllNotification();
+            console.log("responseNoti", response);
+            
             if (!response?.error) {
                 fetchNotifications();
             } else {

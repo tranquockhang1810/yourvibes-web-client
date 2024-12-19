@@ -18,7 +18,7 @@ const ListFriends = ({
     
    
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center mt-4">
         
         <div className='border rounded-md border-solidborder-gray-900 basis-2/4'>
             <div className='text-xl font-bold pb-2'>{localStrings.ListFriends.ListFriends}</div>

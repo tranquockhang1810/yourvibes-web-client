@@ -33,8 +33,7 @@ const ProfileFeature = () => {
 
   return (
     <div>
-        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}
-              />
+        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
         <ProfileTabs
           tabNum={0}
           posts={posts}
@@ -51,4 +50,3 @@ const ProfileFeature = () => {
 }
 
 export default ProfileFeature
-

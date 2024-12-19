@@ -11,7 +11,10 @@ const Page = () => {
       {isAuthenticated ? (
         <>
           <MyHeader />
-          <Homepage />
+          <div style={{ paddingTop: '60px', paddingLeft: '53px'}}>
+              <Homepage />
+          </div>
+          
         </>
       ) : (
         <LoginPage />

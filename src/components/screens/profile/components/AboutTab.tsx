@@ -4,7 +4,7 @@ import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
 import { useAuth } from '@/context/auth/useAuth';
 import useColor from '@/hooks/useColor';
-import { Flex, Spin } from 'antd';
+import { Button, Flex, Modal, Spin } from 'antd';
 import { CreditCardFilled, LoadingOutlined, MailFilled, PhoneFilled } from '@ant-design/icons';
 import React from 'react'
 import { DateTransfer } from '@/utils/helper/DateTransfer';
@@ -12,6 +12,7 @@ import { FaGlobe, FaLock } from 'react-icons/fa';
 import { IoMdPeople } from 'react-icons/io';
 import { AiFillEdit } from 'react-icons/ai';
 import { useRouter } from 'next/navigation';
+import ModalObjectProfile from './ModalObjectProfile';
 
 const AboutTab = ({
     user,
@@ -29,18 +30,18 @@ const AboutTab = ({
     const router = useRouter();
     const {brandPrimaryTap,lightGray} = useColor();
     const {isLoginUser, localStrings } = useAuth();
-
+    const [showObject, setShowObject] = React.useState(false);
     
     
   
     const renderPrivacyIcon = () => {
         switch (user?.privacy) {
           case Privacy.PUBLIC:
-            return <FaGlobe size={20} color={brandPrimaryTap} />;
+            return <FaGlobe size={16} color={brandPrimaryTap} />;
           case Privacy.FRIEND_ONLY:
             return <IoMdPeople size={20} color={brandPrimaryTap} />;
           case Privacy.PRIVATE:
-            return <FaLock name="lock-closed" size={20} color={brandPrimaryTap} />;
+            return <FaLock name="lock-closed" size={17} color={brandPrimaryTap} />;
           default:
             return null;
         }
@@ -61,11 +62,25 @@ const AboutTab = ({
                         <div className='flex justify-between mb-2'>
                             <span className='font-bold text-lg'>{localStrings.Public.Detail}</span>
                             {isLoginUser(user?.id as string) && (
+                                <div>
                                 <div className='flex flex-row items-center'>
                                     <span className='pr-2'>
                                         {renderPrivacyIcon()}
                                     </span>
-                                    <AiFillEdit  size={24} className='pr-2'/>
+                                    <button onClick={() => setShowObject(true)}>
+                                        <AiFillEdit  size={24} className='pr-2' />
+                                    </button>
+                                    
+                                </div>
+                                <Modal
+                                    centered
+                                    title={localStrings.Public.EditProfile}
+                                    open={showObject}
+                                    onCancel={() => setShowObject(false)}
+                                    footer={null}
+                                >
+                                    <ModalObjectProfile closedModalObject={() => setShowObject(false)} />
+                                </Modal>
                                 </div>
                             )}
                         </div>

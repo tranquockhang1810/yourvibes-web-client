@@ -8,7 +8,7 @@ import { useAuth } from '@/context/auth/useAuth';
 import React, { useEffect, useState } from 'react'
 
 const ProfileViewModel = () => {
-  const { user, localStrings, onUpdateProfile } = useAuth();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -17,7 +17,6 @@ const ProfileViewModel = () => {
   const limit = 10;
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
   const [friendCount, setFriendCount] = useState(0);
-  const [selectedFriendName, setSelectedFriendName] = useState<string>("");
   const [search, setSearch] = useState<string>("");
   const [resultCode, setResultCode] = useState(0);
   const getFriendCount = () => friendCount;
@@ -119,22 +118,6 @@ const fetchUserProfile = async (id: string) => {
   }
 }
 
-//update Profile
-const updateProfile = async (data: UpdateProfileRequestModel) => {
-  try {
-    setLoading(true);
-    const response = await defaultProfileRepo.updateProfile(data);
-    
-    if (!response?.error) {
-      onUpdateProfile(response?.data);
-    } else {
-    }
-  } catch (error: any) {
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-}
   
   return {
     loading,
@@ -152,7 +135,6 @@ const updateProfile = async (data: UpdateProfileRequestModel) => {
     fetchMyFriends,
     fetchUserProfile,
     resultCode,
-    updateProfile
   };
 };
 

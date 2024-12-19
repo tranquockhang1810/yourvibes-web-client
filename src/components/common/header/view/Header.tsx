@@ -1,7 +1,7 @@
 "use client"; // Đảm bảo rằng đây là một client-side component
 
 import React, { useState } from "react";
-import { Layout, Menu, Input } from "antd";
+import { Layout, Menu, Input, Grid } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { createElement } from "react";
 import {
@@ -16,12 +16,14 @@ import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
 
 const { Header } = Layout;
+const {useBreakpoint} = Grid;
 
 const MyHeader = () => {
   const [visible, setVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { localStrings } = useAuth();
-  const router = useRouter(); // Khởi tạo useRouter từ next/navigation
+  const router = useRouter(); 
+  const screens = useBreakpoint();
 
   const content = {
     nav: [
@@ -75,6 +77,9 @@ const MyHeader = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          position: "fixed",
+          width: "100%",
+          zIndex: 100,
         }}
       >
         <div
@@ -101,7 +106,7 @@ const MyHeader = () => {
             }}
           />
         </div>
-
+        {!screens.md && (
         <MenuOutlined
           type="menu"
           style={{
@@ -110,8 +115,40 @@ const MyHeader = () => {
             cursor: "pointer",
           }}
           onClick={handleMenuClick}
-        />
+        />)}
       </Header>
+      {screens.md && (
+      <Menu
+        style={{
+          backgroundColor: "white",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "100vh",
+          position: "fixed",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        {nav.map((item, index) => (
+          <Menu.Item
+            key={index}
+            style={{
+              padding: "12px 12px",
+            }}
+            onClick={() => router.push(item.link)} // Gọi handleItemClick
+          >
+            <div
+              style={{
+                fontSize: "20px",
+                color: "#black",
+              }}
+            >
+              {createElement(item.icon)}
+            </div>
+          </Menu.Item>
+        ))}
+      </Menu>)}
 
       {visible && (
         <Menu
@@ -150,7 +187,6 @@ const MyHeader = () => {
                 }}
               >
                 {item.content}
-                {createElement(item.icon)}
               </div>
             </Menu.Item>
           ))}

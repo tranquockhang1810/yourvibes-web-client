@@ -1,10 +1,11 @@
+"use client"
 import NotificationScreen from '@/components/screens/notification/views/Notification'
 import React from 'react'
 
-const page = () => {
+const Notificationpage = () => {
   return (
     <NotificationScreen />
   )
 }
 
-export default page
+export default Notificationpage

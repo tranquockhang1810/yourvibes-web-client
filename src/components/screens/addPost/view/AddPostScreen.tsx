@@ -1,18 +1,33 @@
 "use client";
-import { Button, Form, Input, Avatar, Typography, Upload, Spin, Space, GetProp, Image } from "antd";
-import { CloseOutlined, PictureOutlined, PlusOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Form,
+  Input,
+  Avatar,
+  Typography,
+  Upload,
+  Spin, 
+  GetProp,
+  Image, 
+} from "antd";
+import {
+  CloseOutlined,
+  PictureOutlined,
+  PlusOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import AddPostViewModel from "../viewModel/AddpostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile, UploadProps } from "antd/es/upload";
-import { useState } from "react";
+import { UploadFile, UploadProps } from "antd/es/upload"; 
 
 const { TextArea } = Input;
 const { Text } = Typography;
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AddPostScreen = () => {
   const { user, localStrings } = useAuth();
@@ -54,13 +69,13 @@ const AddPostScreen = () => {
   };
 
   const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
+    <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "10px" }}>
       <div
         style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
       >
@@ -103,24 +118,26 @@ const AddPostScreen = () => {
           </Form.Item>
         </div>
       </div>
+
       <Upload
-          className="pt-4"
-          action="image/*, video/*"
-          listType="picture-card"
-          fileList={fileList}
-          onChange={handleChange}
-          onPreview={handlePreview}
-          beforeUpload={() => false} 
-        >
-          {fileList.length >= 8 ? null : uploadButton}
-        </Upload>
-        {previewImage && (
+        className="pt-4"
+        accept="image/*,video/*"
+        listType="picture-card"
+        fileList={fileList}
+        onChange={handleChange}
+        onPreview={handlePreview}
+        beforeUpload={() => false}
+      >
+        {fileList.length >= 8 ? null : uploadButton}
+      </Upload>
+
+      {previewImage && (
         <Image
-          wrapperStyle={{ display: 'none' }}
+          wrapperStyle={{ display: "none" }}
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
         />
