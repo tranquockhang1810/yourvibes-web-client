@@ -11,13 +11,12 @@ import { LikeCommentResponseModel } from "@/api/features/likeComment/models/Like
 //UserLikePost
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
-import router from "next/router";
 import { Modal } from "antd";
 
-const CommentsViewModel = (
+const PostDetailsViewModel = (
   postId: string,
   replyToCommentId: string | null
-) => { 
+) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
 
   const [replyMap, setReplyMap] = useState<{
@@ -27,8 +26,8 @@ const CommentsViewModel = (
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
   const [newComment, setNewComment] = useState("");
-  const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
   const [setReplyToCommentId] = useState<string | null>(null);
+  const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
 
   const [likeIcon, setLikeIcon] = useState("heart-outline");
   const [renderLikeIconState, setRenderLikeIconState] = useState(false);
@@ -38,7 +37,7 @@ const CommentsViewModel = (
   const [currentCommentId, setCurrentCommentId] = useState("");
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
-
+  const [replyContent, setReplyContent] = useState("");
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -68,7 +67,6 @@ const CommentsViewModel = (
         });
       }
     } catch (error) {
-
       console.error("Error fetching replies:", error);
     }
   };
@@ -172,9 +170,7 @@ const CommentsViewModel = (
         }
         fetchComments();
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -186,29 +182,27 @@ const CommentsViewModel = (
   const handleDelete = (commentId: string) => {
     Modal.confirm({
       title: `${localStrings.PostDetails.DeleteComment}`,
-      content: '',
+      content: "",
       okText: `${localStrings.PostDetails.Yes}`,
       cancelText: `${localStrings.PostDetails.No}`,
       onCancel: () => {},
       onOk: () => {
-        defaultCommentRepo
-          .deleteComment(commentId)
-          .then(() => {
-            // Cập nhật trạng thái comments
-            setComments((prevComments) =>
-              prevComments.filter((comment) => comment.id !== commentId)
-            );
-  
-            // Cập nhật trạng thái replyMap
-            if (replyMap[commentId]) {
-              setReplyMap((prevReplyMap) => {
-                const updatedReplies = prevReplyMap[commentId].filter(
-                  (reply) => reply.id !== commentId
-                );
-                return { ...prevReplyMap, [commentId]: updatedReplies };
-              });
-            }
-          });
+        defaultCommentRepo.deleteComment(commentId).then(() => {
+          // Cập nhật trạng thái comments
+          setComments((prevComments) =>
+            prevComments.filter((comment) => comment.id !== commentId)
+          );
+
+          // Cập nhật trạng thái replyMap
+          if (replyMap[commentId]) {
+            setReplyMap((prevReplyMap) => {
+              const updatedReplies = prevReplyMap[commentId].filter(
+                (reply) => reply.id !== commentId
+              );
+              return { ...prevReplyMap, [commentId]: updatedReplies };
+            });
+          }
+        });
       },
     });
   };
@@ -223,7 +217,6 @@ const CommentsViewModel = (
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
@@ -249,8 +242,6 @@ const CommentsViewModel = (
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
-
-
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => {
             const parentComment = prev.find(
@@ -287,7 +278,7 @@ const CommentsViewModel = (
     });
     console.log(postId, "post id");
     console.log("ai like bài này: ", response);
-  setUserLikePost(response?.data);
+    setUserLikePost(response?.data);
   };
 
   useEffect(() => {
@@ -305,11 +296,10 @@ const CommentsViewModel = (
     handleAddComment,
     handleAddReply,
     setNewComment,
-    setReplyToCommentId,
     setReplyToReplyId,
     fetchReplies,
     handleUpdate,
-    handleDelete, 
+    handleDelete,
     isEditModalVisible,
     setEditModalVisible,
     editCommentContent,
@@ -321,7 +311,10 @@ const CommentsViewModel = (
     fetchComments,
     userLikePost,
     fetchUserLikePosts,
+    setReplyToCommentId,
+    replyContent,
+    setReplyContent,
   };
 };
 
-export default CommentsViewModel;
+export default PostDetailsViewModel;

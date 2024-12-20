@@ -1,10 +1,10 @@
-import PostDetail from '@/components/common/postDetails/view/postDetails';
-import React from 'react';
+import CommentsScreen from '@/components/screens/comments/view/commentsScreen'
+import React from 'react'
 
-const ProfilePage = () => {
+const CommentsPage = () => {
   return (
-    <PostDetail postId="" />
-  );
-};
+    <CommentsScreen postId="" />
+  )
+}
 
-export default ProfilePage;
+export default CommentsPage

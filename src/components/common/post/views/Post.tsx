@@ -37,7 +37,7 @@ import MediaView from "@/components/foundation/MediaView";
 import HomeViewModel from "@/components/screens/home/viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import EditPostScreen from "@/components/features/editpost/view/EditPostScreen";
-import CommentsScreen from "@/components/screens/comments/view/commentsScreen";
+import PostDetailsScreen from "@/components/screens/postDetails/view/postDetailsScreen";
 interface IPost {
   post?: PostResponseModel;
   isParentPost?: boolean;
@@ -278,7 +278,11 @@ const Post: React.FC<IPost> = React.memo(
                   </span>
                 </Row>,
                 <Row align={"middle"} justify={"center"}>
-                  <FaRegComments size={24} color={brandPrimary} onClick={() => setIsCommentModalVisible(true)}/>
+                  <FaRegComments
+                    size={24}
+                    color={brandPrimary}
+                    onClick={() => setIsCommentModalVisible(true)}
+                  />
                   <span style={{ color: brandPrimary }} className="ml-2">
                     {likedPost?.comment_count}
                   </span>
@@ -342,15 +346,16 @@ const Post: React.FC<IPost> = React.memo(
         >
           {post?.id && <EditPostScreen id={post.id} />}
         </Modal>
+        {/* Modal for comments */} 
         <Modal
           visible={isCommentModalVisible}
           width={800}
           footer={null}
-          closable={false}
+          closable={true}
           onCancel={() => setIsCommentModalVisible(false)}
         >
-          <CommentsScreen postId={likedPost?.id} />
-        </Modal>
+          <PostDetailsScreen postId={likedPost?.id} post={likedPost} />
+        </Modal> 
       </Card>
     );
   }
