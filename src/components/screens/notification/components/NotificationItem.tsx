@@ -14,6 +14,8 @@ import {
 import PostDetailsScreen from "../../postDetails/view/postDetailsScreen";
 import EditPostViewModel from "@/components/features/editpost/viewModel/EditPostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import MediaView from "@/components/foundation/MediaView";
+import Post from "@/components/common/post/views/Post";
 const NotificationItem = ({
   notifications,
   onUpdate,
@@ -136,11 +138,12 @@ const NotificationItem = ({
         width={800}
         footer={null}
         closable={true}
+        maskClosable={true}
         onCancel={() => setIsCommentModalVisible(false)}
       >
         <PostDetailsScreen postId={content_id} post={notifications} />
-       </Modal>*/}
-    </List.Item> 
+      </Modal> */}
+    </List.Item>
   );
 };
 export default NotificationItem;

@@ -1,19 +1,18 @@
+import React, { useEffect, useState } from "react";
+import Post from "@/components/common/post/views/Post";
+import { Avatar, Col, Row } from "antd";
+import { FaEdit, FaHeart, FaReply, FaTrash } from "react-icons/fa";
 import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/postDetailsViewModel";
 import { useAuth } from "@/context/auth/useAuth";
-import Post from "@/components/common/post/views/Post";
-import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import useColor from "@/hooks/useColor";
-import { Avatar, Col, Row } from "antd";
-import React, { useEffect, useState } from "react";
-import { FaEdit, FaHeart, FaReply, FaTrash } from "react-icons/fa";
+import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 
 interface CommentsScreenProps {
   postId?: string;
   post?: PostResponseModel;
 }
 
-const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
-  useColor();
+const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
 
 const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
   const {
@@ -37,7 +36,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
 
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const { localStrings } = useAuth();
-
+  const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
   // Chức năng để cập nhật trạng thái cho comment hoặc reply
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (replyToCommentId) {
@@ -62,13 +61,16 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
     setReplyToCommentId(commentId);
     setReplyContent("");  // Reset the reply input when a new comment is selected for reply
   };
-  
 
-  useEffect(() => {}, [postId]);
+  useEffect(() => {
+    // Kiểm tra dữ liệu post
+    console.log(post);
+  }, [post]);
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      <Post post={post} />
+      {/* <Post post={post} /> */}
+      <PostDetailsScreen postId={postId} post={likedPost} />
       <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
