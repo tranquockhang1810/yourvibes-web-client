@@ -200,7 +200,12 @@ const Post: React.FC<IPost> = React.memo(
           width: "100%",
         }}
         title={
-          <Row gutter={[8, 8]} className="m-2">
+          <Row gutter={[8, 8]} className="m-2"
+          onClick={() => {
+            setIsCommentModalVisible(false);
+            router.push(`postDetails?postId=${likedPost?.id}`);
+          }}
+          >
             <Col
               xs={4}
               md={2}
@@ -292,10 +297,10 @@ const Post: React.FC<IPost> = React.memo(
                 //   <FaRegComments
                 //     size={24}
                 //     color={brandPrimary}
-                //     onClick={() => {
-                //       setIsCommentModalVisible(false);
-                //       router.push(`postDetails?postId=${likedPost?.id}`);
-                //     }}
+                    // onClick={() => {
+                    //   setIsCommentModalVisible(false);
+                    //   router.push(`postDetails?postId=${likedPost?.id}`);
+                    // }}
                 //   />
                 //   <span style={{ color: brandPrimary }} className="ml-2">
                 //     {likedPost?.comment_count}
