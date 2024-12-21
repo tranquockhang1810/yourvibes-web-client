@@ -278,29 +278,29 @@ const Post: React.FC<IPost> = React.memo(
                   </span>
                 </Row>,
 
-                // <Row align={"middle"} justify={"center"}>
-                //   <FaRegComments
-                //     size={24}
-                //     color={brandPrimary}
-                //     onClick={() => setIsCommentModalVisible(true)}
-                //   />
-                //   <span style={{ color: brandPrimary }} className="ml-2">
-                //     {likedPost?.comment_count}
-                //   </span>
-                // </Row>,
                 <Row align={"middle"} justify={"center"}>
                   <FaRegComments
                     size={24}
                     color={brandPrimary}
-                    onClick={() => {
-                      setIsCommentModalVisible(false);
-                      router.push(`postDetails?postId=${likedPost?.id}`);
-                    }}
+                    onClick={() => setIsCommentModalVisible(true)}
                   />
                   <span style={{ color: brandPrimary }} className="ml-2">
                     {likedPost?.comment_count}
                   </span>
                 </Row>,
+                // <Row align={"middle"} justify={"center"}>
+                //   <FaRegComments
+                //     size={24}
+                //     color={brandPrimary}
+                //     onClick={() => {
+                //       setIsCommentModalVisible(false);
+                //       router.push(`postDetails?postId=${likedPost?.id}`);
+                //     }}
+                //   />
+                //   <span style={{ color: brandPrimary }} className="ml-2">
+                //     {likedPost?.comment_count}
+                //   </span>
+                // </Row>,
 
                 <Row align={"middle"} justify={"center"}>
                   <IoShareSocialOutline size={24} color={brandPrimary} />

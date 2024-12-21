@@ -12,7 +12,8 @@ interface CommentsScreenProps {
   post?: PostResponseModel;
 }
 
-const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
+const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
+  useColor();
 
 const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
   const {
@@ -32,34 +33,12 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
     setEditCommentContent,
     replyContent,
     setReplyContent,
+    handlePostAction,
+    handleReplyClick,
+    handleTextChange,
   } = PostDetailsViewModel(postId || "");
-
-  const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const { localStrings } = useAuth();
-  const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined); 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (replyToCommentId) {
-      setReplyContent(e.target.value);  
-      setNewComment(e.target.value);  
-    }
-  };
-
-  const handlePostAction = () => {
-    if (replyToCommentId) {
-      handleAddReply(replyContent, replyToCommentId);  
-      setReplyToCommentId(null); 
-      setReplyContent(""); 
-    } else {
-      handleAddComment(newComment); 
-      setNewComment(""); 
-    }
-  };
-
-  const handleReplyClick = (commentId: string) => {
-    setReplyToCommentId(commentId);
-    setReplyContent("");   
-  };
- 
+  const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -130,7 +109,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => setReplyToCommentId(comment.id)} 
+                      onClick={() => setReplyToCommentId(comment.id)}
                     />
                   </Col>
                   <Col span={4}>

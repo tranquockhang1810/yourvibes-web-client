@@ -286,6 +286,40 @@ const PostDetailsViewModel = (
     fetchUserLikePosts(postId);
   }, [postId]);
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (replyToCommentId) {
+      setReplyContent(e.target.value);
+    } else {
+      setNewComment(e.target.value);
+    }
+  };
+
+  // const handlePostAction = () => {
+  //   if (replyToCommentId) {
+  //     handleAddReply(replyContent, replyToCommentId);  
+  //     setReplyToCommentId(null); 
+  //     setReplyContent(""); 
+  //   } else {
+  //     handleAddComment(newComment); 
+  //     setNewComment(""); 
+  //   }
+  // };
+  const handlePostAction = () => {
+    if (replyToCommentId) {
+      handleAddReply(replyContent, replyToCommentId);  
+      setReplyToCommentId(null); 
+      setReplyContent(""); 
+    } else {
+      handleAddComment(newComment); 
+      setNewComment(""); 
+    }
+  };
+
+  const handleReplyClick = (commentId: string) => {
+    setReplyToCommentId(commentId);
+    setReplyContent("");  
+  };
+
   return {
     comments,
     likeCount,
@@ -315,6 +349,9 @@ const PostDetailsViewModel = (
     setReplyToCommentId,
     replyContent,
     setReplyContent,
+    handleReplyClick,
+    handlePostAction, 
+    handleTextChange,
   };
 };
 
