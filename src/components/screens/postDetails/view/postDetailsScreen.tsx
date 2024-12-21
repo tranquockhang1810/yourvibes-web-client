@@ -36,41 +36,34 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
 
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
   const { localStrings } = useAuth();
-  const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined);
-  // Chức năng để cập nhật trạng thái cho comment hoặc reply
+  const [likedPost, setLikedPost] = useState<PostResponseModel | undefined>(undefined); 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (replyToCommentId) {
-      setReplyContent(e.target.value); // Cập nhật reply
-    } else {
-      setNewComment(e.target.value); // Cập nhật comment
+      setReplyContent(e.target.value);  
+      setNewComment(e.target.value);  
     }
   };
 
   const handlePostAction = () => {
     if (replyToCommentId) {
-      handleAddReply(replyContent, replyToCommentId); // Thêm reply
-      setReplyToCommentId(null); // Reset lại
-      setReplyContent(""); // Xóa nội dung reply
+      handleAddReply(replyContent, replyToCommentId);  
+      setReplyToCommentId(null); 
+      setReplyContent(""); 
     } else {
-      handleAddComment(newComment); // Thêm comment
-      setNewComment(""); // Reset lại
+      handleAddComment(newComment); 
+      setNewComment(""); 
     }
   };
 
   const handleReplyClick = (commentId: string) => {
     setReplyToCommentId(commentId);
-    setReplyContent("");  // Reset the reply input when a new comment is selected for reply
+    setReplyContent("");   
   };
-
-  useEffect(() => {
-    // Kiểm tra dữ liệu post
-    console.log(post);
-  }, [post]);
+ 
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      {/* <Post post={post} /> */}
-      <PostDetailsScreen postId={postId} post={likedPost} />
+      <Post post={post} />
       <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
