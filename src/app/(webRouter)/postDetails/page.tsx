@@ -1,10 +1,11 @@
-import CommentsScreen from '@/components/screens/comments/view/commentsScreen'
-import React from 'react'
+"use client" 
+import PostDetailsScreen from '@/components/screens/postDetails/view/postDetailsScreen';
+import React from 'react';
 
-const CommentsPage = () => {
+const PostDetailsPage = () => {
   return (
-    <CommentsScreen postId="" />
-  )
-}
+    <PostDetailsScreen />
+  );
+};
 
-export default CommentsPage
+export default PostDetailsPage;

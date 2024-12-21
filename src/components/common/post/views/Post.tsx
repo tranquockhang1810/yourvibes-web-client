@@ -277,6 +277,7 @@ const Post: React.FC<IPost> = React.memo(
                     {likedPost?.like_count}
                   </span>
                 </Row>,
+
                 <Row align={"middle"} justify={"center"}>
                   <FaRegComments
                     size={24}
@@ -287,6 +288,20 @@ const Post: React.FC<IPost> = React.memo(
                     {likedPost?.comment_count}
                   </span>
                 </Row>,
+                // <Row align={"middle"} justify={"center"}>
+                //   <FaRegComments
+                //     size={24}
+                //     color={brandPrimary}
+                //     onClick={() => {
+                //       setIsCommentModalVisible(false);
+                //       router.push(`postDetails?postId=${likedPost?.id}`);
+                //     }}
+                //   />
+                //   <span style={{ color: brandPrimary }} className="ml-2">
+                //     {likedPost?.comment_count}
+                //   </span>
+                // </Row>,
+
                 <Row align={"middle"} justify={"center"}>
                   <IoShareSocialOutline size={24} color={brandPrimary} />
                 </Row>,
@@ -346,7 +361,7 @@ const Post: React.FC<IPost> = React.memo(
         >
           {post?.id && <EditPostScreen id={post.id} />}
         </Modal>
-        {/* Modal for comments */} 
+        {/* Modal for comments */}
         <Modal
           visible={isCommentModalVisible}
           width={800}
@@ -355,7 +370,7 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsCommentModalVisible(false)}
         >
           <PostDetailsScreen postId={likedPost?.id} post={likedPost} />
-        </Modal> 
+        </Modal>
       </Card>
     );
   }

@@ -4,7 +4,7 @@ import Post from "@/components/common/post/views/Post";
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import useColor from "@/hooks/useColor";
 import { Avatar, Col, Row } from "antd";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit, FaHeart, FaReply, FaTrash } from "react-icons/fa";
 
 interface CommentsScreenProps {
@@ -31,15 +31,40 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
     handleEditComment,
     setNewComment,
     setEditCommentContent,
-    replyToCommentId,
-    setReplyToCommentId,
     replyContent,
     setReplyContent,
-  } = PostDetailsViewModel(postId);
+  } = PostDetailsViewModel(postId || "");
+
+  const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
+  const { localStrings } = useAuth();
+
+  // Chức năng để cập nhật trạng thái cho comment hoặc reply
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (replyToCommentId) {
+      setReplyContent(e.target.value); // Cập nhật reply
+    } else {
+      setNewComment(e.target.value); // Cập nhật comment
+    }
+  };
+
+  const handlePostAction = () => {
+    if (replyToCommentId) {
+      handleAddReply(replyContent, replyToCommentId); // Thêm reply
+      setReplyToCommentId(null); // Reset lại
+      setReplyContent(""); // Xóa nội dung reply
+    } else {
+      handleAddComment(newComment); // Thêm comment
+      setNewComment(""); // Reset lại
+    }
+  };
+
+  const handleReplyClick = (commentId: string) => {
+    setReplyToCommentId(commentId);
+    setReplyContent("");  // Reset the reply input when a new comment is selected for reply
+  };
+  
 
   useEffect(() => {}, [postId]);
-
-  const { localStrings } = useAuth();
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -54,7 +79,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
               <Avatar src={comment.user.avatar_url} size="small" />
               <div className="ml-3">
                 <p className="text-gray-800 font-semibold">
-                  {" "}
                   {comment.user.family_name} {comment.user.name}
                 </p>
                 <p className="text-gray-500 text-xs">
@@ -99,7 +123,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => setEditCommentContent(comment.content)}
+                      onClick={() => handleEditComment(comment.id)}
                     />
                   </Col>
                   <Col span={4} className="hover:cursor-pointer">
@@ -111,15 +135,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => {
-                        if (setReplyToCommentId) {
-                          setReplyToCommentId(comment.id);
-                        } else {
-                          console.error(
-                            "setReplyToCommentId is not a function"
-                          );
-                        }
-                      }}
+                      onClick={() => setReplyToCommentId(comment.id)} 
                     />
                   </Col>
                   <Col span={4}>
@@ -131,7 +147,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                         marginRight: 50,
                       }}
                     >
-                      {/* {likeCount[comment.id] || 0} */}
+                      {likeCount[comment.id]}
                     </span>
                   </Col>
                 </Row>
@@ -146,22 +162,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                   <p className="text-gray-700">{reply.content}</p>
                 </div>
               ))}
-              {replyToCommentId === comment.id && (
-                <div className="reply-input mt-4">
-                  <textarea
-                    className="comment-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    placeholder="Write your reply here..."
-                    value={replyContent}
-                    onChange={(e) => setReplyContent(e.target.value)}
-                  />
-                  <button
-                    onClick={() => handleAddReply(replyContent)}
-                    className="post-btn mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-                  >
-                    {localStrings?.Public?.Conform || "Reply"}
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         ))}
@@ -169,15 +169,20 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
       <div className="add-comment mt-8">
         <textarea
           className="comment-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          placeholder="Write your comment here..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
+          placeholder={
+            replyToCommentId
+              ? "Write your reply here..."
+              : "Write your comment here..."
+          }
+          value={replyToCommentId ? replyContent : newComment}
+          onChange={handleTextChange}
         />
         <button
-          onClick={() => handleAddComment(newComment)}
+          onClick={handlePostAction}
           className="post-btn mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
-          {localStrings?.Public?.Conform || "Post"}
+          {localStrings?.Public?.Conform ||
+            (replyToCommentId ? "Reply" : "Post")}
         </button>
       </div>
       {isEditModalVisible && (

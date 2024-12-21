@@ -15,7 +15,6 @@ import { Modal } from "antd";
 
 const PostDetailsViewModel = (
   postId: string,
-  replyToCommentId: string | null
 ) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
 
@@ -26,7 +25,8 @@ const PostDetailsViewModel = (
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
   const [newComment, setNewComment] = useState("");
-  const [setReplyToCommentId] = useState<string | null>(null);
+  const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
+
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
 
   const [likeIcon, setLikeIcon] = useState("heart-outline");
@@ -230,7 +230,7 @@ const PostDetailsViewModel = (
     }
   };
 
-  const handleAddReply = async (comment: string) => {
+  const handleAddReply = async (comment: string, id: string) => {
     if (comment.trim()) {
       const parentId = replyToReplyId || replyToCommentId;
 
@@ -270,6 +270,7 @@ const PostDetailsViewModel = (
     }
   };
 
+  
   const fetchUserLikePosts = async (postId: string) => {
     const response = await defaultPostRepo.getPostLikes({
       postId: postId,
