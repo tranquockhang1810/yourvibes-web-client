@@ -35,7 +35,6 @@ const ProfileFeature = () => {
     <div>
         <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
         <ProfileTabs
-          tabNum={0}
           posts={posts}
           loading={loading}
           profileLoading={false}

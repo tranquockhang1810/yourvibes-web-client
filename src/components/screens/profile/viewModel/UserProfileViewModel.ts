@@ -10,7 +10,6 @@ import { defaultPostRepo } from '@/api/features/post/PostRepo';
 import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
 
 const UserProfileViewModel = () => {
-  const { localStrings } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -20,10 +19,7 @@ const UserProfileViewModel = () => {
   const [userInfo, setUserInfo] = useState<UserModel | null>(null);
   const [sendRequestLoading, setSendRequestLoading] = useState(false);
   const [newFriendStatus, setNewFriendStatus] = useState<FriendStatus | undefined>(undefined);
-  const [selectedFriendName, setSelectedFriendName] = useState<string>('');
   const [search, setSearch] = useState<string>('');
-  const [otherUserFriends, setOtherUserFriends] = useState<FriendResponseModel[]>([]);
-  const [profile, setProfile] = useState<any>(null);
   const [friends, setFriends] = useState<FriendResponseModel[]>([]);
   const [friendCount, setFriendCount] = useState(0);
   const [resultCode, setResultCode] = useState(0);
@@ -174,7 +170,6 @@ const UserProfileViewModel = () => {
       setSendRequestLoading(true);
       const response = await defaultProfileRepo.unfriend(id); 
       if (!response?.error) {
-       
         setNewFriendStatus(FriendStatus.NotFriend);
       } else {
     
@@ -222,7 +217,7 @@ const UserProfileViewModel = () => {
       fetchUserPosts();
       fetchFriends(page);
     }
-  }, [page, userInfo, fetchUserPosts, fetchFriends]);
+  }, [userInfo]);
 
   return {
     loading,

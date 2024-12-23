@@ -41,7 +41,6 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           friendCount={friendCount}
         />
         <ProfileTabs
-          tabNum={tab}
           posts={posts}
           loading={loading}
           profileLoading={profileLoading}

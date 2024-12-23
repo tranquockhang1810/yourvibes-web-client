@@ -275,6 +275,7 @@ Report: {
   ReportSuccess: "Báo cáo thành công!",
   ReportFailed: "Báo cáo thất bại!",
   Note: "Nếu bạn nhận thấy sự đe dọa hoặc ai đó dang gặp nguy hiểm, đừng chần chừ mà hãy tìm ngay sự giúp đỡ và báo cho dịch vụ khẩn cấp ở địa phương trước khi báo cáo với YourVibes.",
+  placeholder:"Viết lý do báo cáo của bạn ở đây...",
 },
 ChangePassword:{
   ChangePassword: "Thay đổi mật khẩu",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Typography, Row, Col, Radio, Space } from 'antd';
 import { CloseOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
@@ -35,21 +35,21 @@ const ObjectProfile = ({ closedModalObject }: { closedModalObject: () => void })
   return (
     <div>
       {/* Content */}
-      <div className="px-4 py-6">
+      <div className="px-4 py-4">
         <Typography.Text strong className="text-lg">
           {localStrings.ObjectProfile.Contents.WhoCanSee}
         </Typography.Text>
-        <p className="mt-2">
+        <p className="mt-2 mb-4">
           {localStrings.ObjectPostPrivacy.Contents.DefaultPrivacy1}
           <span className="font-semibold">{localStrings.Public.Public}</span>
           {localStrings.ObjectProfile.Contents.DefaultPrivacy2}
         </p>
 
-        <Typography.Text strong className="text-lg mt-4">
+        <Typography.Text strong className="text-lg">
           {localStrings.ObjectPostPrivacy.ChoosePrivacy}
         </Typography.Text>
 
-        <div className="mt-4">
+        <div className="mt-2">
           {options.map((option) => (
             <Row key={option.label} align="middle" className="my-2">
               <Col span={1}>

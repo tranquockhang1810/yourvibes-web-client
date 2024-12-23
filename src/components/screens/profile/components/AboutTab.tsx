@@ -57,7 +57,7 @@ const AboutTab = ({
         ):(
             <div className='flex px-5'>
                 {/* // detail */}
-                <div className='py-2 w-60'>
+                <div className='py-2 pr-4 w-72'>
                     <div>
                         <div className='flex justify-between mb-2'>
                             <span className='font-bold text-lg'>{localStrings.Public.Detail}</span>
@@ -74,7 +74,7 @@ const AboutTab = ({
                                 </div>
                                 <Modal
                                     centered
-                                    title={localStrings.Public.EditProfile}
+                                    title={localStrings.ObjectProfile.ProfilePrivacy}
                                     open={showObject}
                                     onCancel={() => setShowObject(false)}
                                     footer={null}
@@ -89,30 +89,30 @@ const AboutTab = ({
                             {/* // email */}
                             <div className='flex flex-row mb-2'>
                                 <MailFilled />
-                                <p className='ml-2'>{localStrings.Public.Mail}:{""} <span className='font-bold'>{user?.email}</span>
-                                </p>
+                                <span className='ml-2'>{localStrings.Public.Mail}:{""} <span className='font-bold'>{user?.email}</span>
+                                </span>
                             </div>
                             {/* // phone */}
                             <div className='flex flex-row mb-2'>
                             <PhoneFilled />
-                             <p className='ml-2'>{localStrings.Public.Phone}:{""} <span className='font-bold'>{user?.phone_number}</span></p>
+                             <span className='ml-2'>{localStrings.Public.Phone}:{""} <span className='font-bold'>{user?.phone_number}</span></span>
                             </div>    
                             {/* // birthday */}
                             <div className='flex flex-row  mb-2'>
                             <CreditCardFilled />
-                                <p className='ml-2'>{localStrings.Public.Birthday}:{""} <span className='font-bold'>{DateTransfer(user?.birthday)}</span></p>
+                                <span className='ml-2'>{localStrings.Public.Birthday}:{""} <span className='font-bold'>{DateTransfer(user?.birthday)}</span></span>
                             </div>
                             {/* // created_at */}
                             <div className='flex flex-row  mb-2'>
                             <CreditCardFilled />
-                                <p className='ml-2'>{localStrings.Public.Active}:{""} <span className='font-bold'>{DateTransfer(user?.created_at)}</span></p>
+                                <span className='ml-2'>{localStrings.Public.Active}:{""} <span className='font-bold'>{DateTransfer(user?.created_at)}</span></span>
                             </div>
                             </div>
                         )
                             :resultCode === 50016 ?(
-                                <p className='text-center'> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`}</p>
+                                <span className='text-center'> {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo}`}</span>
                             ):resultCode === 50015 ? (
-                                <p className='text-center'>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</p>
+                                <span className='text-center'>{`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly}`}</span>
                             ):null
                             }
                     </div>
@@ -132,23 +132,23 @@ const AboutTab = ({
                                 {localStrings.Public.Friend}</span>
                         </div>
                         <div className='cursor-pointer'>
-                            <p style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
+                            <span style={ { color: brandPrimaryTap }} onClick={() => router.push('#')}>
                             {localStrings.Public.FriendFind}
-                            </p>
+                            </span>
                         </div>
                     </div>
-                    <div className='flex flex-row'>
+                    <div className='flex flex-row flex-wrap'>
                         {friends.map((friend, index) => (
-                            <div key={index} className='w-1/4 items-center mb-2 mx-1'
+                            <div key={index} className='w-[70px]  mb-2 mx-1'
                             onClick={() => router.push(`/user/${friend?.id}`)}
                         >
                             <img
                             src={friend?.avatar_url}
                             className='w-12 h-12 rounded-full bg-gray-300 mr-2'
                             />
-                            <p className='mt-2'>
+                            <span className='mt-2'>
                                 {friend?.family_name} {friend?.name}
-                            </p>
+                            </span>
                         </div>))}
                         
                     </div>

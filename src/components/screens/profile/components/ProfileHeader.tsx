@@ -5,11 +5,12 @@ import useColor from "@/hooks/useColor";
 import React, { useCallback, useEffect } from "react";
 import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 import { FriendStatus } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { Button, Flex, Spin } from "antd";
+import { Button, Dropdown, Flex, MenuProps, Modal, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { FaUserCheck, FaUserPlus } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-import { log } from "console";
+import { RxCross2 } from "react-icons/rx";
+import { BsThreeDots } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 const ProfileHeader = ({
   total,
@@ -24,6 +25,7 @@ const ProfileHeader = ({
 }) => {
   const { lightGray, brandPrimary, backgroundColor } = useColor();
   const { localStrings, language, isLoginUser } = useAuth();
+  const router = useRouter();
 
   const {
     sendFriendRequest,
@@ -35,6 +37,54 @@ const ProfileHeader = ({
     newFriendStatus,
     setNewFriendStatus,
   } = UserProfileViewModel();
+
+  const itemsFriend: MenuProps['items'] = [
+    {
+      key: '1',
+      label: localStrings.Public.UnFriend,
+      type: 'item',
+      onClick: () => {
+        Modal.confirm({
+          centered: true,
+          title: localStrings.Public.Confirm,
+          content: localStrings.Profile.Friend.UnfriendConfirm,
+          okText: localStrings.Public.Confirm,
+          cancelText: localStrings.Public.Cancel,
+          onOk: () => {
+            unFriend(user?.id as string);
+          }
+        });
+      }
+    },
+    {
+      key: '2',
+      label: localStrings.Public.Cancel,
+      type: 'item',
+      onClick: () => {
+        
+      }
+    },
+    
+  ];
+
+  const itemsReport: MenuProps['items'] = [
+    {
+      key: '1',
+      label: localStrings.Public.ReportFriend,
+      onClick: () => {
+        router.push(`/report?userId=${user?.id}`);
+      },
+    },
+    {
+      key: '2',
+      label: localStrings.Public.Cancel,
+      onClick: () => {
+        console.log("Cancel action clicked");
+      },
+    },
+  ];
+  
+
 
   const renderFriendButton = useCallback(() => {
     switch (newFriendStatus) {
@@ -63,6 +113,7 @@ const ProfileHeader = ({
         );
       case FriendStatus.IsFriend:
         return (
+          <Dropdown menu={{ items: itemsFriend }} placement="bottom" arrow>
           <Button type="primary">
             <div className="flex flex-row items-center">
               <FaUserCheck
@@ -82,10 +133,11 @@ const ProfileHeader = ({
               </text>
             </div>
           </Button>
+          </Dropdown>
         );
       case FriendStatus.SendFriendRequest:
         return (
-          <div style={{ marginTop: 10 }}>
+          <div className="flex flex-col items-center">
             <text
               style={{
                 marginBottom: 10,
@@ -103,17 +155,11 @@ const ProfileHeader = ({
               loading={sendRequestLoading}
             >
               <div className="flex flex-row items-center">
-                <ImCross name="cross" size={24} color={brandPrimary} />
-                <text
-                  style={{
-                    color: brandPrimary,
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    marginLeft: 5,
-                  }}
+                <RxCross2 name="cross" size={24} color={brandPrimary} />
+                <span
                 >
                   {localStrings.Public.CancelFriendRequest}
-                </text>
+                </span>
               </div>
             </Button>
           </div>
@@ -194,7 +240,7 @@ const ProfileHeader = ({
           </div>
 
           {/* Profile Image */}
-          <div className="mt-[-60px] text-center">
+          <div className="mt-[-60px] text-center flex justify-center">
             <img
               src={
                 user?.avatar_url ||
@@ -204,7 +250,17 @@ const ProfileHeader = ({
               className="w-52 h-52 rounded-full mx-auto"
               style={{ backgroundColor: lightGray }}
             />
+             {!isLoginUser(user?.id as string) && (
+            <div className="mt-16 mr-2 opacity-50 hover:opacity-100">
+              <Dropdown menu={{ items: itemsReport }} placement="bottomRight">
+                <BsThreeDots size={20} />
+              </Dropdown>
+
+              
+            </div>
+          )}
           </div>
+
 
           {/* User Information */}
           <div className="text-center mt-2">

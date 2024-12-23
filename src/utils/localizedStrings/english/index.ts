@@ -274,6 +274,7 @@ export const ENGLocalizedStrings = {
     ReportSuccess: "Reported successfully!",
     ReportFailed: "Report failed!",
     Note: "If you see a threat or someone in danger, don't hesitate to seek help and report to local emergency services before reporting to YourVibes.",
+    placeholder:"Write your report here..."
   },
   ChangePassword: {
     ChangePassword: "Change password",

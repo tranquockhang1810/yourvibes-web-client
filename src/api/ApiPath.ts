@@ -66,6 +66,10 @@ function getApiPath(path: string) {
 // }
 
 //bên tui để vầy mới coi được
+// function getWSPath(path: string) {
+//   return `${process.env.NEXT_PUBLIC_API_ENDPOINT?.replace("http", "ws")}/v1/2024/${path}`;
+// }
+
 function getWSPath(path: string) {
-  return `${process.env.NEXT_PUBLIC_API_ENDPOINT?.replace("http", "ws")}/v1/2024/${path}`;
+  return `${ENV.SERVER_ENDPOINT.replace("http", "ws")!}/v1/2024/${path}`;
 }

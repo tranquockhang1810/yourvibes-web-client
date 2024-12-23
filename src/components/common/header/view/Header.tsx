@@ -33,7 +33,7 @@ const MyHeader = () => {
         icon: FaHome,
       },
       {
-        link: "/profile",
+        link: "/profile?tab=info",
         content: "Profile",
         icon: FaUser,
       },
@@ -43,7 +43,7 @@ const MyHeader = () => {
         icon: FaBell,
       },
       {
-        link: "/settings",
+        link: "/profile?tab=settings",
         content: "Settings",
         icon: FaCog,
       },
