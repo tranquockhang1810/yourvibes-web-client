@@ -8,25 +8,15 @@ export const TransferToFormData = (data: any) => {
     if (data[key] === undefined) {
       continue;
     } else if (Array.isArray(data[key])) {
-      // Nếu dữ liệu là mảng, lặp qua và thêm từng phần tử vào formData
       data[key].forEach((item: any) => {
-        // Kiểm tra xem phần tử có phải là file hay không
-        if (item instanceof File) {
-          formData.append(key, item);
-        } else {
-          formData.append(key, item);
-        }
+        formData.append(key, item as any);
       });
-    } else if (data[key] instanceof File) {
-      // Nếu dữ liệu là file (ví dụ avatar hoặc capwall)
-      formData.append(key, data[key]);
     } else {
-      formData.append(key, data[key]);
+      formData.append(key, data[key] as any);
     }
   }
-
   return formData;
-};
+}
 
 interface CustomUploadFile extends UploadFile {
   uri?: string; 
@@ -37,16 +27,26 @@ export const convertMediaToFiles = async (media: RcFile[]) => {
     media.map(async (mediaItem, index) => {
       const { name, type } = mediaItem;
 
-      const fileType = type || (name.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg');
+      const fileExtension = type.split('/')[1];
+      const fileName = `${name}.${fileExtension}`;
 
+      const fileReader = new FileReader();
       const file: CustomUploadFile = {
-        uid: index.toString(), // Add the uid property
-        name: name || `media_${index}.${fileType.split('/')[1]}`,
-        type: fileType,
-        uri: URL.createObjectURL(mediaItem), // Add the custom uri property
+        uid: index.toString(),
+        name: fileName,
+        type: type,
       };
 
-      return file;
+      return new Promise((resolve) => {
+        fileReader.onload = () => {
+          const result = fileReader.result;
+          if (result !== null) {
+            file.uri = result as string;
+          }
+          resolve(file);
+        };
+        fileReader.readAsDataURL(mediaItem);
+      });
     })
   );
 

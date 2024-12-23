@@ -31,6 +31,7 @@ const AboutTab = ({
     const {brandPrimaryTap,lightGray} = useColor();
     const {isLoginUser, localStrings } = useAuth();
     const [showObject, setShowObject] = React.useState(false);
+
     
     
   
@@ -144,6 +145,7 @@ const AboutTab = ({
                         >
                             <img
                             src={friend?.avatar_url}
+                            alt={`${friend?.family_name} ${friend?.name}`}
                             className='w-12 h-12 rounded-full bg-gray-300 mr-2'
                             />
                             <span className='mt-2'>

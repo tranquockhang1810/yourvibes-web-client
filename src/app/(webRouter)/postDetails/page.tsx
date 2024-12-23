@@ -1,10 +1,18 @@
-import PostDetail from '@/components/common/postDetails/view/postDetails';
-import React from 'react';
+"use client";
 
-const ProfilePage = () => {
-  return (
-    <PostDetail postId="" />
-  );
+import { useSearchParams } from 'next/navigation';
+import PostDetailsScreen from '@/components/screens/postDetails/view/postDetailsScreen';
+
+const PostDetailsPage = () => {
+  const searchParams = useSearchParams();
+  const postId = searchParams.get('postId');
+  
+
+  if (!postId) {
+    return <div>Post ID is missing</div>;
+  }
+
+  return <PostDetailsScreen postId={postId}  />;
 };
 
-export default ProfilePage;
+export default PostDetailsPage;

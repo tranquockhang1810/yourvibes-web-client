@@ -1,6 +1,6 @@
 const ENV = { 
     // SERVER_ENDPOINT: 'https://yourvibesapi.duckdns.org:8080',
-    SERVER_ENDPOINT: 'http://192.168.1.162:8080',
+    SERVER_ENDPOINT: 'http://192.168.1.180:8080',
     // SERVER_ENDPOINT: 'http://192.168.20.28:8080',
   
     WEB_CLIENT_ID: "1043707259288-skk9gvug9tlvahvfduf1km8p7dar0osf.apps.googleusercontent.com",
