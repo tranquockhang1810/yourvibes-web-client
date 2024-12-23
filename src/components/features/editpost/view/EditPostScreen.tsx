@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react"; 
-import { Input, Button, Image } from "antd";
+import { Input, Button, Image, message } from "antd";
 import useColor from "@/hooks/useColor";
 import { useAuth } from "@/context/auth/useAuth";
 import { CreatePostRequestModel } from "@/api/features/post/models/CreatePostRequestModel";
@@ -11,24 +11,24 @@ import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostRequestModel";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { IoMdClose } from "react-icons/io";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const EditPostScreen = ({ id }: { id: string }) => {
+  
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   if (!isClient) {
-    return null; // Hoặc một loading indicator
+    return null;  
   }
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
-  const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } =
-    useColor();
-  const [loading, setLoading] = useState(false);
+  const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
+
   const {
     postContent,
     setPostContent,
@@ -51,7 +51,7 @@ const EditPostScreen = ({ id }: { id: string }) => {
       input.type = "file";
       input.accept = "image/*";
       input.multiple = true;
-
+  
       input.onchange = async (e) => {
         const files = (e.target as HTMLInputElement)?.files;
         if (files) {
@@ -61,19 +61,23 @@ const EditPostScreen = ({ id }: { id: string }) => {
             reader.onload = () => {
               images.push(reader.result as string);
             };
+            reader.onerror = () => { 
+              message.error("Failed Upload image");
+            };
             reader.readAsDataURL(file);
           }
           setOriginalImageFiles([...originalImageFiles, ...images]);
         }
       };
-
+  
       input.click();
     } catch (error) {
       console.error(error);
+      message.error("Failed Upload image");
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const removeImage = (index: number) => {
     const updatedImageFile = [...originalImageFiles];
@@ -82,25 +86,29 @@ const EditPostScreen = ({ id }: { id: string }) => {
   };
 
   const handleSubmitPost = async () => {
-    if (postContent.trim() === "" && originalImageFiles.length === 0) {
+    if (!postContent.trim() && originalImageFiles.length === 0) {
+      message.warning("Content Or Media Required");
       return;
     }
-    const { detetedMedias, newMediaFiles } = handleMedias(
+  
+    const { deletedMedias, newMediaFiles } = handleMedias(
       mediaIds,
       originalImageFiles
     );
-
+  
     const mediaFiles = await convertMediaToFiles(newMediaFiles);
     const updatedPost: UpdatePostRequestModel = {
       postId: id,
-      content: postContent,
-      privacy: privacy,
+      content: postContent.trim(),
+      privacy,
       location: "HCM",
       media: mediaFiles.length > 0 ? mediaFiles : undefined,
-      media_ids: detetedMedias.length > 0 ? detetedMedias : undefined,
+      media_ids: deletedMedias.length > 0 ? deletedMedias : undefined,
     };
+  
     await updatePost(updatedPost);
   };
+  
 
   const renderPrivacyText = () => {
     switch (privacy) {
@@ -116,10 +124,11 @@ const EditPostScreen = ({ id }: { id: string }) => {
   };
 
   useEffect(() => {
-    if (!post) {
+    if (!post && id) {
       getDetailPost(id);
     }
-  }, [post]);
+  }, [post, id]);
+  
 
   useEffect(() => {
     if (savedPost.savedPostContent) {

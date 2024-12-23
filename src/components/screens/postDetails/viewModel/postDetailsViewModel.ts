@@ -294,16 +294,6 @@ const PostDetailsViewModel = (
     }
   };
 
-  // const handlePostAction = () => {
-  //   if (replyToCommentId) {
-  //     handleAddReply(replyContent, replyToCommentId);  
-  //     setReplyToCommentId(null); 
-  //     setReplyContent(""); 
-  //   } else {
-  //     handleAddComment(newComment); 
-  //     setNewComment(""); 
-  //   }
-  // };
   const handlePostAction = () => {
     if (replyToCommentId) {
       handleAddReply(replyContent, replyToCommentId);  
@@ -351,7 +341,7 @@ const PostDetailsViewModel = (
     setReplyContent,
     handleReplyClick,
     handlePostAction, 
-    handleTextChange,
+    handleTextChange, 
   };
 };
 

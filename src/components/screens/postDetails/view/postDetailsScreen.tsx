@@ -12,8 +12,7 @@ interface CommentsScreenProps {
   post?: PostResponseModel;
 }
 
-const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
-  useColor();
+const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
 
 const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
   const {
@@ -33,12 +32,34 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
     setEditCommentContent,
     replyContent,
     setReplyContent,
-    handlePostAction,
-    handleReplyClick,
+    handlePostAction, 
     handleTextChange,
+    setReplyToCommentId,
+    setReplyToReplyId,
+    replyToCommentId,
+    replyToReplyId,
+    fetchReplies,
   } = PostDetailsViewModel(postId || "");
   const { localStrings } = useAuth();
-  const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
+
+  const [visibleReplies, setVisibleReplies] = useState<{ [key: string]: boolean }>({});
+
+  const handleReplyClick = (commentId: string, isReply: boolean = false) => {
+    if (isReply) {
+      setReplyToReplyId(commentId);
+    } else {
+      setReplyToCommentId(commentId);
+    }
+    setReplyContent("");
+    fetchReplies(postId || "", commentId);  
+  };
+
+  const toggleRepliesVisibility = (commentId: string) => {
+    setVisibleReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -109,7 +130,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => setReplyToCommentId(comment.id)}
+                      onClick={() => handleReplyClick(comment.id)}
                     />
                   </Col>
                   <Col span={4}>
@@ -128,12 +149,188 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
               </div>
             </div>
             <div className="replies pl-6 mt-3 border-l-2 border-gray-200">
-              {replyMap[comment.id]?.map((reply) => (
+              {replyMap[comment.id]?.length > 0 && (
+                <button
+                  onClick={() => toggleRepliesVisibility(comment.id)}
+                  className="show-replies-btn text-blue-500 text-xs mb-2"
+                >
+                  {visibleReplies[comment.id] ? "Hide Replies" : "Show Replies"}
+                </button>
+              )}
+              {visibleReplies[comment.id] && replyMap[comment.id]?.map((reply) => (
                 <div
                   key={reply.id}
                   className="reply-item bg-gray-100 p-3 rounded-lg mt-2 text-sm"
                 >
+                  <div className="reply-header flex items-center mb-3">
+                    <Avatar src={reply.user.avatar_url} size="small" />
+                    <div className="ml-3">
+                      <p className="text-gray-800 font-semibold">
+                        {reply.user.family_name} {reply.user.name}
+                      </p>
+                      <p className="text-gray-500 text-xs">
+                        {new Date(reply.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                   <p className="text-gray-700">{reply.content}</p>
+                  <div className="reply-actions flex space-x-4 text-xs">
+                    <Row>
+                      <Col span={4} className="hover:cursor-pointer">
+                        <FaHeart
+                          size={16}
+                          color={userLikes[reply.id] ? "red" : "white"}
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => handleLike(reply.id)}
+                        />
+                      </Col>
+                      <Col span={4} className="hover:cursor-pointer">
+                        <FaTrash
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => handleDelete(reply.id)}
+                        />
+                      </Col>
+                      <Col span={4} className="hover:cursor-pointer">
+                        <FaEdit
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => handleEditComment(reply.id)}
+                        />
+                      </Col>
+                      <Col span={4} className="hover:cursor-pointer">
+                        <FaReply
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => handleReplyClick(reply.id, true)}
+                        />
+                      </Col>
+                      <Col span={4}>
+                        <span
+                          style={{
+                            color: brandPrimaryTap,
+                            fontSize: 12,
+                            opacity: 0.5,
+                            marginRight: 50,
+                          }}
+                        >
+                          {likeCount[reply.id]}
+                        </span>
+                      </Col>
+                    </Row>
+                  </div>
+                  <div className="replies pl-6 mt-3 border-l-2 border-gray-200">
+                    {replyMap[reply.id]?.length > 0 && (
+                      <button
+                        onClick={() => toggleRepliesVisibility(reply.id)}
+                        className="show-replies-btn text-blue-500 text-xs mb-2"
+                      >
+                        {visibleReplies[reply.id] ? "Hide Replies" : "Show Replies"}
+                      </button>
+                    )}
+                    {visibleReplies[reply.id] && replyMap[reply.id]?.map((nestedReply) => (
+                      <div
+                        key={nestedReply.id}
+                        className="reply-item bg-gray-100 p-3 rounded-lg mt-2 text-sm"
+                      >
+                        <div className="reply-header flex items-center mb-3">
+                          <Avatar src={nestedReply.user.avatar_url} size="small" />
+                          <div className="ml-3">
+                            <p className="text-gray-800 font-semibold">
+                              {nestedReply.user.family_name} {nestedReply.user.name}
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              {new Date(nestedReply.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="text-gray-700">{nestedReply.content}</p>
+                        <div className="reply-actions flex space-x-4 text-xs">
+                          <Row>
+                            <Col span={4} className="hover:cursor-pointer">
+                              <FaHeart
+                                size={16}
+                                color={userLikes[nestedReply.id] ? "red" : "white"}
+                                style={{
+                                  stroke: "black",
+                                  strokeWidth: 2,
+                                  marginRight: 50,
+                                }}
+                                onClick={() => handleLike(nestedReply.id)}
+                              />
+                            </Col>
+                            <Col span={4} className="hover:cursor-pointer">
+                              <FaTrash
+                                size={16}
+                                color="gray"
+                                style={{
+                                  stroke: "black",
+                                  strokeWidth: 2,
+                                  marginRight: 50,
+                                }}
+                                onClick={() => handleDelete(nestedReply.id)}
+                              />
+                            </Col>
+                            <Col span={4} className="hover:cursor-pointer">
+                              <FaEdit
+                                size={16}
+                                color="gray"
+                                style={{
+                                  stroke: "black",
+                                  strokeWidth: 2,
+                                  marginRight: 50,
+                                }}
+                                onClick={() => handleEditComment(nestedReply.id)}
+                              />
+                            </Col>
+                            <Col span={4} className="hover:cursor-pointer">
+                              <FaReply
+                                size={16}
+                                color="gray"
+                                style={{
+                                  stroke: "black",
+                                  strokeWidth: 2,
+                                  marginRight: 50,
+                                }}
+                                onClick={() => handleReplyClick(nestedReply.id, true)}
+                              />
+                            </Col>
+                            <Col span={4}>
+                              <span
+                                style={{
+                                  color: brandPrimaryTap,
+                                  fontSize: 12,
+                                  opacity: 0.5,
+                                  marginRight: 50,
+                                }}
+                              >
+                                {likeCount[nestedReply.id]}
+                              </span>
+                            </Col>
+                          </Row>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -144,11 +341,11 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
         <textarea
           className="comment-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
           placeholder={
-            replyToCommentId
+            replyToCommentId || replyToReplyId
               ? "Write your reply here..."
               : "Write your comment here..."
           }
-          value={replyToCommentId ? replyContent : newComment}
+          value={replyToCommentId || replyToReplyId ? replyContent : newComment}
           onChange={handleTextChange}
         />
         <button
@@ -156,7 +353,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId, post }) => {
           className="post-btn mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
           {localStrings?.Public?.Conform ||
-            (replyToCommentId ? "Reply" : "Post")}
+            (replyToCommentId || replyToReplyId ? "Reply" : "Post")}
         </button>
       </div>
       {isEditModalVisible && (
