@@ -82,9 +82,10 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     return (
         <div className="mb-10">
             <MyHeader />
-            <div style={{ paddingTop: '60px', paddingLeft: '53px', paddingBottom: '50px' }}>
+            <div className="pt-15 pl-13 pb-12 md:pl-2">
                 {children}
             </div>
+
         </div>
     );
 }
