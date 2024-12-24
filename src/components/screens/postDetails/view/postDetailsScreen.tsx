@@ -7,13 +7,14 @@ import { useAuth } from "@/context/auth/useAuth";
 import useColor from "@/hooks/useColor";
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import ReportViewModel from '@/components/screens/report/ViewModel/reportViewModel';
+import { useRouter } from "next/navigation";
 
 interface CommentsScreenProps {
   postId?: string;
 }
 
 const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } = useColor();
-
 const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const {
     comments,
@@ -38,16 +39,14 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     setReplyToReplyId,
     replyToCommentId,
     replyToReplyId,
-    fetchReplies,
-    handleReport,
+    fetchReplies, 
   } = PostDetailsViewModel(postId || "");
-
   const [post, setPost] = useState<PostResponseModel | null>(null);
-  
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
-
+  const reportViewModel = ReportViewModel(defaultPostRepo);
   const [visibleReplies, setVisibleReplies] = useState<{ [key: string]: boolean }>({});
+  const router = useRouter();
 
   const fetchPost = async (postId: string) => {
     try {
@@ -78,6 +77,10 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
       ...prev,
       [commentId]: !prev[commentId],
     }));
+  };
+
+  const reportComment = (commentId: string) => {
+    router.push(`/report?commentId=${commentId}`);
   };
 
   useEffect(() => {
@@ -167,7 +170,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => handleReport(comment.id)}
+                      onClick={() => reportComment(comment.id)}
                     />
                   </Col>
                   <Col span={4}>
@@ -270,7 +273,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             strokeWidth: 2,
                             marginRight: 50,
                           }}
-                          onClick={() => handleReport(reply.id)}
+                          onClick={() => reportComment(reply.id)}
                         />
                       </Col>
                       <Col span={4}>
@@ -372,7 +375,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                   strokeWidth: 2,
                                   marginRight: 50,
                                 }}
-                                onClick={() => handleReport(nestedReply.id)}
+                                onClick={() => reportComment(nestedReply.id)}
                               />
                             </Col>
                             <Col span={4}>
