@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
-import { List, Spin } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { List, Spin, Modal } from 'antd';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import useColor from '@/hooks/useColor';
 import { useAuth } from '@/context/auth/useAuth';
 import Post from '@/components/common/post/views/Post';
 import { useRouter } from 'next/navigation';
+import AddPostScreen from '@/components/screens/addPost/view/AddPostScreen';
 
-
-const PostList = ({ loading, posts, loadMorePosts, user }:{
+const PostList = ({ loading, posts, loadMorePosts, user }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
@@ -17,7 +17,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const { localStrings } = useAuth();
   const router = useRouter();
-  
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const renderFooter = useCallback(() => {
     return loading ? (
@@ -27,72 +27,85 @@ const PostList = ({ loading, posts, loadMorePosts, user }:{
     ) : null;
   }, [loading]);
 
+  const handlePostSuccess = () => {
+    setIsModalVisible(false);
+    loadMorePosts(); // Optionally reload posts
+  };
+
   const renderAddPost = useCallback(() => {
-      return (
-        <div
-          onClick={() => router.push("/addPost")}
+    return (
+      <div
+        onClick={() => setIsModalVisible(true)}
+        style={{
+          padding: "10px",
+          display: "flex",
+          alignItems: "center",
+          margin: "10px",
+          backgroundColor: backgroundColor,
+          border: `1px solid ${lightGray}`,
+          borderRadius: "10px",
+          cursor: "pointer",
+          width: "100%",
+          maxWidth: "600px",
+        }}
+      >
+        <img
+          src={user?.avatar_url}
+          alt="User Avatar"
           style={{
-            padding: "10px",
-            display: "flex",
-            alignItems: "center",
-            margin: "10px",
-            backgroundColor: backgroundColor,
-            border: `1px solid ${lightGray}`,
-            borderRadius: "10px",
-            cursor: "pointer",
-            width: "100%", 
-            maxWidth: "600px", 
+            width: "50px",
+            height: "50px",
+            borderRadius: "25px",
+            backgroundColor: lightGray,
           }}
-        >
-          <img
-            src={user?.avatar_url}
-            alt="User Avatar"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "25px",
-              backgroundColor: lightGray,
-            }}
-          />
-          <div style={{ marginLeft: "10px", flex: 1 }}>
-            <p>
-              {user?.family_name + " " + user?.name ||
-                localStrings.Public.Username}
-            </p>
-            <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
-          </div>
+        />
+        <div style={{ marginLeft: "10px", flex: 1 }}>
+          <p>
+            {user?.family_name + " " + user?.name ||
+              localStrings.Public.Username}
+          </p>
+          <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-      );
-    }, [user, backgroundColor, lightGray, localStrings]);
-    
-  
+        <Modal
+          visible={isModalVisible}
+          width={800}
+          footer={null}
+          closable={false}
+          onCancel={() => setIsModalVisible(false)}
+        >
+          <AddPostScreen onPostSuccess={handlePostSuccess} />
+        </Modal>
+      </div>
+    );
+  }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
 
   return (
     <div className="flex justify-center items-center mt-4">
       <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
-      {/* Add Post Button */}
-      {renderAddPost()}
-     
-      {/* Posts List */}
-      {posts.map((item) => (
-        <div key={item?.id} className="mb-4">
-          <Post post={item}>
-            {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-          </Post>
-        </div>))}
-      {/* <List
-        dataSource={posts}
-        renderItem={(item) => (
-          <List.Item key={item?.id} className="mb-4">
+        {/* Add Post Button */}
+        {renderAddPost()}
+
+        {/* Posts List */}
+        {posts.map((item) => (
+          <div key={item?.id} className="mb-4">
             <Post post={item}>
               {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
             </Post>
-          </List.Item>
-        )}
-        // loading={loading}
-        // loadMore={renderFooter()}
-      /> */}
-    </div>
+          </div>
+        ))}
+        {/* <List
+          dataSource={posts}
+          renderItem={(item) => (
+            <List.Item key={item?.id} className="mb-4">
+              <Post post={item}>
+                {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+              </Post>
+            </List.Item>
+          )}
+          // loading={loading}
+          // loadMore={renderFooter()}
+        /> */}
+      </div>
     </div>
   );
 };
