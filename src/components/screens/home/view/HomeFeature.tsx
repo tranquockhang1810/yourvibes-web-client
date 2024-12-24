@@ -15,54 +15,59 @@ const Homepage = () => {
     HomeViewModel(defaultNewFeedRepo);
   const { user, localStrings } = useAuth();
   const router = useRouter();
-
-const renderAddPost = useCallback(() => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  return (
-    <div
-      onClick={() => setIsModalVisible(true)}
-      style={{
-        padding: "10px",
-        display: "flex",
-        alignItems: "center",
-        margin: "10px",
-        backgroundColor: backgroundColor,
-        border: `1px solid ${lightGray}`,
-        borderRadius: "10px",
-        cursor: "pointer",
-        width: "100%", 
-        maxWidth: "600px", 
-      }}
-    >
-      <img
-        src={user?.avatar_url}
-        alt="User Avatar"
+  const handleModalClose = () => {
+    setIsModalVisible(false); 
+  };
+
+  const renderAddPost = useCallback(() => {
+    return (
+      <div
+        onClick={() => setIsModalVisible(true)}
         style={{
-          width: "50px",
-          height: "50px",
-          borderRadius: "25px",
-          backgroundColor: lightGray,
+          padding: "10px",
+          display: "flex",
+          alignItems: "center",
+          margin: "10px",
+          backgroundColor: backgroundColor,
+          border: `1px solid ${lightGray}`,
+          borderRadius: "10px",
+          cursor: "pointer",
+          width: "100%", 
+          maxWidth: "600px", 
         }}
-      />
-      <div style={{ marginLeft: "10px", flex: 1 }}>
-        <p>
-          {user?.family_name + " " + user?.name ||
-            localStrings.Public.Username}
-        </p>
-        <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
-      </div>
-      <Modal
-        visible={isModalVisible}
-        width={800}
-        footer={null}
-        closable={false}
       >
-        <AddPostScreen />
-      </Modal>
-    </div>
-  );
-}, [user, backgroundColor, lightGray, localStrings]);
+        <img
+          src={user?.avatar_url}
+          alt="User Avatar"
+          style={{
+            width: "50px",
+            height: "50px",
+            borderRadius: "25px",
+            backgroundColor: lightGray,
+          }}
+        />
+        <div style={{ marginLeft: "10px", flex: 1 }}>
+          <p>
+            {user?.family_name + " " + user?.name ||
+              localStrings.Public.Username}
+          </p>
+          <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
+        </div>
+        <Modal
+          visible={isModalVisible}
+          maskClosable={true} 
+          width={800}
+          footer={null}
+          closable={false}
+          onCancel={handleModalClose}
+        >
+          <AddPostScreen onPostSuccess={handleModalClose} />
+        </Modal>
+      </div>
+    );
+  }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
 
   const renderFooter = () => {
     if (!loading) return null;

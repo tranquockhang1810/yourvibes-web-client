@@ -19,6 +19,10 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const handleModalClose = () => {
+    setIsModalVisible(false); 
+  };
+
   const renderFooter = useCallback(() => {
     return loading ? (
       <div className="flex justify-center py-4">
@@ -68,10 +72,11 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
         </div>
         <Modal
           visible={isModalVisible}
+          maskClosable={true} 
           width={800}
           footer={null}
           closable={false}
-          onCancel={() => setIsModalVisible(false)}
+          onCancel={handleModalClose}
         >
           <AddPostScreen onPostSuccess={handlePostSuccess} />
         </Modal>
@@ -93,18 +98,6 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
             </Post>
           </div>
         ))}
-        {/* <List
-          dataSource={posts}
-          renderItem={(item) => (
-            <List.Item key={item?.id} className="mb-4">
-              <Post post={item}>
-                {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-              </Post>
-            </List.Item>
-          )}
-          // loading={loading}
-          // loadMore={renderFooter()}
-        /> */}
       </div>
     </div>
   );
