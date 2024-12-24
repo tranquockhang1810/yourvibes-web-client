@@ -81,25 +81,10 @@ const AddPostScreen: React.FC<AddPostScreenProps> = ({ onPostSuccess }) => {
   );
 
 
+
+
 return (
     <div style={{ padding: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <Button
-          icon={<CloseOutlined />}
-          type="text"
-          onClick={() => router.back()}
-        />
-        <Text strong style={{ fontSize: "18px", marginLeft: "10px" }}>
-          {localStrings.AddPost.NewPost}
-        </Text>
-      </div>
-
       <div
         style={{
           display: "flex",
@@ -166,7 +151,7 @@ return (
         </Select>
         <Button
           type="primary"
-          onClick={handleSubmitPost}
+          onClick={() =>{handleSubmitPost()}}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
           loading={createLoading}
         >

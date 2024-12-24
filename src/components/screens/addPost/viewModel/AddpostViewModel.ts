@@ -45,7 +45,7 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
       } else {
         setPostContent("");
         clearSavedPost?.();
-        router.push("/profile?tabNum=1");
+        window.location.reload(); // Reload lại toàn bộ trang
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);

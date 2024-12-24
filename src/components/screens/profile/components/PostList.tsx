@@ -38,6 +38,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
 
   const renderAddPost = useCallback(() => {
     return (
+      <>
       <div
         onClick={() => setIsModalVisible(true)}
         style={{
@@ -70,7 +71,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
           </p>
           <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-        <Modal
+        {/* <Modal
           visible={isModalVisible}
           maskClosable={true} 
           width={800}
@@ -79,8 +80,13 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
           onCancel={handleModalClose}
         >
           <AddPostScreen onPostSuccess={handlePostSuccess} />
-        </Modal>
+        </Modal> */}
       </div>
+      <Modal centered title={localStrings.AddPost.NewPost} 
+        open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+        </Modal>
+    </>
     );
   }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
 

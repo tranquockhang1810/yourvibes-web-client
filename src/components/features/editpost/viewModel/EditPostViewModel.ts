@@ -107,7 +107,7 @@ const EditPostViewModel = (repo: PostRepo) => {
         message.success({
           content: localStrings.DeletePost.DeleteSuccess,
         });
-        router.push('/profile?tabNum=1');
+        router.push('/profile?tabNum=posts');
       } else {
         message.error({
           content: localStrings.DeletePost.DeleteFailed,
