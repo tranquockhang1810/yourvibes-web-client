@@ -23,6 +23,7 @@ const Homepage = () => {
 
   const renderAddPost = useCallback(() => {
     return (
+      <>
       <div
         onClick={() => setIsModalVisible(true)}
         style={{
@@ -55,7 +56,7 @@ const Homepage = () => {
           </p>
           <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-        <Modal
+        {/* <Modal
           visible={isModalVisible}
           maskClosable={true} 
           width={800}
@@ -64,8 +65,13 @@ const Homepage = () => {
           onCancel={handleModalClose}
         >
           <AddPostScreen onPostSuccess={handleModalClose} />
+        </Modal> */} 
+        </div>
+        <Modal centered title={localStrings.AddPost.NewPost} 
+        open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
         </Modal>
-      </div>
+     </>
     );
   }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
 
