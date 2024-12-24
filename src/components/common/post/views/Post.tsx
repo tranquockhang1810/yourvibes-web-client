@@ -153,7 +153,7 @@ const Post: React.FC<IPost> = React.memo(
             label: localStrings.Post.Advertisement,
             type: "item",
             onClick: () => {
-              router.push(`/ads?postId=${post?.id}`);
+              router.push(`/ads/${post?.id}`);
             },
           },
         ];
