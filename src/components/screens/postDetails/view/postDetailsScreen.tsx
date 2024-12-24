@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Post from "@/components/common/post/views/Post";
 import { Avatar, Col, Row } from "antd";
-import { FaEdit, FaHeart, FaReply, FaTrash } from "react-icons/fa";
+import { FaEdit, FaHeart, FaReply, FaTrash, FaFlag } from "react-icons/fa";
 import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/postDetailsViewModel";
 import { useAuth } from "@/context/auth/useAuth";
 import useColor from "@/hooks/useColor";
@@ -39,6 +39,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     replyToCommentId,
     replyToReplyId,
     fetchReplies,
+    handleReport,
   } = PostDetailsViewModel(postId || "");
 
   const [post, setPost] = useState<PostResponseModel | null>(null);
@@ -157,6 +158,18 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       onClick={() => handleReplyClick(comment.id)}
                     />
                   </Col>
+                  <Col span={4} className="hover:cursor-pointer">
+                    <FaFlag
+                      size={16}
+                      color="gray"
+                      style={{
+                        stroke: "black",
+                        strokeWidth: 2,
+                        marginRight: 50,
+                      }}
+                      onClick={() => handleReport(comment.id)}
+                    />
+                  </Col>
                   <Col span={4}>
                     <span
                       style={{
@@ -248,6 +261,18 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                           onClick={() => handleReplyClick(reply.id, true)}
                         />
                       </Col>
+                      <Col span={4} className="hover:cursor-pointer">
+                        <FaFlag
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => handleReport(reply.id)}
+                        />
+                      </Col>
                       <Col span={4}>
                         <span
                           style={{
@@ -336,6 +361,18 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                   marginRight: 50,
                                 }}
                                 onClick={() => handleReplyClick(nestedReply.id, true)}
+                              />
+                            </Col>
+                            <Col span={4} className="hover:cursor-pointer">
+                              <FaFlag
+                                size={16}
+                                color="gray"
+                                style={{
+                                  stroke: "black",
+                                  strokeWidth: 2,
+                                  marginRight: 50,
+                                }}
+                                onClick={() => handleReport(nestedReply.id)}
                               />
                             </Col>
                             <Col span={4}>

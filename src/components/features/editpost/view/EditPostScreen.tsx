@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Input, Button, Image, message } from "antd";
 import useColor from "@/hooks/useColor";
 import { useAuth } from "@/context/auth/useAuth";
-import { CreatePostRequestModel } from "@/api/features/post/models/CreatePostRequestModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
 import { usePostContext } from "@/context/post/usePostContext";
@@ -14,7 +13,6 @@ import { IoMdClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
 const EditPostScreen = ({ id }: { id: string }) => {
-  
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(false);

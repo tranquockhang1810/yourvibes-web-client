@@ -310,6 +310,14 @@ const PostDetailsViewModel = (
     setReplyContent("");  
   };
 
+  const handleReport = async (commentId: string) => {
+    try {
+      // Report comment logic here ...
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return {
     comments,
     likeCount,
@@ -342,6 +350,7 @@ const PostDetailsViewModel = (
     handleReplyClick,
     handlePostAction, 
     handleTextChange, 
+    handleReport,
   };
 };
 
