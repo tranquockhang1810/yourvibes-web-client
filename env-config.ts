@@ -1,5 +1,5 @@
 const ENV = { 
-    // SERVER_ENDPOINT: 'https://yourvibesapi.duckdns.org:8080',
+    // SERVER_ENDPOINT: 'http://yourvibesapi.duckdns.org:8080',
     // SERVER_ENDPOINT: 'http://192.168.1.135:8080',
     SERVER_ENDPOINT: 'http://192.168.21.4:8080',
   
