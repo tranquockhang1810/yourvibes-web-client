@@ -16,6 +16,7 @@ import {
   Popover,
   Row,
   Tooltip,
+  Select,
 } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -84,6 +85,8 @@ const Post: React.FC<IPost> = React.memo(
     const handleCommentClick = useCallback(() => {
       setIsCommentModalVisible(true);
     }, []);
+
+    const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
     const renderPrivacyText = () => {
       switch (sharePostPrivacy) {
@@ -310,7 +313,8 @@ const Post: React.FC<IPost> = React.memo(
                 // </Row>,
 
                 <Row align={"middle"} justify={"center"}>
-                  <IoShareSocialOutline size={24} color={brandPrimary} />
+                  <IoShareSocialOutline size={24} color={brandPrimary} 
+                    onClick={() => setIsShareModalVisible(true)}/>
                 </Row>,
               ]
         }
@@ -381,6 +385,45 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsCommentModalVisible(false)}
         >
           <PostDetailsScreen postId={likedPost?.id} />
+        </Modal>
+        {/* Modal for share Post */}
+        <Modal
+          visible={isShareModalVisible}
+          onCancel={() => setIsShareModalVisible(false)}
+          footer={[
+            <Button key="back" onClick={() => setIsShareModalVisible(false)}>
+              Hủy
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={shareLoading}
+              onClick={(event) => likedPost && sharePost(likedPost.id!, {})}
+            >
+              Chia sẻ
+            </Button>,
+          ]}
+        >
+          <Form form={shareForm}>
+            {likedPost?.content && (
+              <Form.Item>
+                <span>{likedPost?.content}</span>
+                
+              </Form.Item>
+            )}
+            <Form.Item name="privacy" label="Quyền riêng tư">
+              <Select
+                value={sharePostPrivacy}
+                onChange={(value) => setSharePostPrivacy(value)}
+              >
+                <Select.Option value={Privacy.PUBLIC}>Công khai</Select.Option>
+                <Select.Option value={Privacy.FRIEND_ONLY}>
+                  Chỉ bạn bè
+                </Select.Option>
+                <Select.Option value={Privacy.PRIVATE}>Riêng tư</Select.Option>
+              </Select>
+            </Form.Item>
+          </Form>
         </Modal>
       </Card>
     );
