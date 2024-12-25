@@ -313,8 +313,11 @@ const Post: React.FC<IPost> = React.memo(
                 // </Row>,
 
                 <Row align={"middle"} justify={"center"}>
-                  <IoShareSocialOutline size={24} color={brandPrimary} 
-                    onClick={() => setIsShareModalVisible(true)}/>
+                  <IoShareSocialOutline
+                    size={24}
+                    color={brandPrimary}
+                    onClick={() => setIsShareModalVisible(true)}
+                  />
                 </Row>,
               ]
         }
@@ -405,10 +408,31 @@ const Post: React.FC<IPost> = React.memo(
           ]}
         >
           <Form form={shareForm}>
+            <Col
+              xs={4}
+              md={2}
+              className="hover:cursor-pointer"
+              onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
+            >
+              <Avatar src={likedPost?.user?.avatar_url} shape="circle" />
+            </Col>
+            <Col
+              span={24}
+              className="hover:cursor-pointer hover:underline"
+              onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
+            >
+              <span style={{ fontWeight: "bold", fontSize: 14 }}>
+                {likedPost?.user?.family_name} {likedPost?.user?.name}
+              </span>
+            </Col>
             {likedPost?.content && (
               <Form.Item>
                 <span>{likedPost?.content}</span>
-                
+              </Form.Item>
+            )}
+            {likedPost?.media && likedPost?.media?.length > 0 && (
+              <Form.Item>
+                <MediaView mediaItems={likedPost?.media} />
               </Form.Item>
             )}
             <Form.Item name="privacy" label="Quyền riêng tư">
