@@ -72,9 +72,12 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
             if (!response?.error) {
                 fetchNotifications();
             } else {
+                console.log("error", response?.error);
+                
             }
         } catch (error: any) {
-            console.error(error);
+            console.error("error", error);
+            
         } finally {
             setLoading(false);
         }

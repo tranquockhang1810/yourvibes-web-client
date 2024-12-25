@@ -53,7 +53,7 @@ const NotificationItem = ({ notifications, onUpdate  }: { notifications: Notific
                 className="bg-gray-300"
               />
               <div
-                className={`absolute bottom-0 right-0 text-lg ${notificationDetails.color}`}
+                className={`absolute bottom-[-5px] right-[-2px] text-lg ${notificationDetails.color}`}
               >
                 {notificationDetails.icon}
               </div>

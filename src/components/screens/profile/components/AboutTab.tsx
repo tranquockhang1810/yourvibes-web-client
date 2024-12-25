@@ -56,9 +56,9 @@ const AboutTab = ({
                 <Spin indicator={<LoadingOutlined spin />} size="large" />
             </Flex>
         ):(
-            <div className='flex px-5'>
+            <div className='flex flex-col lg:flex-row px-5'>
                 {/* // detail */}
-                <div className='py-2 pr-4 w-72'>
+                <div className='py-2 lg:w-72'>
                     <div>
                         <div className='flex justify-between mb-2'>
                             <span className='font-bold text-lg'>{localStrings.Public.Detail}</span>

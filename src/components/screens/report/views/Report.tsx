@@ -16,8 +16,6 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
   const { reportPost, loading, reportUser, reportComment, setLoading } = ReportViewModel(defaultPostRepo);
 
   const handleReport = async () => {
-    setLoading(true);
-    try {
       if (postId) {
         reportPost({ report_post_id: postId, reason: reportReason });
         // Handle post report API call
@@ -31,11 +29,6 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
         // Handle comment report API call
         console.log('Report Comment:', { report_comment_id: commentId, reason: reportReason });
       }
-    } catch (error) {
-      console.error('Report failed:', error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (

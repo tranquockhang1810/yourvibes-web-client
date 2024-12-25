@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
+import SearchScreen from "@/components/screens/search/views/SearchScreen";
 
 const { Header } = Layout;
 const {useBreakpoint} = Grid;
@@ -95,8 +96,9 @@ const MyHeader = () => {
             style={{ height: "40px" }}
             onClick={() => router.push("/home")}
           />
+          <SearchScreen />
 
-          <Input
+          {/* <Input
             placeholder={localStrings.Search.Search}
             value={searchQuery}
             onChange={handleSearch}
@@ -104,7 +106,7 @@ const MyHeader = () => {
               width: "300px",
               borderRadius: "8px",
             }}
-          />
+          /> */}
         </div>
         {!screens.md && (
         <MenuOutlined
