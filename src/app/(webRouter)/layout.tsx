@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     return (
         <div className="mb-10">
             <MyHeader />
-            <div className="pt-15 pl-13 pb-12 md:pl-2">
+            <div className="pt-14 pb-12 md:pl-12">
                 {children}
             </div>
 

@@ -10,7 +10,7 @@ export const ApiPath = {
   PROFILE: getApiPath("users/"),
   SEARCH: getApiPath("users/"),
 
-  REPORT_USER: getApiPath("users/report/"),
+  REPORT_USER: getApiPath("users/report"),
 
   //Friend
   FRIEND_REQUEST: getApiPath("users/friends/friend_request/"),
@@ -28,7 +28,7 @@ export const ApiPath = {
   SHARE_POST: getApiPath("posts/share_post/"),
   ADVERTISE_POST: getApiPath("advertise/"),
 
-  REPORT_POST: getApiPath("posts/report/"),
+  REPORT_POST: getApiPath("posts/report"),
 
   //Comment
   CREATE_COMMENT: getApiPath("comments/"),
@@ -37,7 +37,7 @@ export const ApiPath = {
   DELETE_COMMENT: getApiPath("comments/"),
   GET_COMMENT_REPLIES: getApiPath("comments/"),
 
-  REPORT_COMMENT: getApiPath("comments/report/"),
+  REPORT_COMMENT: getApiPath("comments/report"),
 
   //Like Comment
   GET_LIKE_COMMENT: getApiPath("comments/like_comment/"),
@@ -47,7 +47,7 @@ export const ApiPath = {
   GET_WS_PATH: getWSPath("users/notifications/ws/"),
   GET_NOTIFICATIONS: getApiPath("users/notifications"),
   READ_NOTIFICATION: getApiPath("users/notifications/"),
-  READ_ALL_NOTIFICATION: getApiPath("users/notifications/"),
+  READ_ALL_NOTIFICATION: getApiPath("users/notifications"),
 
   //New Feeds
   GET_NEW_FEEDS: getApiPath('posts/new_feeds/'),
