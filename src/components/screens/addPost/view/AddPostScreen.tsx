@@ -80,9 +80,6 @@ const AddPostScreen: React.FC<AddPostScreenProps> = ({ onPostSuccess }) => {
     </button>
   );
 
-
-
-
 return (
     <div style={{ padding: "20px" }}>
       <div
