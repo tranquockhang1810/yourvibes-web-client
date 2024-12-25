@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // localStorage.setItem('refreshtoken', user.refreshtoken);
     setIsAuthenticated(true);
     setUser(user.user);
-    router.push('/(tabs)/home');
+    router.push('/home');
   }
 
   const onUpdateProfile = (user: any) => {
@@ -51,7 +51,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // localStorage.setItem('refreshtoken', user.refreshtoken);
     setIsAuthenticated(true);
     setUser(user);
-    router.back();
+    router.push(`/profile`);
+
   }
 
   const onLogout = async () => {
@@ -73,17 +74,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [language]);
 
   useEffect(() => {
+    // const checkAuthStatus = () => {
+    //   const storedUser = localStorage.getItem('user');
+    //   const storedAccessToken = localStorage.getItem('accesstoken');
+
+    //   if (storedUser && storedAccessToken) {
+    //     setUser(JSON.parse(storedUser));
+    //     setIsAuthenticated(true);
+    //   } else {
+    //     setIsAuthenticated(false);
+    //   }
+    // };
     const checkAuthStatus = () => {
       const storedUser = localStorage.getItem('user');
       const storedAccessToken = localStorage.getItem('accesstoken');
-
-      if (storedUser && storedAccessToken) {
-        setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
-      } else {
+    
+      try {
+        if (storedUser && storedAccessToken) {
+          setUser(JSON.parse(storedUser));
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Failed to parse stored user data:", error);
+        localStorage.removeItem('user'); // Xóa dữ liệu lỗi nếu có
         setIsAuthenticated(false);
       }
     };
+    
 
     checkAuthStatus();
   }, []);

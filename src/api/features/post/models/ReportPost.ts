@@ -1,4 +1,4 @@
 export interface ReportPostRequestModel {
-    post_id?: string;
+    report_post_id?: string;
     reason?: string;
     }
