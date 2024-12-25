@@ -56,16 +56,6 @@ const Homepage = () => {
           </p>
           <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-        {/* <Modal
-          visible={isModalVisible}
-          maskClosable={true} 
-          width={800}
-          footer={null}
-          closable={false}
-          onCancel={handleModalClose}
-        >
-          <AddPostScreen onPostSuccess={handleModalClose} />
-        </Modal> */} 
         </div>
         <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
@@ -94,7 +84,7 @@ const Homepage = () => {
     <div className="flex justify-center items-center mt-4">
       <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
         {/* Content */}
-        <div style={{ flex: 1, overflowY: "auto" }}>
+        <div style={{ flex: 1, overflowY: "auto", marginTop: "50px" }}>
           {renderAddPost()}
           {newFeeds?.length > 0 ? (
             newFeeds.map((item) => (
