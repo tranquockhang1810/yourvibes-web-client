@@ -2,17 +2,25 @@
 
 import { useSearchParams } from 'next/navigation';
 import PostDetailsScreen from '@/components/screens/postDetails/view/postDetailsScreen';
+import { Suspense } from 'react';
 
-const PostDetailsPage = () => {
+const Content = () => {
   const searchParams = useSearchParams();
   const postId = searchParams.get('postId');
-  
 
   if (!postId) {
-    return <div>Post ID is missing</div>;
-  }
+    return <div className="text-center text-gray-500">Đang tải...</div>;
+  } else {
+    return <PostDetailsScreen postId={postId} />;
+  } 
+}
 
-  return <PostDetailsScreen postId={postId}  />;
+const PostDetailsPage = () => {
+  return (
+    <Suspense>
+      <Content />
+    </Suspense>
+  )
 };
 
 export default PostDetailsPage;

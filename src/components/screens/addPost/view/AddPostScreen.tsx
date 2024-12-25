@@ -31,10 +31,10 @@ const { Text } = Typography;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 interface AddPostScreenProps {
-  onPostSuccess: () => void;
+  onPostSuccess?: () => void;
 }
 
-const AddPostScreen: React.FC<AddPostScreenProps> = ({ onPostSuccess }) => {
+const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
   const router = useRouter();
