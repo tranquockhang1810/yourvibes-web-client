@@ -63,7 +63,7 @@ const Homepage = () => {
         </Modal>
      </>
     );
-  }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
+  }, [user, localStrings, isModalVisible]);
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -82,7 +82,7 @@ const Homepage = () => {
 
   return (
     <div className="flex justify-center items-center mt-4">
-      <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
+      <div className="rounded-md border-solid border-gray-900 basis-2/4">
         {/* Content */}
         <div style={{ flex: 1, overflowY: "auto", marginTop: "50px" }}>
           {renderAddPost()}

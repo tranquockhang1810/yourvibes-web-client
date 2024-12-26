@@ -1,4 +1,4 @@
-import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+import { Privacy } from "@/src/api/baseApiResponseModel/baseApiResponseModel"; 
 
 export interface CreateCommentsRequestModel {
     
