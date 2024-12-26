@@ -24,7 +24,6 @@ const EditPostViewModel = (repo: PostRepo) => {
   const [hidePost, setHidePost] = useState<PostResponseModel[]>([]);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
-    setUpdateLoading(true);
     try {
       const res = await repo.updatePost(data);
       if (res && !res.error) {
@@ -41,7 +40,7 @@ const EditPostViewModel = (repo: PostRepo) => {
       message.error({
         content: localStrings.UpdatePost.UpdatePostFailed,
       });
-    } finally {
+    }finally {
       setUpdateLoading(false);
     }
   };

@@ -519,6 +519,8 @@ const Post: React.FC<IPost> = React.memo(
             </Form.Item>
           </Form>
         </Modal>
+        {/* Modal for edit Post*/} 
+
       </Card>
     );
   }
