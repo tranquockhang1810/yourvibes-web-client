@@ -1,31 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react"; 
+
+import React, { useEffect, useState, useMemo } from "react";
 import { Input, Button, Image, message } from "antd";
 import useColor from "@/hooks/useColor";
 import { useAuth } from "@/context/auth/useAuth";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
-import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { usePostContext } from "@/context/post/usePostContext";
+import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel"; 
 import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostRequestModel";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { IoMdClose } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
-const EditPostScreen = ({ id }: { id: string }) => {
+interface EditPostScreenProps {
+  id: string;
+}
+
+const EditPostScreen = ({ id }: EditPostScreenProps) => {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
-  if (!isClient) {
-    return null;  
-  }
   const { user, localStrings } = useAuth();
-  const savedPost = usePostContext();
   const { brandPrimary, backgroundColor, brandPrimaryTap, lightGray } = useColor();
+
+  const viewModel = useMemo(() => EditPostViewModel(defaultPostRepo, id), [id]);
 
   const {
     postContent,
@@ -34,14 +33,24 @@ const EditPostScreen = ({ id }: { id: string }) => {
     updateLoading,
     privacy,
     setPrivacy,
-    getDetailPost,
-    post,
-    mediaIds,
     originalImageFiles,
     setOriginalImageFiles,
     handleMedias,
-  } = EditPostViewModel(defaultPostRepo);
+    post,
+    getDetailPost,
+  } = viewModel;
 
+  useEffect(() => {
+    if (id ) {
+      getDetailPost(id);
+    }
+  }, [id, post]);
+  
+
+  if (!isClient) {
+    return null;
+  }
+ 
   const pickImage = async () => {
     setLoading(true);
     try {
@@ -49,52 +58,49 @@ const EditPostScreen = ({ id }: { id: string }) => {
       input.type = "file";
       input.accept = "image/*";
       input.multiple = true;
-  
+
       input.onchange = async (e) => {
         const files = (e.target as HTMLInputElement)?.files;
         if (files) {
           const images: string[] = [];
-          for (const file of files) {
+          for (const file of Array.from(files)) {
             const reader = new FileReader();
             reader.onload = () => {
               images.push(reader.result as string);
+              setOriginalImageFiles([...originalImageFiles, ...images]);
             };
-            reader.onerror = () => { 
-              message.error("Failed Upload image");
+            reader.onerror = () => {
+              message.error("Failed to upload image");
             };
             reader.readAsDataURL(file);
           }
-          setOriginalImageFiles([...originalImageFiles, ...images]);
         }
       };
-  
+
       input.click();
     } catch (error) {
       console.error(error);
-      message.error("Failed Upload image");
+      message.error("Failed to upload image");
     } finally {
       setLoading(false);
     }
-  };  
-
+  };
+ 
   const removeImage = (index: number) => {
     const updatedImageFile = [...originalImageFiles];
     updatedImageFile.splice(index, 1);
     setOriginalImageFiles(updatedImageFile);
   };
-
+ 
   const handleSubmitPost = async () => {
     if (!postContent.trim() && originalImageFiles.length === 0) {
-      message.warning("Content Or Media Required");
+      message.warning("Content or Media Required");
       return;
     }
-  
-    const { deletedMedias, newMediaFiles } = handleMedias(
-      mediaIds,
-      originalImageFiles
-    );
-  
+
+    const { deletedMedias, newMediaFiles } = handleMedias([], originalImageFiles);
     const mediaFiles = await convertMediaToFiles(newMediaFiles);
+
     const updatedPost: UpdatePostRequestModel = {
       postId: id,
       content: postContent.trim(),
@@ -103,10 +109,9 @@ const EditPostScreen = ({ id }: { id: string }) => {
       media: mediaFiles.length > 0 ? mediaFiles : undefined,
       media_ids: deletedMedias.length > 0 ? deletedMedias : undefined,
     };
-  
+
     await updatePost(updatedPost);
   };
-  
 
   const renderPrivacyText = () => {
     switch (privacy) {
@@ -121,25 +126,8 @@ const EditPostScreen = ({ id }: { id: string }) => {
     }
   };
 
-  useEffect(() => {
-    if (!post && id) {
-      getDetailPost(id);
-    }
-  }, [post, id]);
-  
-
-  useEffect(() => {
-    if (savedPost.savedPostContent) {
-      setPostContent(savedPost.savedPostContent);
-    }
-    if (savedPost.savedPrivacy) {
-      setPrivacy(savedPost.savedPrivacy);
-    }
-  }, [savedPost]);
-
   return (
-    <div style={{ padding: 20 }}>
-      {/* Header */}
+    <div style={{ padding: 20 }}> 
       <div style={{ backgroundColor, paddingTop: "30px" }}>
         <div
           style={{
@@ -149,15 +137,14 @@ const EditPostScreen = ({ id }: { id: string }) => {
             alignItems: "center",
           }}
         >
-      <Button onClick={() => router.back()} style={{ border: "none" }}>
-        <IoMdClose name="close" size={24} color={brandPrimary} />
-      </Button>
+          <Button onClick={() => router.back()} style={{ border: "none" }}>
+            <IoMdClose size={24} color={brandPrimary} />
+          </Button>
           <h2>{localStrings.Post.EditPost}</h2>
         </div>
       </div>
-
-      {/* Avatar and Input */}
-      <div style={{ display: "flex", flexDirection: "row", marginBottom: 20 }}>
+ 
+      <div style={{ display: "flex", marginBottom: 20 }}>
         <Image
           src={
             user?.avatar_url ||
@@ -179,105 +166,25 @@ const EditPostScreen = ({ id }: { id: string }) => {
           />
         </div>
       </div>
-
-      {/* Image Upload */}
-      {!post?.parent_post && (
-        <div style={{ paddingRight: 10, paddingLeft: 60 }}>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {originalImageFiles.map((file, index) => (
-              <div
-                key={index}
-                style={{
-                  position: "relative",
-                  marginRight: 10,
-                  marginBottom: 10,
-                }}
-              >
-                {file?.uri?.includes("mp4") || file?.uri?.includes("mov") ? (
-                  <video
-                    src={file?.uri}
-                    controls
-                    style={{
-                      width: 75,
-                      height: 75,
-                      borderRadius: 10,
-                      backgroundColor: "#f0f0f0",
-                    }}
-                  />
-                ) : (
-                  <Image
-                    src={file?.uri}
-                    style={{
-                      width: 75,
-                      height: 75,
-                      borderRadius: 10,
-                      backgroundColor: "#f0f0f0",
-                    }}
-                  />
-                )}
-                <Button
-                  onClick={() => removeImage(index)}
-                  style={{
-                    position: "absolute",
-                    top: -10,
-                    right: -10,
-                    backgroundColor: "white",
-                    borderRadius: "50%",
-                    padding: 2,
-                  }}
-                >
-                  <IoMdClose name="close" size={18} color={brandPrimary} />
-                </Button>
-              </div>
-            ))}
-            {/* Add Image Button */}
-            <Button
-              onClick={pickImage}
-              style={{
-                width: 75,
-                height: 75,
-                borderRadius: 10,
-                backgroundColor: lightGray,
-              }}
-              disabled={loading}
-            >
-              {loading ? (
-                <Input size="small" disabled />
-              ) : (
-                <IoMdClose
-                  name="image-outline"
-                  size={30}
-                  color={brandPrimary}
-                />
-              )}
-            </Button>
-          </div>
+ 
+      <div style={{ padding: "0 60px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {originalImageFiles.map((file, index) => (
+            <div key={index} style={{ marginRight: 10, marginBottom: 10 }}>
+              <Image src={file} style={{ width: 75, height: 75, borderRadius: 10 }} />
+              <Button onClick={() => removeImage(index)}>
+                <IoMdClose size={18} color={brandPrimary} />
+              </Button>
+            </div>
+          ))}
         </div>
-      )}
-
-      {/* Privacy Section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 20,
-        }}
-      >
-        <span style={{ color: "gray", fontSize: 14, paddingRight: 5 }}>
-          {localStrings.AddPost.PrivacyText}
-        </span>
-        <Button
-          onClick={() => {
-            /* handle privacy change */
-          }}
-          style={{ color: "gray", fontSize: 14 }}
-        >
-          {renderPrivacyText()}
-        </Button>
       </div>
-
-      {/* Post Button */}
+ 
+      <div style={{ marginTop: 20 }}>
+        <span>{localStrings.AddPost.PrivacyText}</span>
+        <Button>{renderPrivacyText()}</Button>
+      </div>
+ 
       <Button
         type="primary"
         onClick={handleSubmitPost}

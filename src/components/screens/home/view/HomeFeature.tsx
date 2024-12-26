@@ -7,7 +7,7 @@ import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; 
 import { Modal } from 'antd';
-import AddPostScreen from "../../addPost/view/AddPostScreen";
+import AddPostScreen from "../../addPost/view/AddPostScreen"; 
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();

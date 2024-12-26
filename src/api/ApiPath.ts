@@ -54,8 +54,7 @@ export const ApiPath = {
 
 function getApiPath(path: string) {
   return `${process.env.NEXT_PUBLIC_API_ENDPOINT!}/v1/2024/${path}`;
-}
-
+} 
 function getWSPath(path: string) {
   return `${process.env.NEXT_PUBLIC_API_ENDPOINT!.replace("http", "ws")!}/v1/2024/${path}`;
-}
+} 

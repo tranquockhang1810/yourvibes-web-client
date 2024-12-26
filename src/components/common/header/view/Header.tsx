@@ -97,16 +97,6 @@ const MyHeader = () => {
             onClick={() => router.push("/home")}
           />
           <SearchScreen />
-
-          {/* <Input
-            placeholder={localStrings.Search.Search}
-            value={searchQuery}
-            onChange={handleSearch}
-            style={{
-              width: "300px",
-              borderRadius: "8px",
-            }}
-          /> */}
         </div>
         {!screens.md && (
         <MenuOutlined
