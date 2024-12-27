@@ -59,19 +59,6 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
     setPreviewImage,
   } = AddPostViewModel(defaultPostRepo, router);
 
-  // Hiển thị chế độ quyền riêng tư
-  const renderPrivacyText = () => {
-    switch (privacy) {
-      case Privacy.PUBLIC:
-        return localStrings.Public.Everyone.toLowerCase();
-      case Privacy.FRIEND_ONLY:
-        return localStrings.Public.Friend.toLowerCase();
-      case Privacy.PRIVATE:
-        return localStrings.Public.Private.toLowerCase();
-      default:
-        return localStrings.Public.Everyone.toLowerCase();
-    }
-  };
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -136,7 +123,8 @@ return (
         />
       )}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "row", alignItems: "center",marginTop: "10px" }}>
+      <Text>{localStrings.AddPost.PrivacyText}: </Text>
         <Select
           value={privacy}
           onChange={(value) => setPrivacy(value)}
@@ -146,7 +134,7 @@ return (
           <Select.Option value={Privacy.FRIEND_ONLY}>{localStrings.Public.Friend}</Select.Option>
           <Select.Option value={Privacy.PRIVATE}>{localStrings.Public.Private}</Select.Option>
         </Select>
-        <Button
+        <Button style={{ marginLeft: "auto" }}
           type="primary"
           onClick={() =>{handleSubmitPost()}}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}

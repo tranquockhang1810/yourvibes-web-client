@@ -91,19 +91,6 @@ const Post: React.FC<IPost> = React.memo(
 
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
-    const renderPrivacyText = () => {
-      switch (sharePostPrivacy) {
-        case Privacy.PUBLIC:
-          return localStrings.Public.Everyone.toLowerCase();
-        case Privacy.FRIEND_ONLY:
-          return localStrings.Public.Friend.toLowerCase();
-        case Privacy.PRIVATE:
-          return localStrings.Public.Private.toLowerCase();
-        default:
-          return localStrings.Public.Everyone.toLowerCase();
-      }
-    };
-
     const handleLikeClick = useCallback(() => {
       if (likedPost?.id) {
         likePost(likedPost.id);
@@ -133,23 +120,9 @@ const Post: React.FC<IPost> = React.memo(
             type: "item",
             onClick: async () => {
               if (post && post.id) {
-                setIsEditModalVisible(true); 
-                <EditPostScreen 
-                  id={post.id}  
-                />;
+                setIsEditModalVisible(true);
+                <EditPostScreen id={post.id} />;
               }
-              Modal.confirm({
-                title: localStrings.Public.Confirm,
-                content: localStrings.Post.EditPost,
-                okText: localStrings.Public.Confirm,
-                cancelText: localStrings.Public.Cancel,
-                onOk: () => { 
-                  setIsEditModalVisible(true); 
-                  <EditPostScreen 
-                    id={post?.id as string}  
-                  />
-                },
-              });
             },
           },
           {
@@ -533,24 +506,6 @@ const Post: React.FC<IPost> = React.memo(
             </Form.Item>
           </Form>
         </Modal>
-        {/* Modal for edit Post*/}
-        {isEditModalVisible && (
-          <Modal
-            title={localStrings.Post.EditPost}
-            visible={isEditModalVisible}
-            onOk={() => {
-              setIsEditModalVisible(false);
-              
-            }}
-            onCancel={() => {
-              setIsEditModalVisible(false);
-            }}
-          >
-            <EditPostScreen  
-              id={post?.id || ''}
-            />
-          </Modal>
-        )}
       </Card>
     );
   }

@@ -7,6 +7,19 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { message } from "antd";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+import { UploadFile, UploadChangeParam, UploadProps } from "antd/es/upload";
+import { RcFile } from "antd/es/upload";
+import { convertMediaToFiles, TransferToFormData } from "@/utils/helper/TransferToFormData";  
+import { GetProp } from "antd"; 
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) => {
   const { localStrings } = useAuth();
@@ -23,8 +36,11 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
   const [shareLoading, setShareLoading] = useState<boolean>(false);
   const [hidePost, setHidePost] = useState<PostResponseModel[]>([]);
   const [getPostLoading, setGetPostLoading] = useState<boolean>(false);
-
-  // ✅ Kiểm tra repo và id trước khi gọi API
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false); 
+  const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
+  
   const getDetailPost = async (id: string) => {
     if (!repo) return;
 
@@ -74,7 +90,14 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
       setUpdateLoading(false);
     }
   };
-
+  const handleSubmit = async () => {
+    const data: UpdatePostRequestModel = {
+      postId: id,
+      content: postContent,
+      privacy: privacy,
+    };
+    await updatePost(data);
+  };
   const deletePost = async (id: string) => {
     if (!repo) return;
 
@@ -154,7 +177,82 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
     };
   };
 
+    // Xử lý đăng bài viết
+    const handleSubmitPost = async () => {
+      if (!postContent.trim() && fileList.length === 0) return;
+    
+      const validFiles = fileList
+        .map((file) => file.originFileObj)
+        .filter((file): file is RcFile => !!file);
+    
+      const mediaFiles = await convertMediaToFiles(validFiles);
+    
+      // Chuyển đổi mediaFiles sang dạng file
+      const mediaFilesAsFiles = mediaFiles.map((file) => {
+        if (file.uri) {
+          const blob = new Blob([file.uri], { type: file.type });
+          return new File([blob], file.name, { type: file.type });
+        } else {
+          console.log(`File ${file.name} không có URI, bỏ qua`);
+          return null;
+        }
+      }).filter((file) => file !== null);
+    
+      const formData = TransferToFormData({
+        content: postContent,
+        privacy,
+        media: mediaFilesAsFiles,
+      });
+    
+      const UpdatePostRequestModel: UpdatePostRequestModel = {
+        content: postContent,
+        privacy: privacy,
+        media: mediaFilesAsFiles, // Đảm bảo rằng media được truyền đúng
+      };
+    
+      await updatePost(UpdatePostRequestModel);
+    };
+  
+    const handlePreview = async (file: UploadFile) => {
+      let preview = file.url || file.preview;
+  
+      if (!preview && file.originFileObj) {
+        preview = await getBase64(file.originFileObj as FileType);
+      }
+  
+      setPreviewImage(preview || "");
+      setPreviewOpen(true);
+    };
+  
+    const handleChange: UploadProps["onChange"] = async ({
+      fileList: newFileList,
+    }) => {
+      setFileList(newFileList);
+  
+      const validFiles = newFileList
+        .map((file) => file.originFileObj)
+        .filter((file): file is RcFile => !!file); // Lọc các file hợp lệ
+  
+      const mediaFiles = await convertMediaToFiles(validFiles); // Chuyển đổi thành URI hợp lệ
+      setSelectedMediaFiles(mediaFiles);
+    };
+    
+    const updateMedia = async (newMedia: any[]) => {
+      const mediaIds = newMedia.map((item) => item.fileName);
+      const originalImageFiles = newMedia.map((item) => ({
+        uri: item.uri,
+        fileName: item.fileName,
+      }));
+    
+      setMediaIds(mediaIds);
+      setOriginalImageFiles(originalImageFiles);
+    };
+
   return {
+    updateMedia,
+    handleSubmit,
+    handlePreview,
+    handleChange, 
     updateLoading,
     postContent,
     setPostContent,
@@ -174,6 +272,18 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
     setLikedPost,
     sharePost,
     shareLoading,
+    hidePost,
+    setHidePost,
+    getPostLoading,
+    previewOpen,
+    setPreviewOpen,
+    previewImage,
+    setPreviewImage,
+    selectedMediaFiles,
+    setSelectedMediaFiles,
+    handleSubmitPost,
+    fileList,
+    setFileList,
   };
 };
 
