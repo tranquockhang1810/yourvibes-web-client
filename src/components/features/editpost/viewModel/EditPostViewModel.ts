@@ -59,7 +59,7 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
         setOriginalImageFiles(mediaFiles);
       } else {
         message.error(localStrings.Profile.Posts.GetOnePostFailed);
-        router.back();
+        // router.back();
       }
     } catch (err: any) {
       console.error(err);
@@ -82,7 +82,7 @@ const EditPostViewModel = (repo: PostRepo | undefined, id: string | undefined) =
       setUpdateLoading(true);
       const res = await repo.updatePost(data);
       if (res && !res.error) {
-        router.push('/profile?tab');
+        // router.push('/profile?tab');
       }
     } catch (error) {
       console.error(error);

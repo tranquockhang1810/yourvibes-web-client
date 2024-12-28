@@ -45,10 +45,17 @@ interface IPost {
   isParentPost?: boolean;
   noFooter?: boolean;
   children?: React.ReactNode;
+  noComment?: boolean;
 }
 
 const Post: React.FC<IPost> = React.memo(
-  ({ post, isParentPost = false, noFooter = false, children }) => {
+  ({
+    post,
+    isParentPost = false,
+    noFooter = false,
+    children,
+    noComment = false,
+  }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
       useColor();
@@ -272,46 +279,35 @@ const Post: React.FC<IPost> = React.memo(
           isParentPost || noFooter
             ? undefined
             : [
-                <Row align={"middle"} justify={"center"}>
-                  {renderLikeIcon()}
-                  <span style={{ color: brandPrimary }} className="ml-2">
-                    {likedPost?.like_count}
-                  </span>
-                </Row>,
-
-                <Row align={"middle"} justify={"center"}>
-                  <FaRegComments
-                    size={24}
-                    color={brandPrimary}
-                    onClick={() => setIsCommentModalVisible(true)}
-                  />
-                  <span style={{ color: brandPrimary }} className="ml-2">
-                    {likedPost?.comment_count}
-                  </span>
-                </Row>,
-                // <Row align={"middle"} justify={"center"}>
-                //   <FaRegComments
-                //     size={24}
-                //     color={brandPrimary}
-                // onClick={() => {
-                //   setIsCommentModalVisible(false);
-                //   router.push(`postDetails?postId=${likedPost?.id}`);
-                // }}
-                //   />
-                //   <span style={{ color: brandPrimary }} className="ml-2">
-                //     {likedPost?.comment_count}
-                //   </span>
-                // </Row>,
-
-                <Row align={"middle"} justify={"center"}>
-                  <IoShareSocialOutline
-                    size={24}
-                    color={brandPrimary}
-                    onClick={() => setIsShareModalVisible(true)}
-                  />
-                </Row>,
+                <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+                  <Row align={"middle"} justify={"center"}>
+                    {renderLikeIcon()}
+                    <span style={{ color: brandPrimary }} className="ml-2">
+                      {likedPost?.like_count}
+                    </span>
+                  </Row>
+                  {!noComment && (
+                    <Row align={"middle"} justify={"center"}>
+                      <FaRegComments
+                        size={24}
+                        color={brandPrimary}
+                        onClick={() => setIsCommentModalVisible(true)}
+                      />
+                      <span style={{ color: brandPrimary }} className="ml-2">
+                        {likedPost?.comment_count}
+                      </span>
+                    </Row>
+                  )}
+                  <Row align={"middle"} justify={"center"}>
+                    <IoShareSocialOutline
+                      size={24}
+                      color={brandPrimary}
+                      onClick={() => setIsShareModalVisible(true)}
+                    />
+                  </Row>
+                </div>,
               ]
-        }
+        } 
       >
         <Row gutter={[8, 8]} className="mx-2">
           {!isParentPost && children ? (

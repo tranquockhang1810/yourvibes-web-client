@@ -84,6 +84,14 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     router.push(`/report?commentId=${commentId}`);
   };
 
+  const handleOutsideClick = () => {
+    if (replyToCommentId || replyToReplyId) {
+      setReplyToCommentId(null);
+      setReplyToReplyId(null);
+      setReplyContent("");
+    }
+  };
+
   useEffect(() => {
     if (postId) {
       fetchPost(postId);
@@ -92,8 +100,8 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      <Post post={post || undefined} />
-      <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
+      <Post noComment={true} post={post || undefined} />
+      <div  className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
             key={comment.id}
@@ -187,13 +195,13 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         marginRight: 50,
                       }}
                     >
-                      {likeCount[comment.id]}
+                      {/* {likeCount[comment.id]} */}
                     </span>
                   </Col>
                 </Row>
               </div>
             </div>
-            <div className="replies pl-6 mt-3 border-l-2 border-gray-200">
+            <div onClick={handleOutsideClick} className="replies pl-6 mt-3 border-l-2 border-gray-200">
               {replyMap[comment.id]?.length > 0 && (
                 <button
                   onClick={() => toggleRepliesVisibility(comment.id)}
@@ -291,7 +299,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               marginRight: 50,
                             }}
                           >
-                            {likeCount[reply.id]}
+                            {/* {likeCount[reply.id]} */}
                           </span>
                         </Col>
                       </Row>
@@ -414,7 +422,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       marginRight: 50,
                                     }}
                                   >
-                                    {likeCount[nestedReply.id]}
+                                    {/* {likeCount[nestedReply.id]} */}
                                   </span>
                                 </Col>
                               </Row>

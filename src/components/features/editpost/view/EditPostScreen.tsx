@@ -55,6 +55,7 @@ const EditPostScreen = ({ id }: EditPostScreenProps) => {
   useEffect(() => {
     getDetailPost(id);
   }, [id]);
+  
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
