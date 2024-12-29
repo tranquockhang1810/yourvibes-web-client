@@ -38,12 +38,14 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     replyToCommentId,
     replyToReplyId,
     fetchReplies,
+    setEditModalVisible, 
+    handleUpdate,
   } = PostDetailsViewModel(postId || "");
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
   const reportViewModel = ReportViewModel(defaultPostRepo);
-  
+
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -91,6 +93,12 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
       setReplyContent("");
     }
   };
+  const [currentCommentId, setCurrentCommentId] = useState<string>("");
+  const handleShowEditModal = (commentId: string, content: string) => {
+    setEditCommentContent(content);
+    setCurrentCommentId(commentId);
+    setEditModalVisible(true);
+  };
 
   useEffect(() => {
     if (postId) {
@@ -101,7 +109,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
       <Post noComment={true} post={post || undefined} />
-      <div  className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
+      <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
             key={comment.id}
@@ -157,7 +165,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                           marginRight: 50,
                         }}
                         onClick={() =>
-                          handleEditComment(comment.id)
+                          handleShowEditModal(comment.id, comment.content)
                         }
                       />
                     </Col>
@@ -201,7 +209,10 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                 </Row>
               </div>
             </div>
-            <div onClick={handleOutsideClick} className="replies pl-6 mt-3 border-l-2 border-gray-200">
+            <div
+              onClick={handleOutsideClick}
+              className="replies pl-6 mt-3 border-l-2 border-gray-200"
+            >
               {replyMap[comment.id]?.length > 0 && (
                 <button
                   onClick={() => toggleRepliesVisibility(comment.id)}
@@ -263,7 +274,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               strokeWidth: 2,
                               marginRight: 50,
                             }}
-                            onClick={() => handleEditComment(reply.id)}
+                            onClick={() => handleShowEditModal(reply.id, reply.content)}
                           />
                         </Col>
                         <Col span={4} className="hover:cursor-pointer">
@@ -381,7 +392,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       marginRight: 50,
                                     }}
                                     onClick={() =>
-                                      handleEditComment(nestedReply.id)
+                                      handleShowEditModal(nestedReply.id, nestedReply.content)
                                     }
                                   />
                                 </Col>
@@ -456,24 +467,26 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
         </button>
       </div>
       {isEditModalVisible && (
-        <div className="edit-modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="modal-content bg-white p-6 rounded-lg shadow-md w-96 max-h-[80vh]">
-            <div className="modal-scrollable-content overflow-y-auto max-h-[60vh]">
-              <textarea
-                className="edit-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                value={editCommentContent}
-                onChange={(e) => setEditCommentContent(e.target.value)}
-              />
-            </div>
-            <button
-              onClick={() => handleEditComment(editCommentContent)}
-              className="save-btn mt-4 w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600"
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      )} 
+        <Modal
+          title="Edit Comment"
+          visible={isEditModalVisible}
+          onCancel={() => setEditModalVisible(false)}
+          onOk={() =>{
+            handleUpdate(
+              currentCommentId,
+              editCommentContent,
+              replyToCommentId || ""
+            );
+            setEditModalVisible(false);
+          }} 
+        >
+          <textarea
+            value={editCommentContent}
+            onChange={(e) => setEditCommentContent(e.target.value)}
+            style={{ border: '1px solid #000', height: 100, width: '100%' }} 
+          />
+        </Modal>
+      )}
     </div>
   );
 };
