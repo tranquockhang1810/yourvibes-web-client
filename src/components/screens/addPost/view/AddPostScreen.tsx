@@ -161,7 +161,9 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
         >
           {createLoading ? (
-            <Spin style={{ color: "white" }} />
+            createLoading && (
+              <Spin style={{ color: "white" }} />
+            ) 
           ) : (
             localStrings.AddPost.PostNow
           )}

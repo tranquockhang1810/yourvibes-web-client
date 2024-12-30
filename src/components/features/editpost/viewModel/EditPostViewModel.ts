@@ -274,12 +274,7 @@ const EditPostViewModel = (
       limit: 10,
     }); 
     setUserLikePost(response?.data);
-  };
-  useEffect(() => {
-    if (postId) {
-      fetchUserLikePosts(postId);
-    }
-  }, [postId]);
+  }; 
 
   return {
     updateMedia,
