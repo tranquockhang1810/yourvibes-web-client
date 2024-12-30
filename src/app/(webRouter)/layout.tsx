@@ -80,7 +80,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
     }, [user]);
 
     return (
-        <div className="mb-10">
+        <div className="mb-10"> 
             <MyHeader />
             <div className="pt-15 pl-13 pb-12 md:pl-2">
                 {children}
