@@ -6,7 +6,7 @@ import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; 
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen"; 
 
 const Homepage = () => {
@@ -59,7 +59,10 @@ const Homepage = () => {
         </div>
         <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+          <AddPostScreen onPostSuccess={() => {
+            setIsModalVisible(false);
+            fetchNewFeeds();
+          }} />
         </Modal>
      </>
     );
@@ -96,10 +99,11 @@ const Homepage = () => {
                 </Post>
               </div>
             ))
-          ) : (
-            <p style={{ textAlign: "center", marginTop: "20px" }}>
-              No posts available
-            </p>
+          ) :  (
+            <div className="w-full h-screen flex justify-center items-center">
+            <Spin tip="Loading...">
+            </Spin>
+          </div>
           )}
 
           {renderFooter()}

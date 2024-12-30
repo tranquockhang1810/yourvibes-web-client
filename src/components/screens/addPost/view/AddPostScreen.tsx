@@ -59,7 +59,6 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
     setPreviewImage,
   } = AddPostViewModel(defaultPostRepo, router);
 
-
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -67,7 +66,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
     </button>
   );
 
-return (
+  return (
     <div style={{ padding: "20px" }}>
       <div
         style={{
@@ -123,24 +122,49 @@ return (
         />
       )}
 
-      <div style={{ display: "flex", flexDirection: "row", alignItems: "center",marginTop: "10px" }}>
-      <Text>{localStrings.AddPost.PrivacyText}: </Text>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: "10px",
+        }}
+      >
+        <Text>{localStrings.AddPost.PrivacyText}: </Text>
         <Select
           value={privacy}
           onChange={(value) => setPrivacy(value)}
           style={{ width: 120 }}
         >
-          <Select.Option value={Privacy.PUBLIC}>{localStrings.Public.Everyone}</Select.Option>
-          <Select.Option value={Privacy.FRIEND_ONLY}>{localStrings.Public.Friend}</Select.Option>
-          <Select.Option value={Privacy.PRIVATE}>{localStrings.Public.Private}</Select.Option>
+          <Select.Option value={Privacy.PUBLIC}>
+            {localStrings.Public.Everyone}
+          </Select.Option>
+          <Select.Option value={Privacy.FRIEND_ONLY}>
+            {localStrings.Public.Friend}
+          </Select.Option>
+          <Select.Option value={Privacy.PRIVATE}>
+            {localStrings.Public.Private}
+          </Select.Option>
         </Select>
-        <Button style={{ marginLeft: "auto" }}
+        <Button
+          style={{ marginLeft: "auto" }}
           type="primary"
-          onClick={() =>{handleSubmitPost()}}
+          onClick={() => {
+            handleSubmitPost()
+            .then(() => {
+              if (onPostSuccess) {
+                onPostSuccess();
+              }
+            })
+            .catch((error) => console.error(error));
+          }}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
-          loading={createLoading}
         >
-          {createLoading ? <Spin /> : localStrings.AddPost.PostNow}
+          {createLoading ? (
+            <Spin style={{ color: "white" }} />
+          ) : (
+            localStrings.AddPost.PostNow
+          )}
         </Button>
       </div>
     </div>

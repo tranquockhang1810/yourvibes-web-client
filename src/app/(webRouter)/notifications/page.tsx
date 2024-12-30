@@ -1,6 +1,5 @@
 "use client"
-import NotificationScreen from '@/components/screens/notification/views/Notification'
-import React from 'react'
+import NotificationScreen from '@/components/screens/notification/views/Notification' 
 
 const Notificationpage = () => {
   return (

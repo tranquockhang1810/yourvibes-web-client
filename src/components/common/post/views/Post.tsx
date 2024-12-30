@@ -40,6 +40,9 @@ import HomeViewModel from "@/components/screens/home/viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import EditPostScreen from "@/components/features/editpost/view/EditPostScreen";
 import PostDetailsScreen from "@/components/screens/postDetails/view/postDetailsScreen";
+import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/postDetailsViewModel";
+import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
+
 interface IPost {
   post?: PostResponseModel;
   isParentPost?: boolean;
@@ -72,7 +75,9 @@ const Post: React.FC<IPost> = React.memo(
       shareLoading,
       deletePost,
       updatePost,
-    } = EditPostViewModel(defaultPostRepo, post?.id || "");
+      fetchUserLikePosts,
+    } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
+
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy>(
@@ -96,6 +101,8 @@ const Post: React.FC<IPost> = React.memo(
       setIsCommentModalVisible(true);
     }, []);
 
+    const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+    const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
     const handleLikeClick = useCallback(() => {
@@ -192,6 +199,53 @@ const Post: React.FC<IPost> = React.memo(
       setLikedPost(post);
     }, [post]);
 
+    const renderLikedUserItem = useCallback(
+      (like: LikeUsersModel) => {
+        return (
+          <div
+            key={like.id}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 10,
+              paddingBottom: 10,
+              borderBottom: "1px solid #e0e0e0",
+            }}
+          >
+            <button
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                flex: 1,
+              }}
+              onClick={() => {
+                router.push(`/user/${like.id}`);
+              }}
+            >
+              <img
+                src={like.avatar_url}
+                style={{
+                  marginLeft: 10,
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  backgroundColor: "#e0e0e0",
+                  marginRight: 10,
+                }}
+                alt={`${like.family_name} ${like.name}`}
+              />
+              <span style={{ fontSize: 16, color: "black" }}>
+                {like.family_name} {like.name}
+              </span>
+            </button>
+          </div>
+        );
+      },
+      [userLikePost]
+    );
+
     return (
       <Card
         style={{
@@ -279,10 +333,24 @@ const Post: React.FC<IPost> = React.memo(
           isParentPost || noFooter
             ? undefined
             : [
-                <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
                   <Row align={"middle"} justify={"center"}>
                     {renderLikeIcon()}
-                    <span style={{ color: brandPrimary }} className="ml-2">
+                    <span
+                      style={{ color: brandPrimary }}
+                      className="ml-2"
+                      onClick={() => {
+                        fetchUserLikePosts(likedPost!.id as string);
+                        setIsVisible(true);
+                      }}
+                    >
                       {likedPost?.like_count}
                     </span>
                   </Row>
@@ -307,7 +375,7 @@ const Post: React.FC<IPost> = React.memo(
                   </Row>
                 </div>,
               ]
-        } 
+        }
       >
         <Row gutter={[8, 8]} className="mx-2">
           {!isParentPost && children ? (
@@ -501,6 +569,31 @@ const Post: React.FC<IPost> = React.memo(
               </Select>
             </Form.Item>
           </Form>
+        </Modal>
+        {/* Modal for User Like Post */}
+        <Modal
+          visible={isVisible}
+          onCancel={() => setIsVisible(false)}
+          footer={null}
+          width={800}
+        >
+          <div
+            style={{
+              maxHeight: 500,
+              overflowY: "auto",
+              padding: 20,
+            }}
+          >
+            {userLikePost && userLikePost.length > 0 ? (
+              <div>
+                {userLikePost.map((like) => (
+                  <div key={like.id}>{renderLikedUserItem(like)}</div>
+                ))}
+              </div>
+            ) : (
+              <p>Không có người dùng nào thích bài viết này.</p>
+            )}
+          </div>
         </Modal>
       </Card>
     );

@@ -1,24 +1,27 @@
 "use client";
-import { useAuth } from '@/context/auth/useAuth';
-import LoginPage from './login/page';
-import Homepage from './(webRouter)/home/page';
-import MyHeader from '@/components/common/header/view/Header'; 
-import Layout from './(webRouter)/layout';
-import { useRouter } from 'next/navigation';
+import { Spin } from "antd";
+import { useAuth } from "@/context/auth/useAuth";
+import LoginPage from "./login/page";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Page = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
-  const router = useRouter();  // Khởi tạo useRouter
+  const router = useRouter();
 
-  // Nếu đã đăng nhập, điều hướng đến trang chính
   if (isAuthenticated) {
-    router.push('/home');  // Điều hướng đến URL /home
+    router.push("/home");
   }
 
   return (
-    <div className='w-full'>
-     <LoginPage />
-    </div>
+    <div className="w-full h-screen flex justify-center items-center">
+    {isLoading ? (
+      <Spin tip="Loading..." />
+    ) : (
+      <LoginPage />
+    )}
+  </div>
   );
 };
 

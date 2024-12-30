@@ -1,6 +1,4 @@
-import HomePage from '@/components/screens/home/view/HomeFeature';
-import React from 'react';
-
+import HomePage from '@/components/screens/home/view/HomeFeature'; 
 const Homepage = () => {
   return (
     <HomePage />
