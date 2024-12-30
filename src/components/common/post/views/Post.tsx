@@ -249,7 +249,7 @@ const Post: React.FC<IPost> = React.memo(
     return (
       <Card
         style={{
-          margin: 10,
+          marginTop: 10,
           borderColor: isParentPost ? brandPrimary : "black",
           maxWidth: 600,
           width: "100%",

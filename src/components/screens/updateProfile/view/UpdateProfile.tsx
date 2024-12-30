@@ -30,6 +30,7 @@ import { FaGlobe, FaLock } from "react-icons/fa";
 import { IoMdPeople } from "react-icons/io";
 import { AiFillEdit } from "react-icons/ai";
 import ModalObjectProfile from "../../profile/components/ModalObjectProfile";
+import MydateTimePicker from "@/components/foundation/MydateTimePicker";
 
 const { Text } = Typography;
 
@@ -52,6 +53,7 @@ const UpdateProfileScreen = () => {
   }>({ url: "", name: "", type: "" });
   const [loading, setLoading] = useState(false);
   const { updateProfile } = UpdateProfileViewModel(defaultProfileRepo);
+  const [showPicker, setShowPicker] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -102,10 +104,6 @@ const UpdateProfileScreen = () => {
   };
 
   const UpdateProfile = () => {
-    // {loading === true ? message.loading('Updating profile...') :
-    //       message.success('Profile updated!')
-    //       setShowUpdateProfile(false);
-    //     }
     setLoading(true);
     setNewAvatar({ url: "", name: "", type: "" });
     setNewCapwall({ url: "", name: "", type: "" });
@@ -233,18 +231,15 @@ const UpdateProfileScreen = () => {
             >
               <Input placeholder={localStrings.Form.Label.Phone} />
             </Form.Item>
+{/* 
 
-            {/* Birthday Picker */}
-            <div className="mb-6">
-              {/* <MyDateTimePicker
-            value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
-            onSubmit={(date) => {
-              updatedForm.setFieldValue('birthday', dayjs(date).format('DD/MM/YYYY'));
-            }}
-            show={showPicker}
-            onCancel={() => setShowPicker(false)}
-          /> */}
-            </div>
+            <Form.Item
+              name="birthday"
+              label={localStrings.Form.Label.BirthDay}
+              rules={[{ required: true }]}
+            >
+              <Input placeholder={localStrings.Form.Label.BirthDay} />
+            </Form.Item> */}
 
             <Form.Item
               name="email"
@@ -277,6 +272,27 @@ const UpdateProfileScreen = () => {
           </Radio.Group>
         </div>
       </div>
+
+      {/* Birthday Picker */}
+      <div className="mb-6">
+              {/* <MyDateTimePicker
+            value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
+            onSubmit={(date) => {
+              updatedForm.setFieldValue('birthday', dayjs(date).format('DD/MM/YYYY'));
+            }}
+            show={showPicker}
+            onCancel={() => setShowPicker(false)}
+          /> */}
+          <MydateTimePicker 
+          value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
+          onSubmit={(date) => {
+            updatedForm.setFieldsValue({ birthday: dayjs(date).format('DD/MM/YYYY') });
+          }
+          }
+          show={showPicker}
+          onCancel={() => setShowPicker(false)}
+          />
+            </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { PostRepo } from "@/api/features/post/PostRepo";
 import { ReportUserRequestModel } from "@/api/features/profile/model/ReportUser";
 import { defaultProfileRepo } from "@/api/features/profile/ProfileRepository";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -52,17 +53,10 @@ const ReportViewModel = (repo: PostRepo) => {
           console.log("resUser", res);
           
           if (!res?.error) {
-            // Toast.show({
-            //   type: 'success',
-            //   text1: localStrings.Report.ReportSuccess,
-            // });
+           message.success(localStrings.Report.ReportSuccess);
             router.back();
           } else {
-            // Toast.show({
-            //   type: 'error',
-            //   text1: localStrings.Report.ReportFailed,
-            //   text2: res?.error?.message,
-            // });
+            message.error(localStrings.Report.ReportFailed);
           }
         } catch (error: any) {
           console.error(error);

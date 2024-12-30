@@ -121,7 +121,7 @@ const SearchScreen = React.memo(() => {
       <Input
         placeholder={localStrings.Search.Search}
         style={{
-          width: '300px',
+          maxWidth: '400px',
           borderRadius: '8px',
         }}
       />

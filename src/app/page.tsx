@@ -1,27 +1,28 @@
 "use client";
-import { Spin } from "antd";
-import { useAuth } from "@/context/auth/useAuth";
-import LoginPage from "./login/page";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useAuth } from '@/context/auth/useAuth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  if (isAuthenticated) {
-    router.push("/home");
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/home'); // Điều hướng đến trang chính nếu đã đăng nhập
+    } else {
+      router.push('/login'); // Điều hướng đến trang login nếu chưa đăng nhập
+    }
+  }, [isAuthenticated, router]); // Chỉ chạy khi trạng thái xác thực hoặc router thay đổi
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
-    {isLoading ? (
-      <Spin tip="Loading..." />
-    ) : (
-      <LoginPage />
-    )}
-  </div>
+    <div className="w-screen h-screen flex justify-center items-center">
+      <img 
+        src="/image/yourvibes_black.png" 
+        alt="YourVibes" 
+      />
+    </div>
   );
 };
 

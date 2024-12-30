@@ -50,7 +50,7 @@ const AboutTab = ({
   
   return (
     <div className="flex justify-center items-center mt-4">
-        <div className='border rounded-md border-solidborder-gray-900  basis-2/4'>
+        <div className='border rounded-md border-solidborder-gray-900 basis-3/4  md:basis-2/4'>
         {loading ? (
             <Flex align="center" gap="middle">
                 <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -138,7 +138,7 @@ const AboutTab = ({
                             </span>
                         </div>
                     </div>
-                    <div className='flex flex-row flex-wrap'>
+                    <div className='flex flex-row'>
                         {friends.map((friend, index) => (
                             <div key={index} className='w-[70px]  mb-2 mx-1'
                             onClick={() => router.push(`/user/${friend?.id}`)}

@@ -6,7 +6,7 @@ import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; 
-import { Modal, Spin } from 'antd';
+import { Modal } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen"; 
 
 const Homepage = () => {
@@ -16,6 +16,8 @@ const Homepage = () => {
   const { user, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const {friends, fetchMyFriends} = ProfileViewModel();
+
 
   const handleModalClose = () => {
     setIsModalVisible(false); 
@@ -30,7 +32,6 @@ const Homepage = () => {
           padding: "10px",
           display: "flex",
           alignItems: "center",
-          margin: "10px",
           backgroundColor: backgroundColor,
           border: `1px solid ${lightGray}`,
           borderRadius: "10px",
@@ -68,6 +69,47 @@ const Homepage = () => {
     );
   }, [user, localStrings, isModalVisible]);
 
+  const renderFriends = () => { 
+    return (
+      <div style={{ 
+        marginInline: "10px",
+        position: 'fixed',  
+        width: '280px',
+        maxHeight: '400px', 
+        overflowY: 'auto', 
+        backgroundColor,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+        borderRadius: '8px', 
+        right: '10px',
+      }}>
+        {friends.map((user) => (
+          <div
+            key={user.id}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: 10,
+              borderBottom: '1px solid #f0f0f0',
+              cursor: 'pointer',
+            }}
+            onClick={() => router.push(`/user/${user?.id}`)}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img
+                src={user.avatar_url}
+                alt={user.name}
+                style={{ width: 50, height: 50, borderRadius: '50%' }}
+              />
+              <span style={{ marginLeft: 10, fontWeight: 'bold', fontSize: 16 }}>
+                {user.family_name + ' ' + user.name}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const renderFooter = () => {
     if (!loading) return null;
     return (
@@ -99,11 +141,10 @@ const Homepage = () => {
                 </Post>
               </div>
             ))
-          ) :  (
-            <div className="w-full h-screen flex justify-center items-center">
-            <Spin tip="Loading...">
-            </Spin>
-          </div>
+          ) : (
+            <p style={{ textAlign: "center", marginTop: "20px" }}>
+              No posts available
+            </p>
           )}
 
           {renderFooter()}
@@ -111,6 +152,6 @@ const Homepage = () => {
       </div>
     </div>
   );
-};
-
-export default Homepage;
+}
+  
+  export default Homepage;
