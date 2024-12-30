@@ -65,7 +65,7 @@ const Homepage = () => {
         </Modal>
      </>
     );
-  }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
+  }, [user, localStrings, isModalVisible]);
 
   const renderFriends = () => { 
     return (
@@ -78,20 +78,7 @@ const Homepage = () => {
         backgroundColor,
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
         borderRadius: '8px', 
-        // zIndex: 1000, 
-
-        // style={{
-        //   padding: "10px",
-        //   display: "flex",
-        //   alignItems: "center",
-        //   margin: "10px",
-        //   backgroundColor: backgroundColor,
-        //   border: `1px solid ${lightGray}`,
-        //   borderRadius: "10px",
-        //   cursor: "pointer",
-        //   width: "100%", 
-        //   maxWidth: "600px", 
-        // }}
+        right: '10px',
       }}>
         {friends.map((user) => (
           <div
@@ -137,33 +124,33 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="flex justify-center mt-4">
-        {/* Content */}
-        <div>
-          {renderAddPost()}
-          {newFeeds?.length > 0 ? (
-            newFeeds.map((item) => (
-              <div key={item?.id}>
-                <Post post={item}>
-                  {item?.parent_post && (
-                    <Post post={item?.parent_post} isParentPost />
-                  )}
-                </Post>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: "center", marginTop: "20px" }}>
-              No posts available
-            </p>
-          )}
-
-          {renderFooter()}
-        </div>
-       <div>
-          {renderFriends()}
-       </div>
+    <div className="flex mt-4 ">
+      {/* Content */}
+      <div className="flex-auto w-auto flex flex-col items-center justify-center">
+        {renderAddPost()}
+        {newFeeds?.length > 0 ? (
+          newFeeds.map((item) => (
+            <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
+              <Post post={item}>
+                {item?.parent_post && (
+                  <Post post={item?.parent_post} isParentPost />
+                )}
+              </Post>
+            </div>
+          ))
+        ) : (
+          <p style={{ textAlign: "center", marginTop: "20px" }}>
+            No posts available
+          </p>
+        )}
+  
+        {renderFooter()}
+      </div>
+      <div className="flex-initial w-[300px]">
+        {renderFriends()}
+      </div>
     </div>
   );
-};
-
-export default Homepage;
+}
+  
+  export default Homepage;

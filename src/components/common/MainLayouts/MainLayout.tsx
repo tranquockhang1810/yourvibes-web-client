@@ -66,6 +66,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const { nav } = content;
 
+
+
   const handleMenuClick = () => {
     setVisible(!visible);
   };
@@ -139,11 +141,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="demo-logo-vertical" />
           <Menu
             mode="inline"
-            className="flex flex-col justify-center h-full"
+            className="flex flex-col gap-4 justify-center h-full"
             items={nav.map((item, index) => ({
               key: index.toString(),
-              icon: <item.icon />,
-              label: item.content,
+              icon: <item.icon style={{ fontSize: "24px",
+                color: "black",}} />,
+              label:<span style={{fontSize: "18px"}}>{item.content}</span>,
               onClick: () => handleItemClick(item.link),
             }))}
           />

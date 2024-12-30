@@ -6,7 +6,7 @@ import { useAuth } from "@/context/auth/useAuth";
 import { Button, notification } from "antd";
 import { useEffect, useState } from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function Layout({ children }: { children: React.ReactNode }): React.ReactElement {
     const { user, localStrings } = useAuth();
     const [statusNotifi, setStatusNotifi] = useState(false);
     const mapNotifiCationContent = (type: string) => {

@@ -234,7 +234,7 @@ const UpdateProfileScreen = () => {
             >
               <Input placeholder={localStrings.Form.Label.Phone} />
             </Form.Item>
-
+{/* 
 
             <Form.Item
               name="birthday"
@@ -242,7 +242,7 @@ const UpdateProfileScreen = () => {
               rules={[{ required: true }]}
             >
               <Input placeholder={localStrings.Form.Label.BirthDay} />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               name="email"

@@ -38,12 +38,17 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     replyToCommentId,
     replyToReplyId,
     fetchReplies,
+    setEditModalVisible,
+    handleUpdate,
   } = PostDetailsViewModel(postId || "");
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
   const reportViewModel = ReportViewModel(defaultPostRepo);
-  
+
+  const { user } = useAuth();
+  const userId = user?.id;
+
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -84,6 +89,20 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     router.push(`/report?commentId=${commentId}`);
   };
 
+  const handleOutsideClick = () => {
+    if (replyToCommentId || replyToReplyId) {
+      setReplyToCommentId(null);
+      setReplyToReplyId(null);
+      setReplyContent("");
+    }
+  };
+  const [currentCommentId, setCurrentCommentId] = useState<string>("");
+  const handleShowEditModal = (commentId: string, content: string) => {
+    setEditCommentContent(content);
+    setCurrentCommentId(commentId);
+    setEditModalVisible(true);
+  };
+
   useEffect(() => {
     if (postId) {
       fetchPost(postId);
@@ -92,7 +111,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      <Post post={post || undefined} />
+      <Post noComment={true} post={post || undefined} />
       <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
@@ -126,21 +145,9 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       onClick={() => handleLike(comment.id)}
                     />
                   </Col>
-                  <Col span={4} className="hover:cursor-pointer">
-                    <FaTrash
-                      size={16}
-                      color="gray"
-                      style={{
-                        stroke: "black",
-                        strokeWidth: 2,
-                        marginRight: 50,
-                      }}
-                      onClick={() => handleDelete(comment.id)}
-                    />
-                  </Col>
-                  <Col span={4} className="hover:cursor-pointer">
+                  {userId === comment.user?.id ? (
                     <Col span={4} className="hover:cursor-pointer">
-                      <FaEdit
+                      <FaTrash
                         size={16}
                         color="gray"
                         style={{
@@ -148,10 +155,37 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                           strokeWidth: 2,
                           marginRight: 50,
                         }}
-                        onClick={() =>
-                          handleEditComment(comment.id)
-                        }
+                        onClick={() => handleDelete(comment.id)}
                       />
+                    </Col>
+                  ) : null}
+                  <Col span={4} className="hover:cursor-pointer">
+                    <Col span={4} className="hover:cursor-pointer">
+                      {userId === comment.user?.id ? (
+                        <FaEdit
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() =>
+                            handleShowEditModal(comment.id, comment.content)
+                          }
+                        />
+                      ) : (
+                        <FaFlag
+                          size={16}
+                          color="gray"
+                          style={{
+                            stroke: "black",
+                            strokeWidth: 2,
+                            marginRight: 50,
+                          }}
+                          onClick={() => reportComment(comment.id)}
+                        />
+                      )}
                     </Col>
                   </Col>
                   <Col span={4} className="hover:cursor-pointer">
@@ -166,18 +200,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       onClick={() => handleReplyClick(comment.id)}
                     />
                   </Col>
-                  <Col span={4} className="hover:cursor-pointer">
-                    <FaFlag
-                      size={16}
-                      color="gray"
-                      style={{
-                        stroke: "black",
-                        strokeWidth: 2,
-                        marginRight: 50,
-                      }}
-                      onClick={() => reportComment(comment.id)}
-                    />
-                  </Col>
                   <Col span={4}>
                     <span
                       style={{
@@ -187,13 +209,16 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         marginRight: 50,
                       }}
                     >
-                      {likeCount[comment.id]}
+                      {/* {likeCount[comment.id]} */}
                     </span>
                   </Col>
                 </Row>
               </div>
             </div>
-            <div className="replies pl-6 mt-3 border-l-2 border-gray-200">
+            <div
+              onClick={handleOutsideClick}
+              className="replies pl-6 mt-3 border-l-2 border-gray-200"
+            >
               {replyMap[comment.id]?.length > 0 && (
                 <button
                   onClick={() => toggleRepliesVisibility(comment.id)}
@@ -234,29 +259,46 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             onClick={() => handleLike(reply.id)}
                           />
                         </Col>
+                        {userId === reply.user?.id ? (
+                          <Col span={4} className="hover:cursor-pointer">
+                            <FaTrash
+                              size={16}
+                              color="gray"
+                              style={{
+                                stroke: "black",
+                                strokeWidth: 2,
+                                marginRight: 50,
+                              }}
+                              onClick={() => handleDelete(reply.id)}
+                            />
+                          </Col>
+                        ) : null}
                         <Col span={4} className="hover:cursor-pointer">
-                          <FaTrash
-                            size={16}
-                            color="gray"
-                            style={{
-                              stroke: "black",
-                              strokeWidth: 2,
-                              marginRight: 50,
-                            }}
-                            onClick={() => handleDelete(reply.id)}
-                          />
-                        </Col>
-                        <Col span={4} className="hover:cursor-pointer">
-                          <FaEdit
-                            size={16}
-                            color="gray"
-                            style={{
-                              stroke: "black",
-                              strokeWidth: 2,
-                              marginRight: 50,
-                            }}
-                            onClick={() => handleEditComment(reply.id)}
-                          />
+                          {userId === reply.user?.id ? (
+                            <FaEdit
+                              size={16}
+                              color="gray"
+                              style={{
+                                stroke: "black",
+                                strokeWidth: 2,
+                                marginRight: 50,
+                              }}
+                              onClick={() =>
+                                handleShowEditModal(reply.id, reply.content)
+                              }
+                            />
+                          ) : (
+                            <FaFlag
+                              size={16}
+                              color="gray"
+                              style={{
+                                stroke: "black",
+                                strokeWidth: 2,
+                                marginRight: 50,
+                              }}
+                              onClick={() => reportComment(reply.id)}
+                            />
+                          )}
                         </Col>
                         <Col span={4} className="hover:cursor-pointer">
                           <FaReply
@@ -270,18 +312,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             onClick={() => handleReplyClick(reply.id, true)}
                           />
                         </Col>
-                        <Col span={4} className="hover:cursor-pointer">
-                          <FaFlag
-                            size={16}
-                            color="gray"
-                            style={{
-                              stroke: "black",
-                              strokeWidth: 2,
-                              marginRight: 50,
-                            }}
-                            onClick={() => reportComment(reply.id)}
-                          />
-                        </Col>
                         <Col span={4}>
                           <span
                             style={{
@@ -291,7 +321,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               marginRight: 50,
                             }}
                           >
-                            {likeCount[reply.id]}
+                            {/* {likeCount[reply.id]} */}
                           </span>
                         </Col>
                       </Row>
@@ -351,31 +381,58 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                     onClick={() => handleLike(nestedReply.id)}
                                   />
                                 </Col>
+
+                                {userId === nestedReply.user?.id ? (
+                                  <Col
+                                    span={4}
+                                    className="hover:cursor-pointer"
+                                  >
+                                    <FaTrash
+                                      size={16}
+                                      color="gray"
+                                      style={{
+                                        stroke: "black",
+                                        strokeWidth: 2,
+                                        marginRight: 50,
+                                      }}
+                                      onClick={() =>
+                                        handleDelete(nestedReply.id)
+                                      }
+                                    />
+                                  </Col>
+                                ) : null}
+
                                 <Col span={4} className="hover:cursor-pointer">
-                                  <FaTrash
-                                    size={16}
-                                    color="gray"
-                                    style={{
-                                      stroke: "black",
-                                      strokeWidth: 2,
-                                      marginRight: 50,
-                                    }}
-                                    onClick={() => handleDelete(nestedReply.id)}
-                                  />
-                                </Col>
-                                <Col span={4} className="hover:cursor-pointer">
-                                  <FaEdit
-                                    size={16}
-                                    color="gray"
-                                    style={{
-                                      stroke: "black",
-                                      strokeWidth: 2,
-                                      marginRight: 50,
-                                    }}
-                                    onClick={() =>
-                                      handleEditComment(nestedReply.id)
-                                    }
-                                  />
+                                  {userId === nestedReply.user?.id ? (
+                                    <FaEdit
+                                      size={16}
+                                      color="gray"
+                                      style={{
+                                        stroke: "black",
+                                        strokeWidth: 2,
+                                        marginRight: 50,
+                                      }}
+                                      onClick={() =>
+                                        handleShowEditModal(
+                                          nestedReply.id,
+                                          nestedReply.content
+                                        )
+                                      }
+                                    />
+                                  ) : (
+                                    <FaFlag
+                                      size={16}
+                                      color="gray"
+                                      style={{
+                                        stroke: "black",
+                                        strokeWidth: 2,
+                                        marginRight: 50,
+                                      }}
+                                      onClick={() =>
+                                        reportComment(nestedReply.id)
+                                      }
+                                    />
+                                  )}
                                 </Col>
                                 <Col span={4} className="hover:cursor-pointer">
                                   <FaReply
@@ -391,20 +448,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                     }
                                   />
                                 </Col>
-                                <Col span={4} className="hover:cursor-pointer">
-                                  <FaFlag
-                                    size={16}
-                                    color="gray"
-                                    style={{
-                                      stroke: "black",
-                                      strokeWidth: 2,
-                                      marginRight: 50,
-                                    }}
-                                    onClick={() =>
-                                      reportComment(nestedReply.id)
-                                    }
-                                  />
-                                </Col>
                                 <Col span={4}>
                                   <span
                                     style={{
@@ -414,7 +457,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       marginRight: 50,
                                     }}
                                   >
-                                    {likeCount[nestedReply.id]}
+                                    {/* {likeCount[nestedReply.id]} */}
                                   </span>
                                 </Col>
                               </Row>
@@ -448,24 +491,26 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
         </button>
       </div>
       {isEditModalVisible && (
-        <div className="edit-modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="modal-content bg-white p-6 rounded-lg shadow-md w-96 max-h-[80vh]">
-            <div className="modal-scrollable-content overflow-y-auto max-h-[60vh]">
-              <textarea
-                className="edit-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                value={editCommentContent}
-                onChange={(e) => setEditCommentContent(e.target.value)}
-              />
-            </div>
-            <button
-              onClick={() => handleEditComment(editCommentContent)}
-              className="save-btn mt-4 w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600"
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      )} 
+        <Modal
+          title="Edit Comment"
+          visible={isEditModalVisible}
+          onCancel={() => setEditModalVisible(false)}
+          onOk={() => {
+            handleUpdate(
+              currentCommentId,
+              editCommentContent,
+              replyToCommentId || ""
+            );
+            setEditModalVisible(false);
+          }}
+        >
+          <textarea
+            value={editCommentContent}
+            onChange={(e) => setEditCommentContent(e.target.value)}
+            style={{ border: "1px solid #000", height: 100, width: "100%" }}
+          />
+        </Modal>
+      )}
     </div>
   );
 };
