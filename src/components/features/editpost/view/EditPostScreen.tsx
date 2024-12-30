@@ -29,9 +29,10 @@ const { Text } = Typography;
 
 interface EditPostScreenProps {
   id: string;
+  postId: string;
 }
 
-const EditPostScreen = ({ id }: EditPostScreenProps) => {
+const EditPostScreen = ({ id, postId }: EditPostScreenProps) => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
 
@@ -50,7 +51,7 @@ const EditPostScreen = ({ id }: EditPostScreenProps) => {
     fileList,
     handleSubmit,
     updateMedia,
-  } = EditPostViewModel(defaultPostRepo, id);
+  } = EditPostViewModel(defaultPostRepo, id, postId);
 
   useEffect(() => {
     getDetailPost(id);

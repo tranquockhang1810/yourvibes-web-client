@@ -6,8 +6,9 @@ import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; 
-import { Modal } from 'antd';
-import AddPostScreen from "../../addPost/view/AddPostScreen"; 
+import { Modal, Spin } from 'antd';
+import AddPostScreen from "../../addPost/view/AddPostScreen";
+import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
@@ -60,10 +61,7 @@ const Homepage = () => {
         </div>
         <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
-          <AddPostScreen onPostSuccess={() => {
-            setIsModalVisible(false);
-            fetchNewFeeds();
-          }} />
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
         </Modal>
      </>
     );
@@ -126,29 +124,31 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center mt-4">
-      <div className="rounded-md border-solid border-gray-900 basis-2/4">
-        {/* Content */}
-        <div style={{ flex: 1, overflowY: "auto", marginTop: "50px" }}>
-          {renderAddPost()}
-          {newFeeds?.length > 0 ? (
-            newFeeds.map((item) => (
-              <div key={item?.id}>
-                <Post post={item}>
-                  {item?.parent_post && (
-                    <Post post={item?.parent_post} isParentPost />
-                  )}
-                </Post>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: "center", marginTop: "20px" }}>
-              No posts available
-            </p>
-          )}
-
-          {renderFooter()}
+    <div className="flex mt-4 ">
+      {/* Content */}
+      <div className="flex-auto w-auto flex flex-col items-center justify-center">
+        {renderAddPost()}
+        {newFeeds?.length > 0 ? (
+          newFeeds.map((item) => (
+            <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
+              <Post post={item}>
+                {item?.parent_post && (
+                  <Post post={item?.parent_post} isParentPost />
+                )}
+              </Post>
+            </div>
+          ))
+        ) : (
+          <div className="w-full h-screen flex justify-center items-center">
+          <Spin tip="Loading...">
+          </Spin>
         </div>
+        )}
+  
+        {renderFooter()}
+      </div>
+      <div className="flex-initial w-[300px]">
+        {renderFriends()}
       </div>
     </div>
   );

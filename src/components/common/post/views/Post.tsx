@@ -135,7 +135,7 @@ const Post: React.FC<IPost> = React.memo(
             onClick: async () => {
               if (post && post.id) {
                 setIsEditModalVisible(true);
-                <EditPostScreen id={post.id} />;
+                <EditPostScreen id={post.id} postId={post.id} />;
               }
             },
           },
@@ -429,7 +429,7 @@ const Post: React.FC<IPost> = React.memo(
           closable={false}
         >
           {post?.id ? (
-            <EditPostScreen id={post.id} />
+            <EditPostScreen id={post.id} postId={post.id} />
           ) : (
             <div>No post ID available</div>
           )}
