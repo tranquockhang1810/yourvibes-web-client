@@ -15,15 +15,28 @@ import {
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
 import SearchScreen from "@/components/screens/search/views/SearchScreen";
+import { Content, Footer, Header } from "antd/es/layout/layout";
+import Sider from "antd/es/layout/Sider";
+import useColor from "@/hooks/useColor";
 
-const { Header } = Layout;
-const {useBreakpoint} = Grid;
+const { useBreakpoint } = Grid;
+const siderStyle: React.CSSProperties = {
+  overflow: 'auto',
+  height: '100vh',
+  position: 'fixed',
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+  scrollbarWidth: 'thin',
+  scrollbarGutter: 'stable',
+};
 
-const MyHeader = () => {
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [visible, setVisible] = useState(false);
+  const { backgroundColor } = useColor();
   const [searchQuery, setSearchQuery] = useState("");
   const { localStrings } = useAuth();
-  const router = useRouter(); 
+  const router = useRouter();
   const screens = useBreakpoint();
 
   const content = {
@@ -57,11 +70,6 @@ const MyHeader = () => {
     setVisible(!visible);
   };
 
-  const handleSearch = (e: any) => {
-    setSearchQuery(e.target.value);
-    console.log("Search query:", e.target.value);
-  };
-
   // Cập nhật lại hàm handleItemClick
   const handleItemClick = (link: string) => {
     router.push(link); // Chuyển trang khi nhấn vào menu item
@@ -72,13 +80,14 @@ const MyHeader = () => {
     <Layout>
       <Header
         style={{
-          backgroundColor: "white",
+          position: 'sticky',
+          top: 0,
+          backgroundColor: backgroundColor,
           padding: "0 20px",
           borderBottom: "1px solid #dcdcdc",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          position: "fixed",
           width: "100%",
           zIndex: 100,
         }}
@@ -87,7 +96,7 @@ const MyHeader = () => {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "20px",
+            gap: "10px",
           }}
         >
           <img
@@ -97,68 +106,61 @@ const MyHeader = () => {
             onClick={() => router.push("/home")}
           />
           <SearchScreen />
-
-          {/* <Input
-            placeholder={localStrings.Search.Search}
-            value={searchQuery}
-            onChange={handleSearch}
-            style={{
-              width: "300px",
-              borderRadius: "8px",
-            }}
-          /> */}
         </div>
-        {!screens.md && (
         <MenuOutlined
           type="menu"
           style={{
             fontSize: "24px",
             color: "black",
             cursor: "pointer",
+            alignItems: "center",
+            marginBottom: "9px",
+            marginLeft: "10px",
           }}
           onClick={handleMenuClick}
-        />)}
+        />
       </Header>
-      {screens.md && (
-      <Menu
-        style={{
-          backgroundColor: "white",
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          justifyContent: "center",
-          height: "100vh",
-          position: "fixed",
-          fontFamily: "Arial, sans-serif",
-        }}
-      >
-        {nav.map((item, index) => (
-          <Menu.Item
-            key={index}
-            style={{
-              padding: "12px 12px",
-            }}
-            onClick={() => router.push(item.link)} // Gọi handleItemClick
-          >
-            <div
-              style={{
-                fontSize: "20px",
-                color: "#black",
-              }}
-            >
-              {createElement(item.icon)}
+      <Layout>
+        <Sider
+          width={200}
+          style={{
+            backgroundColor: backgroundColor,
+            display: screens.lg ? "block" : "none",
+            overflow: 'auto',
+            height: '100vh',
+            position: 'fixed',
+            insetInlineStart: 0,
+            top: 0,
+            bottom: 0,
+            scrollbarWidth: 'thin',
+            scrollbarGutter: 'stable',
+          }}
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            mode="inline"
+            className="flex flex-col justify-center h-full"
+            items={nav.map((item, index) => ({
+              key: index.toString(),
+              icon: <item.icon />,
+              label: item.content,
+              onClick: () => handleItemClick(item.link),
+            }))}
+          />
+        </Sider>
+        <Content style={{ marginInlineStart: screens.lg ? 200 : 0 }}>
+          <div>
+            {children}
             </div>
-          </Menu.Item>
-        ))}
-      </Menu>)}
-
+        </Content>
+      </Layout>
       {visible && (
         <Menu
           mode="inline"
           style={{
-            position: "absolute",
+            position: "fixed",
             top: "64px",
-            right: "20px",
+            right: "15px",
             backgroundColor: "white",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
             width: "200px",
@@ -198,4 +200,4 @@ const MyHeader = () => {
   );
 };
 
-export default MyHeader;
+export default MainLayout;

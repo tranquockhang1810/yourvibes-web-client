@@ -1,23 +1,26 @@
 "use client";
 import { useAuth } from '@/context/auth/useAuth';
-import LoginPage from './login/page';
-import Homepage from './(webRouter)/home/page';
-import MyHeader from '@/components/common/header/view/Header'; 
-import Layout from './(webRouter)/layout';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const Page = () => {
   const { isAuthenticated } = useAuth();
-  const router = useRouter();  // Khởi tạo useRouter
+  const router = useRouter();
 
-  // Nếu đã đăng nhập, điều hướng đến trang chính
-  if (isAuthenticated) {
-    router.push('/home');  // Điều hướng đến URL /home
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/home'); // Điều hướng đến trang chính nếu đã đăng nhập
+    } else {
+      router.push('/login'); // Điều hướng đến trang login nếu chưa đăng nhập
+    }
+  }, [isAuthenticated, router]); // Chỉ chạy khi trạng thái xác thực hoặc router thay đổi
 
   return (
-    <div className='w-full'>
-     <LoginPage />
+    <div className="w-screen h-screen flex justify-center items-center">
+      <img 
+        src="/image/yourvibes_black.png" 
+        alt="YourVibes" 
+      />
     </div>
   );
 };

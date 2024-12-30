@@ -1,6 +1,7 @@
 import { UpdateProfileRequestModel } from '@/api/features/profile/model/UpdateProfileModel';
 import { defaultProfileRepo, ProfileRepo } from '@/api/features/profile/ProfileRepository';
 import { useAuth } from '@/context/auth/useAuth';
+import { message } from 'antd';
 import { useState } from 'react'
 
 
@@ -17,7 +18,9 @@ const updateProfile = async (data: UpdateProfileRequestModel) => {
     
     if (!response?.error) {
       onUpdateProfile(response?.data);
+      message.success(localStrings.UpdateProfile.UpdateSuccess);
     } else {
+      message.error(localStrings.UpdateProfile.UpdateFailed);
     }
   } catch (error: any) {
     console.error(error);

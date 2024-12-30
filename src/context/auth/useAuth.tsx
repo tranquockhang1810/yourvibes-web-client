@@ -6,6 +6,7 @@ import { ENGLocalizedStrings } from "@/utils/localizedStrings/english";
 import translateLanguage from '../../utils/i18n/translateLanguage';
 import { useRouter } from 'next/navigation';
 import { UserModel } from '../../api/features/authenticate/model/LoginModel';
+import { cookies } from 'next/headers';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -40,6 +41,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('user', JSON.stringify(user.user));
     localStorage.setItem('accesstoken', user.access_token);
     // localStorage.setItem('refreshtoken', user.refreshtoken);
+    document.cookie = "accesstoken=your_token; path=/; SameSite=None; Secure";
+
     setIsAuthenticated(true);
     setUser(user.user);
     router.push('/home');
@@ -59,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     //Xóa dữ liệu trong storage và trong biến
     localStorage.removeItem('user');
     localStorage.removeItem('accesstoken');
+    document.cookie = 'accesstoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     // await localStorage.removeItem('refreshtoken');
     setIsAuthenticated(false);
     setUser(null);
