@@ -1,7 +1,7 @@
 "use client";
 import { ApiPath } from "@/api/ApiPath";
 import { defaultNotificationRepo } from "@/api/features/notification/NotifiCationRepo";
-import MyHeader from "@/components/common/header/view/Header";
+import MainLayout from "@/components/common/MainLayouts/MainLayout";
 import { useAuth } from "@/context/auth/useAuth";
 import { Button, notification } from "antd";
 import { useEffect, useState } from "react";
@@ -81,10 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 
     return (
         <div className="mb-10">
-            <MyHeader />
-            <div className="pt-15 pl-13 pb-12 md:pl-2">
-                {children}
-            </div>
+            <MainLayout>{children}</MainLayout>
 
         </div>
     );

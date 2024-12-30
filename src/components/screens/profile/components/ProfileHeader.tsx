@@ -231,11 +231,11 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="w-full h-72" style={{ backgroundColor: lightGray }}>
+          <div className="h-[400px]" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
-              className="w-full h-full"
+              className="w-full h-full object-contain"
             />
           </div>
 
@@ -247,7 +247,7 @@ const ProfileHeader = ({
                 "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"
               }
               alt="Profile"
-              className="w-52 h-52 rounded-full mx-auto"
+              className="w-52 h-52 rounded-full mx-auto object-cover"
               style={{ backgroundColor: lightGray }}
             />
              {!isLoginUser(user?.id as string) && (

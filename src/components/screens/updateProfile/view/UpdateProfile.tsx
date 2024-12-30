@@ -30,12 +30,13 @@ import { FaGlobe, FaLock } from "react-icons/fa";
 import { IoMdPeople } from "react-icons/io";
 import { AiFillEdit } from "react-icons/ai";
 import ModalObjectProfile from "../../profile/components/ModalObjectProfile";
+import MydateTimePicker from "@/components/foundation/MydateTimePicker";
 
 const { Text } = Typography;
 
 const UpdateProfileScreen = () => {
   const { user, localStrings, changeLanguage, language } = useAuth();
-  const {brandPrimaryTap,lightGray} = useColor();
+  const { brandPrimaryTap, lightGray } = useColor();
   const [showObject, setShowObject] = React.useState(false);
   const [updatedForm] = Form.useForm();
   const [newAvatar, setNewAvatar] = useState<{
@@ -52,6 +53,7 @@ const UpdateProfileScreen = () => {
   }>({ url: "", name: "", type: "" });
   const [loading, setLoading] = useState(false);
   const { updateProfile } = UpdateProfileViewModel(defaultProfileRepo);
+  const [showPicker, setShowPicker] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -102,10 +104,6 @@ const UpdateProfileScreen = () => {
   };
 
   const UpdateProfile = () => {
-    // {loading === true ? message.loading('Updating profile...') :
-    //       message.success('Profile updated!')
-    //       setShowUpdateProfile(false);
-    //     }
     setLoading(true);
     setNewAvatar({ url: "", name: "", type: "" });
     setNewCapwall({ url: "", name: "", type: "" });
@@ -121,19 +119,18 @@ const UpdateProfileScreen = () => {
     router.back();
   };
 
-
-      const renderPrivacyIcon = () => {
-          switch (user?.privacy) {
-            case Privacy.PUBLIC:
-              return <FaGlobe size={16} color={brandPrimaryTap} />;
-            case Privacy.FRIEND_ONLY:
-              return <IoMdPeople size={20} color={brandPrimaryTap} />;
-            case Privacy.PRIVATE:
-              return <FaLock name="lock-closed" size={17} color={brandPrimaryTap} />;
-            default:
-              return null;
-          }
-        }
+  const renderPrivacyIcon = () => {
+    switch (user?.privacy) {
+      case Privacy.PUBLIC:
+        return <FaGlobe size={16} color={brandPrimaryTap} />;
+      case Privacy.FRIEND_ONLY:
+        return <IoMdPeople size={20} color={brandPrimaryTap} />;
+      case Privacy.PRIVATE:
+        return <FaLock name="lock-closed" size={17} color={brandPrimaryTap} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="p-2.5">
@@ -199,13 +196,11 @@ const UpdateProfileScreen = () => {
             <span className="font-bold text-lg ml-6 mt-[60px]">
               {`${user?.family_name} ${user?.name}` ||
                 localStrings.Public.Username}
-                </span>
+            </span>
           </div>
-
         </div>
 
         <div className="flex-initial mr-6 w-1/3">
-
           {/* Form */}
           <Form form={updatedForm} layout="vertical" onFinish={UpdateProfile}>
             <Row gutter={16}>
@@ -236,18 +231,15 @@ const UpdateProfileScreen = () => {
             >
               <Input placeholder={localStrings.Form.Label.Phone} />
             </Form.Item>
+{/* 
 
-            {/* Birthday Picker */}
-            <div className="mb-6">
-              {/* <MyDateTimePicker
-            value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
-            onSubmit={(date) => {
-              updatedForm.setFieldValue('birthday', dayjs(date).format('DD/MM/YYYY'));
-            }}
-            show={showPicker}
-            onCancel={() => setShowPicker(false)}
-          /> */}
-            </div>
+            <Form.Item
+              name="birthday"
+              label={localStrings.Form.Label.BirthDay}
+              rules={[{ required: true }]}
+            >
+              <Input placeholder={localStrings.Form.Label.BirthDay} />
+            </Form.Item> */}
 
             <Form.Item
               name="email"
@@ -265,25 +257,42 @@ const UpdateProfileScreen = () => {
             </Form.Item>
           </Form>
           <div className="flex justify-end">
-          <Button
-            type="primary"
-            onClick={UpdateProfile}
-            loading={loading}
-          >
-            {localStrings.Public.Save}
-          </Button>
+            <Button type="primary" onClick={UpdateProfile} loading={loading}>
+              {localStrings.Public.Save}
+            </Button>
           </div>
         </div>
         <div className="flex-initial w-52">
           <p>{localStrings.Public.Language}</p>
           <Radio.Group value={language} onChange={changeLanguage}>
             <Space direction="vertical">
-            <Radio value="en">{localStrings.Public.English}</Radio>
-            <Radio value="vi">{localStrings.Public.Vietnamese}</Radio>
+              <Radio value="en">{localStrings.Public.English}</Radio>
+              <Radio value="vi">{localStrings.Public.Vietnamese}</Radio>
             </Space>
           </Radio.Group>
         </div>
       </div>
+
+      {/* Birthday Picker */}
+      <div className="mb-6">
+              {/* <MyDateTimePicker
+            value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
+            onSubmit={(date) => {
+              updatedForm.setFieldValue('birthday', dayjs(date).format('DD/MM/YYYY'));
+            }}
+            show={showPicker}
+            onCancel={() => setShowPicker(false)}
+          /> */}
+          <MydateTimePicker 
+          value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
+          onSubmit={(date) => {
+            updatedForm.setFieldsValue({ birthday: dayjs(date).format('DD/MM/YYYY') });
+          }
+          }
+          show={showPicker}
+          onCancel={() => setShowPicker(false)}
+          />
+            </div>
     </div>
   );
 };

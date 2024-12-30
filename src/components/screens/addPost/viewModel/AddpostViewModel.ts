@@ -45,7 +45,7 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
       } else {
         setPostContent("");
         clearSavedPost?.();
-        window.location.reload(); // Reload lại toàn bộ trang
+        //window.location.reload(); // Reload lại toàn bộ trang
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);
@@ -62,29 +62,10 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
   
-    const mediaFiles = await convertMediaToFiles(validFiles);
-  
-    // Chuyển đổi mediaFiles sang dạng file
-    const mediaFilesAsFiles = mediaFiles.map((file) => {
-      if (file.uri) {
-        const blob = new Blob([file.uri], { type: file.type });
-        return new File([blob], file.name, { type: file.type });
-      } else {
-        console.log(`File ${file.name} không có URI, bỏ qua`);
-        return null;
-      }
-    }).filter((file) => file !== null);
-  
-    const formData = TransferToFormData({
-      content: postContent,
-      privacy,
-      media: mediaFilesAsFiles,
-    });
-  
     const createPostRequestModel: CreatePostRequestModel = {
       content: postContent,
       privacy: privacy,
-      media: mediaFilesAsFiles, // Đảm bảo rằng media được truyền đúng
+      media: validFiles, // Đảm bảo rằng media được truyền đúng
     };
   
     await createPost(createPostRequestModel);
