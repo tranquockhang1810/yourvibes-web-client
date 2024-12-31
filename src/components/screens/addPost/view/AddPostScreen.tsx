@@ -134,7 +134,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
         <Select
           value={privacy}
           onChange={(value) => setPrivacy(value)}
-          style={{ width: 120 }}
+          style={{ width: 120 ,marginLeft: "10px" }}
         >
           <Select.Option value={Privacy.PUBLIC}>
             {localStrings.Public.Everyone}
