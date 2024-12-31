@@ -18,6 +18,7 @@ import { GetProp } from "antd";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
+import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -54,67 +55,105 @@ const EditPostViewModel = (
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
-  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]); 
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const getDetailPost = async (id: string) => {
-    if (!repo) return;
 
-    try {
-      setGetPostLoading(true);
-      const res = await repo.getPostById(id);
-      if (res && !res.error) {
-        setPost(res.data);
-        setPostContent(res.data?.content || "");
-        setPrivacy(res.data?.privacy);
-        setMediaIds(
-          res.data?.media?.map((item) => item?.id?.toString() || "") || []
-        );
-        const mediaFiles = res.data?.media?.map((item) => ({
-          uri: item?.media_url || "",
-          fileName: item?.id?.toString() || "",
-        })) as any[];
-        setOriginalImageFiles(mediaFiles);
-      } else {
-        message.error(localStrings.Profile.Posts.GetOnePostFailed);
-        // router.back();
-      }
-    } catch (err: any) {
-      console.error(err);
+const getDetailPost = async (id: string) => {
+  if (!repo) return;
+
+  try {
+    setGetPostLoading(true);
+    const res = await repo.getPostById(id);
+    if (res && !res.error) {
+      setPost(res.data);
+      setPostContent(res.data?.content || "");
+      setPrivacy(res.data?.privacy);
+      setMediaIds(
+        res.data?.media?.map((item) => item?.id?.toString() || "") || []
+      );
+      const mediaFiles = res.data?.media?.map((item) => ({
+        uri: item?.media_url || "",
+        fileName: item?.id?.toString() || "",
+      })) as any[];
+      setOriginalImageFiles(mediaFiles);
+      setFileList(mediaFiles); // Cập nhật giá trị của fileList
+    } else {
       message.error(localStrings.Profile.Posts.GetOnePostFailed);
-    } finally {
-      setGetPostLoading(false);
+      // router.back();
     }
-  };
+  } catch (err: any) {
+    console.error(err);
+    message.error(localStrings.Profile.Posts.GetOnePostFailed);
+  } finally {
+    setGetPostLoading(false);
+  }
+};
 
-  useEffect(() => {
-    if (id && !post && repo) {
-      getDetailPost(id);
-    }
-  }, [id, post, repo]);
+const handleMediaChange = (info: UploadProps) => {
+  if (info.fileList) {
+    const newMedia = info.fileList.filter((file): file is RcFile => file !== undefined).map((file) => ({
+      ...file,
+      originFileObj: file,
+    }));
+    updateMedia(newMedia);
+    setFileList(newMedia); // Cập nhật giá trị của fileList
+  }
+};
+
+useEffect(() => {
+  if (selectedMediaFiles.length > 0) {
+    setFileList(selectedMediaFiles);
+  }
+}, [selectedMediaFiles]);
 
   const updatePost = async (data: UpdatePostRequestModel) => {
     if (!repo) return;
-
+  
     try {
       setUpdateLoading(true);
-      const res = await repo.updatePost(data);
+      const res = await repo.updatePost({
+        ...data,
+        media_ids: mediaIds, // truyền id media từ post id vào trường media_ids
+      });
       if (res && !res.error) {
-        // router.push('/profile?tab');
+        message.success(localStrings.UpdatePost.UpdatePostSuccess);
+        await getNewFeed(); // Gọi API làm mới dữ liệu
+        router.push("/profile?tabNum=posts");
+      } else {
+        message.error(localStrings.UpdatePost.UpdatePostFailed);
       }
     } catch (error) {
       console.error(error);
+      message.error(localStrings.UpdatePost.UpdatePostFailed);
     } finally {
       setUpdateLoading(false);
     }
   };
+  
+
+  const getNewFeed = async () => {
+    await defaultNewFeedRepo.getNewFeed({ limit: 10, page: 1 });
+  };
+  
   const handleSubmit = async () => {
     const data: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
       privacy: privacy,
+      media: selectedMediaFiles,
+      media_ids: mediaIds,
     };
     await updatePost(data);
+    setModalVisible(false); // Đóng Modal sau khi cập nhật
   };
+
+  useEffect(() => {
+    if (!updateLoading && post) {
+      getNewFeed(); // Làm mới dữ liệu
+    }
+  }, [updateLoading]);
+
   const deletePost = async (id: string) => {
     if (!repo) return;
 
@@ -234,11 +273,11 @@ const EditPostViewModel = (
 
   const handlePreview = async (file: UploadFile) => {
     let preview = file.url || file.preview;
-
+  
     if (!preview && file.originFileObj) {
-      preview = await getBase64(file.originFileObj as FileType);
+      preview = URL.createObjectURL(file.originFileObj);
     }
-
+  
     setPreviewImage(preview || "");
     setPreviewOpen(true);
   };
@@ -256,15 +295,12 @@ const EditPostViewModel = (
     setSelectedMediaFiles(mediaFiles);
   };
 
-  const updateMedia = async (newMedia: any[]) => {
-    const mediaIds = newMedia.map((item) => item.fileName);
-    const originalImageFiles = newMedia.map((item) => ({
-      uri: item.uri,
-      fileName: item.fileName,
+  const updateMedia = (media: any[]) => {
+    const mediaFiles = media.map((item) => ({
+      uri: item?.originFileObj?.uri || "",
+      fileName: item?.originFileObj?.name || "",
     }));
-
-    setMediaIds(mediaIds);
-    setOriginalImageFiles(originalImageFiles);
+    setSelectedMediaFiles(mediaFiles);
   };
 
   const fetchUserLikePosts = async (postId: string) => {
@@ -315,6 +351,8 @@ const EditPostViewModel = (
     fetchUserLikePosts,
     userLikePost,
     setUserLikePost,
+    getNewFeed,
+    handleMediaChange,
   };
 };
 

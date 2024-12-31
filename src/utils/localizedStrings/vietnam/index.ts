@@ -51,7 +51,9 @@ export const VnLocalizedStrings = {
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
     HideInfo: "đã ẩn thông tin cá nhân",
-    FriendOnly: "chỉ bạn bè được xem"
+    FriendOnly: "chỉ bạn bè được xem",
+    UserLikePost: " Danh sách người dùng thích bài viết",
+    NoUserLikePost: "Bài viết chưa có lượt thích",
   },
   Form: {
     Label: {

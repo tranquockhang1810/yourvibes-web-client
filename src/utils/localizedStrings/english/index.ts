@@ -53,6 +53,8 @@ export const ENGLocalizedStrings = {
     Day: "Day",
     HideInfo: "has hidden personal information",
     FriendOnly: "only friends can see",
+    UserLikePost: " List of users liked post",
+    NoUserLikePost: "No one liked this post",
   },
   Form: {
     Label: {

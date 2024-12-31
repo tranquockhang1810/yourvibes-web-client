@@ -41,11 +41,17 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     setEditModalVisible,
     handleUpdate,
   } = PostDetailsViewModel(postId || "");
+
   const [post, setPost] = useState<PostResponseModel | null>(null);
+  console.log(post);
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
   const reportViewModel = ReportViewModel(defaultPostRepo);
+  const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
+    null
+  );
 
+  const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -112,6 +118,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
       <Post noComment={true} post={post || undefined} />
+
       <div className="comments-list space-y-6 overflow-y-auto max-h-[50vh]">
         {comments.map((comment) => (
           <div
@@ -197,7 +204,11 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         strokeWidth: 2,
                         marginRight: 50,
                       }}
-                      onClick={() => handleReplyClick(comment.id)}
+                      onClick={() => {
+                        setSelectedCommentId(comment.id);
+                        handleReplyClick(comment.id);
+                        setReplyModalVisible(true);
+                      }}
                     />
                   </Col>
                   <Col span={4}>
@@ -309,7 +320,11 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               strokeWidth: 2,
                               marginRight: 50,
                             }}
-                            onClick={() => handleReplyClick(reply.id)}
+                            onClick={() => {
+                              setSelectedCommentId(reply.id);
+                              handleReplyClick(reply.id);
+                              setReplyModalVisible(true);
+                            }}
                           />
                         </Col>
                         <Col span={4}>
@@ -443,9 +458,11 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       strokeWidth: 2,
                                       marginRight: 50,
                                     }}
-                                    onClick={() =>
-                                      handleReplyClick(nestedReply.id)
-                                    }
+                                    onClick={() => {
+                                      setSelectedCommentId(nestedReply.id);
+                                      handleReplyClick(nestedReply.id);
+                                      setReplyModalVisible(true);
+                                    }}
                                   />
                                 </Col>
                                 <Col span={4}>
@@ -472,6 +489,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
         ))}
       </div>
       <div className="add-comment mt-8">
+        {/* Phản hồi đến bình luận */}
         <textarea
           className="comment-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
           placeholder={
@@ -490,6 +508,26 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
             (replyToCommentId || replyToReplyId ? "Reply" : "Post")}
         </button>
       </div>
+      {/*Modal Reply*/}
+      {isReplyModalVisible && (
+        <Modal
+          title="Reply"
+          visible={isReplyModalVisible}
+          onCancel={() => setReplyModalVisible(false)}
+          onOk={() => {
+            handlePostAction();
+            setReplyModalVisible(false);
+          }}
+        >
+          <textarea
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            style={{ border: "1px solid #000", height: 100, width: "100%" }}
+          />
+        </Modal>
+      )}
+
+      {/* Modal Edit */}
       {isEditModalVisible && (
         <Modal
           title="Edit Comment"

@@ -1,7 +1,7 @@
 import { NewFeedResponseModel } from "@/api/features/newFeed/Model/NewFeedModel";
-import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo"
-import { useAuth } from "@/context/auth/useAuth"; 
-import { useState } from "react"; 
+import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
+import { useAuth } from "@/context/auth/useAuth";
+import { useState } from "react";
 
 const HomeViewModel = (repo: NewFeedRepo) => {
   const [newFeeds, setNewFeeds] = useState<NewFeedResponseModel[]>([]);
@@ -19,22 +19,25 @@ const HomeViewModel = (repo: NewFeedRepo) => {
         page: newPage,
         limit: limit,
       });
-
       if (!response?.error) {
         if (newPage === 1) {
           setNewFeeds(response?.data || []);
         } else {
-          setNewFeeds((prevNewFeeds) => [...prevNewFeeds, ...response?.data || []]);
+          setNewFeeds((prevNewFeeds) => [
+            ...prevNewFeeds,
+            ...(response?.data || []),
+          ]);
         }
-        const { page: currentPage, limit: currentLimit, total: totalRecords } = response?.paging;
-
+        const { page: currentPage, limit: currentLimit, total: totalRecords } =
+          response?.paging;
         setTotal(totalRecords);
         setPage(currentPage);
         setHasMore(currentPage * currentLimit < totalRecords);
-      } else { 
+      } else {
+        // Handle error
       }
     } catch (error: any) {
-      console.error(error); 
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -44,21 +47,23 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     try {
       setLoading(true);
       const res = await repo.deleteNewFeed(id);
-       // Cập nhậtlại danh sách
-      setNewFeeds(newFeeds => newFeeds.filter(post => post.id !== id));
-      if (!res?.error) { 
-      } else { 
+      setNewFeeds((newFeeds) =>
+        newFeeds.filter((post) => post.id !== id)
+      );
+      if (!res?.error) {
+        // Handle success
+      } else {
+        // Handle error
       }
     } catch (err: any) {
-      console.error(err); 
+      console.error(err);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const loadMoreNewFeeds = () => {
     if (!loading && hasMore) {
-      setPage((prevPage) => prevPage + 1);
       fetchNewFeeds(page + 1);
     }
   };
@@ -69,7 +74,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     fetchNewFeeds,
     loadMoreNewFeeds,
     deleteNewFeed,
-  }
-}
+  };
+};
 
-export default HomeViewModel
+export default HomeViewModel;

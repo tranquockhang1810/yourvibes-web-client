@@ -18,6 +18,7 @@ import {
   Tooltip,
   Select,
   Input,
+  Spin,
 } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -42,6 +43,8 @@ import EditPostScreen from "@/components/features/editpost/view/EditPostScreen";
 import PostDetailsScreen from "@/components/screens/postDetails/view/postDetailsScreen";
 import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/postDetailsViewModel";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
+import { log } from "console";
+import { console } from "inspector";
 
 interface IPost {
   post?: PostResponseModel;
@@ -76,6 +79,8 @@ const Post: React.FC<IPost> = React.memo(
       deletePost,
       updatePost,
       fetchUserLikePosts,
+      userLikePost,
+      setUserLikePost,
     } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
 
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
@@ -101,7 +106,6 @@ const Post: React.FC<IPost> = React.memo(
       setIsCommentModalVisible(true);
     }, []);
 
-    const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
@@ -187,7 +191,7 @@ const Post: React.FC<IPost> = React.memo(
                 okText: localStrings.Public.Confirm,
                 cancelText: localStrings.Public.Cancel,
                 onOk: () => {
-                  deletePost && deletePost(post?.id as string);
+                  deleteNewFeed && deleteNewFeed(post?.id as string);
                 },
               });
             },
@@ -197,7 +201,7 @@ const Post: React.FC<IPost> = React.memo(
 
     useEffect(() => {
       setLikedPost(post);
-    }, [post]);
+    }, []);
 
     const renderLikedUserItem = useCallback(
       (like: LikeUsersModel) => {
@@ -414,7 +418,7 @@ const Post: React.FC<IPost> = React.memo(
           ) : (
             <Col span={22}>
               {likedPost?.content && (
-                <span className="pl-2">{likedPost?.content}</span>
+                <span className="pl-0.5">{likedPost?.content}</span>
               )}
               {likedPost?.media && likedPost?.media?.length > 0 && (
                 <MediaView mediaItems={likedPost?.media} />
@@ -422,11 +426,13 @@ const Post: React.FC<IPost> = React.memo(
             </Col>
           )}
         </Row>
+        {/* Modal for edit post */}
         <Modal
           visible={isEditModalVisible}
           width={800}
           footer={null}
-          closable={false}
+          closable={true}
+          onCancel={() => setIsEditModalVisible(false)}
         >
           {post?.id ? (
             <EditPostScreen id={post.id} postId={post.id} />
@@ -448,6 +454,7 @@ const Post: React.FC<IPost> = React.memo(
         {/* Modal for share Post */}
         <Modal
           visible={isShareModalVisible}
+          centered
           onCancel={() => setIsShareModalVisible(false)}
           footer={[
             <Button key="back" onClick={() => setIsShareModalVisible(false)}>
@@ -572,10 +579,18 @@ const Post: React.FC<IPost> = React.memo(
         </Modal>
         {/* Modal for User Like Post */}
         <Modal
+          title={
+            <div style={{ textAlign: "center" }}>
+              <span style={{ fontWeight: "bold" }}>
+                {localStrings.Public.UserLikePost}
+              </span>
+            </div>
+          }
           visible={isVisible}
           onCancel={() => setIsVisible(false)}
           footer={null}
-          width={800}
+          width={500}
+          centered
         >
           <div
             style={{
@@ -591,7 +606,12 @@ const Post: React.FC<IPost> = React.memo(
                 ))}
               </div>
             ) : (
-              <p>Không có người dùng nào thích bài viết này.</p>
+              <div>
+                <Spin />
+                <span style={{ marginLeft: 10, fontSize: 16 }}>
+                  {localStrings.Public.NoUserLikePost}
+                </span>
+              </div>
             )}
           </div>
         </Modal>

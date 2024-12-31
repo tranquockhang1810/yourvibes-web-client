@@ -29,7 +29,7 @@ const PostDetailsViewModel = (postId: string) => {
   const [likeIcon, setLikeIcon] = useState("heart-outline");
   const [renderLikeIconState, setRenderLikeIconState] = useState(false);
 
-  const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [isEditModalVisible, setEditModalVisible] = useState(false); 
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
@@ -300,44 +300,32 @@ const PostDetailsViewModel = (postId: string) => {
       setNewComment("");
     }
   };
+ 
+  
 
-  const handleReplyClick = (commentId: string) => {
-    setReplyToCommentId(commentId);
-    setReplyContent("");
-  };
-
-  return {
+  return { 
     comments,
+    replyMap,
     likeCount,
     userLikes,
     newComment,
-    replyToCommentId,
-    replyToReplyId,
-    handleLike,
-    handleAddComment,
-    handleAddReply,
-    setNewComment,
-    setReplyToReplyId,
-    fetchReplies,
-    handleUpdate,
-    handleDelete,
     isEditModalVisible,
-    setEditModalVisible,
     editCommentContent,
-    setEditCommentContent,
+    handleLike,
+    handleDelete,
     handleEditComment,
-    currentCommentId,
-    replyMap,
-    likeIcon,
-    fetchComments,
-    userLikePost,
-    fetchUserLikePosts,
-    setReplyToCommentId,
+    setEditCommentContent,
     replyContent,
     setReplyContent,
-    handleReplyClick,
     handlePostAction,
     handleTextChange,
+    setReplyToCommentId,
+    setReplyToReplyId,
+    replyToCommentId,
+    replyToReplyId,
+    fetchReplies,
+    setEditModalVisible,
+    handleUpdate, 
   };
 };
 

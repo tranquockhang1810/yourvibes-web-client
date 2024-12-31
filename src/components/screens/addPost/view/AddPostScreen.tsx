@@ -146,6 +146,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
             {localStrings.Public.Private}
           </Select.Option>
         </Select>
+
         <Button
           style={{ marginLeft: "auto" }}
           type="primary"
@@ -159,6 +160,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
             .catch((error) => console.error(error));
           }}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
+          loading={createLoading}
         >
           {createLoading ? (
             createLoading && (
@@ -168,6 +170,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
             localStrings.AddPost.PostNow
           )}
         </Button>
+
       </div>
     </div>
   );
