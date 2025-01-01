@@ -418,7 +418,7 @@ const Post: React.FC<IPost> = React.memo(
           ) : (
             <Col span={22}>
               {likedPost?.content && (
-                <span className="pl-0.5">{likedPost?.content}</span>
+                <span className="pl-0.3">{likedPost?.content}</span>
               )}
               {likedPost?.media && likedPost?.media?.length > 0 && (
                 <MediaView mediaItems={likedPost?.media} />
@@ -429,6 +429,7 @@ const Post: React.FC<IPost> = React.memo(
         {/* Modal for edit post */}
         <Modal
           visible={isEditModalVisible}
+          centered
           width={800}
           footer={null}
           closable={true}

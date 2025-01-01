@@ -57,7 +57,7 @@ const EditPostViewModel = (
   const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]); 
   const [modalVisible, setModalVisible] = useState(false);
-
+ 
 
 const getDetailPost = async (id: string) => {
   if (!repo) return;
@@ -313,46 +313,34 @@ useEffect(() => {
   }; 
 
   return {
-    updateMedia,
-    handleSubmit,
     handlePreview,
     handleChange,
     updateLoading,
     postContent,
     setPostContent,
-    originalImageFiles,
-    setOriginalImageFiles,
     privacy,
     setPrivacy,
-    updatePost,
     getDetailPost,
-    post,
-    mediaIds,
-    handleMedias,
-    deletePost,
+    fileList,
+    handleSubmit,
+    updateMedia,
+    selectedMediaFiles,
+    getNewFeed, 
+    previewImage,
+    setMediaIds,
+    setPreviewImage,
+    setFileList,
     deleteLoading,
     likePost,
     likedPost,
     setLikedPost,
     sharePost,
     shareLoading,
-    hidePost,
-    setHidePost,
-    getPostLoading,
-    previewOpen,
-    setPreviewOpen,
-    previewImage,
-    setPreviewImage,
-    selectedMediaFiles,
-    setSelectedMediaFiles,
-    handleSubmitPost,
-    fileList,
-    setFileList,
+    deletePost,
+    updatePost,
     fetchUserLikePosts,
     userLikePost,
     setUserLikePost,
-    getNewFeed,
-    handleMediaChange,
   };
 };
 

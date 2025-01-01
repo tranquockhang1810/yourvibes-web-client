@@ -35,6 +35,42 @@ const PostDetailsViewModel = (postId: string) => {
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
   const [replyContent, setReplyContent] = useState("");
+
+  const [visibleReplies, setVisibleReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const toggleRepliesVisibility = (commentId: string) => {
+    setVisibleReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+  const handleReplyClick = (commentId: string, isReply: boolean = false) => {
+    if (isReply) {
+      setReplyToReplyId(commentId);
+    } else {
+      setReplyToCommentId(commentId);
+    }
+    setReplyContent("");
+    fetchReplies(postId || "", commentId);
+  };
+
+  const handleShowEditModal = (commentId: string, content: string) => {
+    setEditCommentContent(content);
+    setCurrentCommentId(commentId);
+    setEditModalVisible(true);
+  };
+
+  const handleOutsideClick = () => {
+    if (replyToCommentId || replyToReplyId) {
+      setReplyToCommentId(null);
+      setReplyToReplyId(null);
+      setReplyContent("");
+    }
+  };
+
+  
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -300,7 +336,6 @@ const PostDetailsViewModel = (postId: string) => {
       setNewComment("");
     }
   };
- 
   
 
   return { 
@@ -326,6 +361,12 @@ const PostDetailsViewModel = (postId: string) => {
     fetchReplies,
     setEditModalVisible,
     handleUpdate, 
+    toggleRepliesVisibility,
+    handleReplyClick,
+    handleShowEditModal,
+    handleOutsideClick,
+    setVisibleReplies,
+    visibleReplies, 
   };
 };
 

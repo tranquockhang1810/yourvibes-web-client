@@ -54,6 +54,9 @@ export const VnLocalizedStrings = {
     FriendOnly: "chỉ bạn bè được xem",
     UserLikePost: " Danh sách người dùng thích bài viết",
     NoUserLikePost: "Bài viết chưa có lượt thích",
+    ReplyClick: " Ấn vào đây và nhập câu trả lời của bạn nào !!!",
+    CommentClick:" Ấn vào đây và viết bình luận của bạn nào !!!",
+    LoginLoading:"Đang đăng nhập vui lòng đợi ...",
   },
   Form: {
     Label: {

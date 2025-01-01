@@ -10,6 +10,7 @@ import {
   GetProp,
   Select,
   message,
+  Image,
 } from "antd";
 import {
   CloseOutlined,
@@ -41,7 +42,6 @@ const EditPostScreen = ({
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
 
-  const [previewImage, setPreviewImage] = useState<string>("");
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const {
     handlePreview,
@@ -57,12 +57,14 @@ const EditPostScreen = ({
     updateMedia,
     selectedMediaFiles,
     getNewFeed,
+    setMediaIds,
+    previewImage,
+    setPreviewImage,
   } = EditPostViewModel(defaultPostRepo, id, postId);
 
   useEffect(() => {
     getDetailPost(id);
   }, [id]);
-
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -112,11 +114,12 @@ const EditPostScreen = ({
       <Upload
         listType="picture-card"
         fileList={fileList}
+        accept="image/*,video/*"
         onPreview={(file) => {
           let preview = file.url || file.preview;
 
           if (!preview && file.originFileObj) {
-            preview = URL.createObjectURL(file.originFileObj);
+            preview = URL.createObjectURL(file.originFileObj as Blob);
           }
 
           setPreviewImage(preview || "");
@@ -124,12 +127,43 @@ const EditPostScreen = ({
         }}
         onChange={(info) => {
           handleChange(info);
-          const newMedia = info.fileList.map((file) => file.originFileObj);
-          updateMedia(newMedia);
+          const newMedia = info.fileList.map(
+            (file) => file.originFileObj as Blob
+          );
+          const updatedMedia = [...selectedMediaFiles, ...newMedia];
+          updateMedia(updatedMedia);
         }}
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {uploadButton}
       </Upload>
+      {previewImage && (
+        <img
+          src={previewImage}
+          style={{ display: "block" }}
+          onClick={() => setPreviewOpen(true)}
+        />
+      )}
+      {previewOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onClick={() => setPreviewOpen(false)}
+        >
+          <img
+            src={previewImage}
+            style={{ maxWidth: "80%", maxHeight: "80%" }}
+          />
+        </div>
+      )}
 
       {/* Privacy Text */}
       <div style={{ display: "flex" }}>

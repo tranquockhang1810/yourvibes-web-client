@@ -55,6 +55,9 @@ export const ENGLocalizedStrings = {
     FriendOnly: "only friends can see",
     UserLikePost: " List of users liked post",
     NoUserLikePost: "No one liked this post",
+    ReplyClick:"Click and write your Reply here...",
+    CommentClick:"Click and write your Comment here...",
+    LoginLoading:"Loading Login ...",
   },
   Form: {
     Label: {
