@@ -9,14 +9,14 @@ import { PostResponseModel } from "@/api/features/post/models/PostResponseModel"
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import { useRouter } from "next/navigation";
-import { Modal, Input, Button } from "antd";
+import { Modal, Input, Button } from "antd";  
 interface CommentsScreenProps {
   postId?: string;
 }
 
 const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
   useColor();
-const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
+const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => { 
   const {
     comments,
     replyMap,
@@ -45,8 +45,9 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     handleShowEditModal,
     handleOutsideClick,
     setVisibleReplies,
-    visibleReplies,
-  } = PostDetailsViewModel(postId || "");
+    visibleReplies, 
+  } = PostDetailsViewModel(postId || "", defaultPostRepo);
+   
 
   const [post, setPost] = useState<PostResponseModel | null>(null);
   console.log(post);
@@ -63,32 +64,30 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
 
   const router = useRouter();
   const [currentCommentId, setCurrentCommentId] = useState<string>("");
-
-  // const fetchPost = async (postId: string) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await defaultPostRepo.getPostById(postId);
-  //     if (!response.error) {
-  //       return response.data;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     return null;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (postId) {
-  //     fetchPost(postId).then((data) => setPost(data));
-  //   }
-  // }, [postId]);
-
+  console.log(post, "post"); 
   const reportComment = (commentId: string) => {
     router.push(`/report?commentId=${commentId}`);
   };
+
+  const fetchPost = async (postId: string) => {
+    try {
+      setLoading(true);
+      const post = await defaultPostRepo.getPostById(postId);
+      if (!post.error) {
+        setPost(post.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (postId) {
+      fetchPost(postId);
+    }
+  }, [postId]);
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -537,5 +536,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     </div>
   );
 };
+
 
 export default PostDetailsScreen;

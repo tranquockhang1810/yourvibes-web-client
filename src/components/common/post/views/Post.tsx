@@ -103,8 +103,8 @@ const Post: React.FC<IPost> = React.memo(
     };
     const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
     const handleCommentClick = useCallback(() => {
-      setIsCommentModalVisible(true);
-    }, []);
+      setIsCommentModalVisible(true); 
+    }, [post]);
 
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
@@ -201,7 +201,7 @@ const Post: React.FC<IPost> = React.memo(
 
     useEffect(() => {
       setLikedPost(post);
-    }, []);
+    }, [post]);
 
     const renderLikedUserItem = useCallback(
       (like: LikeUsersModel) => {
@@ -358,6 +358,7 @@ const Post: React.FC<IPost> = React.memo(
                       {likedPost?.like_count}
                     </span>
                   </Row>
+                  
                   {!noComment && (
                     <Row align={"middle"} justify={"center"}>
                       <FaRegComments
@@ -370,6 +371,7 @@ const Post: React.FC<IPost> = React.memo(
                       </span>
                     </Row>
                   )}
+
                   <Row align={"middle"} justify={"center"}>
                     <IoShareSocialOutline
                       size={24}

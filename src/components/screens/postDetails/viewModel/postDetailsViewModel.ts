@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 //Comments
 import { CommentsResponseModel } from "@/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
@@ -9,11 +10,16 @@ import { UpdateCommentsRequestModel } from "@/api/features/comment/models/Update
 import { defaultLikeCommentRepo } from "@/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/api/features/likeComment/models/LikeCommentResponses";
 //UserLikePost
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import { defaultPostRepo, PostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
+import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
+import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
 
-const PostDetailsViewModel = (postId: string) => {
+const PostDetailsViewModel = (
+  postId: string,
+  repo: PostRepo,
+) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
   const [replyMap, setReplyMap] = useState<{
     [key: string]: CommentsResponseModel[];
@@ -29,13 +35,19 @@ const PostDetailsViewModel = (postId: string) => {
   const [likeIcon, setLikeIcon] = useState("heart-outline");
   const [renderLikeIconState, setRenderLikeIconState] = useState(false);
 
-  const [isEditModalVisible, setEditModalVisible] = useState(false); 
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
   const [replyContent, setReplyContent] = useState("");
-
+  const [getPostLoading, setGetPostLoading] = useState<boolean>(false);
+  const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
+  const [postContent, setPostContent] = useState("");
+  const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
+  const [mediaIds, setMediaIds] = useState<string[]>([]);
+  const [originalImageFiles, setOriginalImageFiles] = useState<any[]>([]);
+  const [fileList, setFileList] = useState<any[]>([]);
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
   }>({});
@@ -70,7 +82,6 @@ const PostDetailsViewModel = (postId: string) => {
     }
   };
 
-  
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -336,9 +347,8 @@ const PostDetailsViewModel = (postId: string) => {
       setNewComment("");
     }
   };
-  
 
-  return { 
+  return {
     comments,
     replyMap,
     likeCount,
@@ -360,14 +370,16 @@ const PostDetailsViewModel = (postId: string) => {
     replyToReplyId,
     fetchReplies,
     setEditModalVisible,
-    handleUpdate, 
+    handleUpdate,
     toggleRepliesVisibility,
     handleReplyClick,
     handleShowEditModal,
     handleOutsideClick,
     setVisibleReplies,
-    visibleReplies, 
+    visibleReplies,  
   };
 };
+
+
 
 export default PostDetailsViewModel;
