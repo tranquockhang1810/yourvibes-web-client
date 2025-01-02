@@ -376,7 +376,7 @@ const PostDetailsViewModel = (
     handleShowEditModal,
     handleOutsideClick,
     setVisibleReplies,
-    visibleReplies,  
+    visibleReplies, 
   };
 };
 

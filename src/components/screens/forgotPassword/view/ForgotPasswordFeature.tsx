@@ -1,22 +1,26 @@
 "use client";
 import React from "react";
 import { Button, Checkbox, DatePicker, Form, Input, message } from "antd";
-import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
+import { ForgotPasswordRepo } from "@/api/features/forgotPassword/ForgotPasswordRepo";
 import { useAuth } from "@/context/auth/useAuth";
+import {
+  ForgotPasswordResponseModel,
+  VerifyOTPRequestModel,
+} from "@/api/features/forgotPassword/models/ForgotPassword";
+import { useRouter } from "next/navigation";
+
+
 const ForgotPasswordFeature: React.FC = () => {
   const [form] = Form.useForm();
-  const repo = new AuthenRepo(); // Khởi tạo AuthenRepo
-const { language, localStrings } = useAuth();
+  const repo = new ForgotPasswordRepo(); 
+  const { language, localStrings } = useAuth();
+  const router = useRouter();
   const onRequestOTP = async () => {
     try {
       const email = form.getFieldValue("email");
-      const phone = form.getFieldValue("phone");
       if (!email) {
         message.error(localStrings.Form.RequiredMessages.EmailRequiredMessage);
         return;
-      }
-      if (!phone) {
-        message.error(localStrings.Form.RequiredMessages.PhoneRequiredMessage);
       }
       await repo.verifyOTP({ email });
       message.success(localStrings.SignUp.OTPSuccess);
@@ -39,22 +43,18 @@ const { language, localStrings } = useAuth();
 
         {/* Form */}
         <Form form={form} layout="vertical" onFinish={onForgotPassword}>
-          {/* Phone Number */}
-          <Form.Item
-            name="phone"
-            rules={[
-              { required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage },
-            ]}
-          >
-            <Input placeholder= {localStrings.Form.Label.Phone} className="w-full" />
-          </Form.Item>
-
           {/* Email and OTP */}
           <div className="grid grid-cols-3 gap-4">
             <Form.Item
               name="email"
               className="col-span-2"
-              rules={[{ required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage }]}
+              rules={[
+                {
+                  required: true,
+                  message:
+                    localStrings.Form.RequiredMessages.EmailRequiredMessage,
+                },
+              ]}
             >
               <Input placeholder="Email" className="w-full" />
             </Form.Item>
@@ -70,10 +70,23 @@ const { language, localStrings } = useAuth();
 
           {/* Password */}
           <Form.Item
-            name="password"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
+            name="new_password"
+            rules={[
+              {
+                required: true,
+                message:
+                  localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+              },
+              {
+                min: 8,
+                message: localStrings.Form.TypeMessage.PasswordTypeMessage,
+              },
+            ]}
           >
-            <Input.Password placeholder= {localStrings.Form.Label.Password} className="w-full" />
+            <Input.Password
+              placeholder={localStrings.Form.Label.Password}
+              className="w-full"
+            />
           </Form.Item>
 
           {/* Confirm Password */}
@@ -81,10 +94,15 @@ const { language, localStrings } = useAuth();
             name="confirmPassword"
             dependencies={["password"]}
             rules={[
-              { required: true, message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage },
+              {
+                required: true,
+                message:
+                  localStrings.Form.RequiredMessages
+                    .ConfirmPasswordRequiredMessage,
+              },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
+                  if (!value || getFieldValue("new_password") === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(
@@ -95,7 +113,7 @@ const { language, localStrings } = useAuth();
             ]}
           >
             <Input.Password
-              placeholder= {localStrings.Form.Label.ConfirmPassword}
+              placeholder={localStrings.Form.Label.ConfirmPassword}
               className="w-full"
             />
           </Form.Item>
@@ -103,9 +121,17 @@ const { language, localStrings } = useAuth();
           {/* Confirm OTP */}
           <Form.Item
             name="otp"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
+            rules={[
+              {
+                required: true,
+                message: localStrings.Form.RequiredMessages.OTPRequiredMessage,
+              },
+            ]}
           >
-            <Input placeholder= {localStrings.Form.Label.OTP} className="w-full" />
+            <Input
+              placeholder={localStrings.Form.Label.OTP}
+              className="w-full"
+            />
           </Form.Item>
 
           {/* Submit Button */}
@@ -115,8 +141,20 @@ const { language, localStrings } = useAuth();
             size="large"
             htmlType="submit"
             className="mt-4 font-bold bg-black text-white rounded"
+            onClick={async () => {
+              try {
+                const values = await form.validateFields();
+                await repo.resetPassword(values as ForgotPasswordResponseModel);
+                message.success(
+                  localStrings.ChangePassword.ChangePasswordSuccess
+                ); 
+                router.push('/login'); 
+              } catch (error) {
+                message.error(localStrings.ChangePassword.ChangePasswordFailed);
+              } 
+            }}
           >
-          {localStrings.Form.Label.ConfirmPassword}
+            {localStrings.Form.Label.ConfirmPassword}
           </Button>
 
           {/* Additional Links */}

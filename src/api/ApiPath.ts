@@ -50,6 +50,10 @@ export const ApiPath = {
   //New Feeds
   GET_NEW_FEEDS: getApiPath('posts/new_feeds/'),
   DELETE_NEW_FEED: getApiPath('posts/new_feeds/'),
+
+  //Forgot Password
+  GET_OTP_FORGOOT_PASSWORD: getApiPath('users/get_otp_forgot_user_password'),
+  FORGOT_PASSWORD: getApiPath("users/forgot_user_password"),
 };
 
 function getApiPath(path: string) {
