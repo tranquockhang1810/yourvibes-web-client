@@ -8,9 +8,7 @@ import {
   VerifyOTPRequestModel,
 } from "@/api/features/forgotPassword/models/ForgotPassword";
 import { useRouter } from "next/navigation";
-
-
-const ForgotPasswordFeature: React.FC = () => {
+ const ForgotPasswordFeature: React.FC = () => {
   const [form] = Form.useForm();
   const repo = new ForgotPasswordRepo(); 
   const { language, localStrings } = useAuth();
