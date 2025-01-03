@@ -86,34 +86,17 @@ const EditPostViewModel = (
     }
   };
 
-  const handleMediaChange = (info: UploadProps) => {
-    if (info.fileList) {
-      const newMedia = info.fileList
-        .filter((file): file is RcFile => file !== undefined)
-        .map((file) => ({
-          ...file,
-          originFileObj: file,
-        }));
-      updateMedia(newMedia);
-      setFileList(newMedia); // Cập nhật giá trị của fileList
-    }
-  };
-
-  useEffect(() => {
-    if (selectedMediaFiles.length > 0) {
-      setFileList(selectedMediaFiles);
-    }
-  }, [selectedMediaFiles]);
-
   const updatePost = async (data: UpdatePostRequestModel) => {
     if (!repo) return;
-
+  
     try {
       setUpdateLoading(true);
+      console.log("UpdatePostRequestModel:", data); // Log the request data
       const res = await repo.updatePost({
         ...data,
         media_ids: mediaIds, // truyền id media từ post id vào trường media_ids
       });
+      console.log("API Response:", res); // Log the API response
       if (res && !res.error) {
         message.success(localStrings.UpdatePost.UpdatePostSuccess);
         await getNewFeed(); // Gọi API làm mới dữ liệu
@@ -122,7 +105,7 @@ const EditPostViewModel = (
         message.error(localStrings.UpdatePost.UpdatePostFailed);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Update Post Error:", error); // Log the error
       message.error(localStrings.UpdatePost.UpdatePostFailed);
     } finally {
       setUpdateLoading(false);
@@ -134,15 +117,25 @@ const EditPostViewModel = (
   };
 
   const handleSubmit = async () => {
-    const data: UpdatePostRequestModel = {
+    if (!postContent.trim() && fileList.length === 0) return;
+  
+    const validFiles = fileList
+      .map((file) => file.originFileObj)
+      .filter((file): file is RcFile => !!file);
+  
+    const mediaFiles = await convertMediaToFiles(validFiles);
+  
+    const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, mediaFiles);
+  
+    const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
       privacy: privacy,
-      media: selectedMediaFiles,
-      media_ids: mediaIds,
+      media: newMediaFiles,
+      media_ids: deletedMedias,
     };
-    await updatePost(data);
-    setModalVisible(false); // Đóng Modal sau khi cập nhật
+  
+    await updatePost(updatePostRequest);
   };
 
   useEffect(() => {
@@ -212,7 +205,7 @@ const EditPostViewModel = (
     const deletedMedias: string[] = [];
     const savedMedias: string[] = [];
     const newMediaFiles: any[] = [];
-
+  
     newMedias?.forEach((item) => {
       if (!mediaIds.includes(item?.fileName as string)) {
         newMediaFiles.push(item);
@@ -221,52 +214,15 @@ const EditPostViewModel = (
         savedMedias.push(ids);
       }
     });
-
+  
     const deletedMediaIds = mediaIds?.filter((id) => !savedMedias.includes(id));
-
+  
     return {
       deletedMedias: deletedMediaIds,
       newMediaFiles,
     };
   };
 
-  // Xử lý đăng bài viết
-  const handleSubmitPost = async () => {
-    if (!postContent.trim() && fileList.length === 0) return;
-
-    const validFiles = fileList
-      .map((file) => file.originFileObj)
-      .filter((file): file is RcFile => !!file);
-
-    const mediaFiles = await convertMediaToFiles(validFiles);
-
-    // Chuyển đổi mediaFiles sang dạng file
-    const mediaFilesAsFiles = mediaFiles
-      .map((file) => {
-        if (file.uri) {
-          const blob = new Blob([file.uri], { type: file.type });
-          return new File([blob], file.name, { type: file.type });
-        } else {
-          console.log(`File ${file.name} không có URI, bỏ qua`);
-          return null;
-        }
-      })
-      .filter((file) => file !== null);
-
-    const formData = TransferToFormData({
-      content: postContent,
-      privacy,
-      media: mediaFilesAsFiles,
-    });
-
-    const UpdatePostRequestModel: UpdatePostRequestModel = {
-      content: postContent,
-      privacy: privacy,
-      media: mediaFilesAsFiles, // Đảm bảo rằng media được truyền đúng
-    };
-
-    await updatePost(UpdatePostRequestModel);
-  };
   const handlePreview = async (file: UploadFile) => {
     let preview = file.url || file.preview;
 
