@@ -100,7 +100,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
 
       <Upload
         className="pt-4"
-        accept="image/*,video/*"
+        accept=".jpg, .jpeg, .gif, .png, .svg, .mp4, .mov"
         listType="picture-card"
         fileList={fileList}
         onChange={handleChange}
@@ -134,7 +134,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
         <Select
           value={privacy}
           onChange={(value) => setPrivacy(value)}
-          style={{ width: 120 ,marginLeft: "10px" }}
+          style={{ width: 120, marginLeft: "10px" }}
         >
           <Select.Option value={Privacy.PUBLIC}>
             {localStrings.Public.Everyone}
@@ -152,25 +152,20 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
           type="primary"
           onClick={() => {
             handleSubmitPost()
-            .then(() => {
-              if (onPostSuccess) {
-                onPostSuccess();
-              }
-            })
-            .catch((error) => console.error(error));
+              .then(() => {
+                if (onPostSuccess) {
+                  onPostSuccess();
+                }
+              })
+              .catch((error) => console.error(error));
           }}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
           loading={createLoading}
         >
-          {createLoading ? (
-            createLoading && (
-              <Spin style={{ color: "white" }} />
-            ) 
-          ) : (
-            localStrings.AddPost.PostNow
-          )}
+          {createLoading
+            ? createLoading && <Spin style={{ color: "white" }} />
+            : localStrings.AddPost.PostNow}
         </Button>
-
       </div>
     </div>
   );

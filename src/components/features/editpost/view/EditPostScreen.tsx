@@ -6,24 +6,16 @@ import {
   Avatar,
   Typography,
   Upload,
-  Spin,
-  GetProp,
-  Select,
   message,
-  Image,
+  Select,
 } from "antd";
-import {
-  CloseOutlined,
-  PlusOutlined,
-  PictureOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile, UploadProps } from "antd/es/upload";
 import { useEffect, useState } from "react";
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -65,6 +57,7 @@ const EditPostScreen = ({
   useEffect(() => {
     getDetailPost(id);
   }, [id]);
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -114,25 +107,9 @@ const EditPostScreen = ({
       <Upload
         listType="picture-card"
         fileList={fileList}
-        accept="image/*,video/*"
-        onPreview={(file) => {
-          let preview = file.url || file.preview;
-
-          if (!preview && file.originFileObj) {
-            preview = URL.createObjectURL(file.originFileObj as Blob);
-          }
-
-          setPreviewImage(preview || "");
-          setPreviewOpen(true);
-        }}
-        onChange={(info) => {
-          handleChange(info);
-          const newMedia = info.fileList.map(
-            (file) => file.originFileObj as Blob
-          );
-          const updatedMedia = [...selectedMediaFiles, ...newMedia];
-          updateMedia(updatedMedia);
-        }}
+        accept=".jpg, .jpeg, .gif, .png, .svg, .mp4, .mov"
+        onPreview={handlePreview}
+        onChange={handleChange}
       >
         {uploadButton}
       </Upload>
@@ -167,7 +144,7 @@ const EditPostScreen = ({
 
       {/* Privacy Text */}
       <div style={{ display: "flex" }}>
-        <div style={{ marginRight: "auto" }}>
+        <div style={{ marginRight: "auto", marginTop: "10px" }}>
           <Text style={{}}>{localStrings.AddPost.PrivacyText}: </Text>
           <Select
             value={privacy}

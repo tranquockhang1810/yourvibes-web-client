@@ -5,7 +5,9 @@ import "slick-carousel/slick/slick-theme.css";
 import useColor from '@/hooks/useColor';
 import { PostMediaModel } from '@/api/features/post/models/PostResponseModel'; 
 import ReactPlayer from 'react-player';
-
+import { dot } from 'node:test/reporters';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css"; 
 interface MediaViewProps {
   mediaItems: PostMediaModel[];
 }
@@ -30,7 +32,9 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
         }}
       />
     ),
+    dotsClass: 'slick-dots',
   };
+  
 
   return (
     <div style={{ position: 'relative', maxWidth: '100%', overflow: 'hidden' }}>
