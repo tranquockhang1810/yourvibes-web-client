@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 //Comments
 import { CommentsResponseModel } from "@/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
@@ -9,11 +10,16 @@ import { UpdateCommentsRequestModel } from "@/api/features/comment/models/Update
 import { defaultLikeCommentRepo } from "@/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/api/features/likeComment/models/LikeCommentResponses";
 //UserLikePost
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import { defaultPostRepo, PostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
+import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
+import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
 
-const PostDetailsViewModel = (postId: string) => {
+const PostDetailsViewModel = (
+  postId: string,
+  repo: PostRepo,
+) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
   const [replyMap, setReplyMap] = useState<{
     [key: string]: CommentsResponseModel[];
@@ -35,6 +41,47 @@ const PostDetailsViewModel = (postId: string) => {
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
   const [replyContent, setReplyContent] = useState("");
+  const [getPostLoading, setGetPostLoading] = useState<boolean>(false);
+  const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
+  const [postContent, setPostContent] = useState("");
+  const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
+  const [mediaIds, setMediaIds] = useState<string[]>([]);
+  const [originalImageFiles, setOriginalImageFiles] = useState<any[]>([]);
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [visibleReplies, setVisibleReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const toggleRepliesVisibility = (commentId: string) => {
+    setVisibleReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+  const handleReplyClick = (commentId: string, isReply: boolean = false) => {
+    if (isReply) {
+      setReplyToReplyId(commentId);
+    } else {
+      setReplyToCommentId(commentId);
+    }
+    setReplyContent("");
+    fetchReplies(postId || "", commentId);
+  };
+
+  const handleShowEditModal = (commentId: string, content: string) => {
+    setEditCommentContent(content);
+    setCurrentCommentId(commentId);
+    setEditModalVisible(true);
+  };
+
+  const handleOutsideClick = () => {
+    if (replyToCommentId || replyToReplyId) {
+      setReplyToCommentId(null);
+      setReplyToReplyId(null);
+      setReplyContent("");
+    }
+  };
+
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -301,44 +348,38 @@ const PostDetailsViewModel = (postId: string) => {
     }
   };
 
-  const handleReplyClick = (commentId: string) => {
-    setReplyToCommentId(commentId);
-    setReplyContent("");
-  };
-
   return {
     comments,
+    replyMap,
     likeCount,
     userLikes,
     newComment,
-    replyToCommentId,
-    replyToReplyId,
-    handleLike,
-    handleAddComment,
-    handleAddReply,
-    setNewComment,
-    setReplyToReplyId,
-    fetchReplies,
-    handleUpdate,
-    handleDelete,
     isEditModalVisible,
-    setEditModalVisible,
     editCommentContent,
-    setEditCommentContent,
+    handleLike,
+    handleDelete,
     handleEditComment,
-    currentCommentId,
-    replyMap,
-    likeIcon,
-    fetchComments,
-    userLikePost,
-    fetchUserLikePosts,
-    setReplyToCommentId,
+    setEditCommentContent,
     replyContent,
     setReplyContent,
-    handleReplyClick,
     handlePostAction,
     handleTextChange,
+    setReplyToCommentId,
+    setReplyToReplyId,
+    replyToCommentId,
+    replyToReplyId,
+    fetchReplies,
+    setEditModalVisible,
+    handleUpdate,
+    toggleRepliesVisibility,
+    handleReplyClick,
+    handleShowEditModal,
+    handleOutsideClick,
+    setVisibleReplies,
+    visibleReplies, 
   };
 };
+
+
 
 export default PostDetailsViewModel;

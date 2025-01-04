@@ -51,7 +51,12 @@ export const VnLocalizedStrings = {
     ReportComment: "Báo cáo bình luận",
     Day: "Ngày",
     HideInfo: "đã ẩn thông tin cá nhân",
-    FriendOnly: "chỉ bạn bè được xem"
+    FriendOnly: "chỉ bạn bè được xem",
+    UserLikePost: " Danh sách người dùng thích bài viết",
+    NoUserLikePost: "Bài viết chưa có lượt thích",
+    ReplyClick: " Ấn vào đây và nhập câu trả lời của bạn nào !!!",
+    CommentClick:" Ấn vào đây và viết bình luận của bạn nào !!!",
+    LoginLoading:"Đang đăng nhập vui lòng đợi ...",
   },
   Form: {
     Label: {
@@ -84,6 +89,7 @@ export const VnLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Xác nhận mật khẩu không hợp lệ!",
       OTPTypeMessage: "Mã OTP phải là chuỗi 6 số!",
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
+      PleaseOldPasswordDifferentNewPassword: "Mật khẩu mới phải khác mật khẩu cũ!",
     },
   },
   Login: {

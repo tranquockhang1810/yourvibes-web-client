@@ -25,12 +25,21 @@ const ProfileFeature = () => {
     friendCount,  
     resultCode,
     fetchUserProfile,
+    fetchMyFriends,
+    page,
   } = ProfileViewModel();
 
   useEffect(() => {
-    fetchUserProfile(user?.id as string);
-    fetchUserPosts();
+    
   }, [user]);
+  useEffect(() => {
+    if (user) { 
+      fetchUserProfile(user?.id as string);
+      fetchMyFriends(page);
+      fetchUserPosts();
+    }
+  }, [page, user, friendCount]);
+  
 
   return (
     <div className='lg:mx-8'>

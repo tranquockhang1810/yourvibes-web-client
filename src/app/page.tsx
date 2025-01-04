@@ -1,9 +1,7 @@
 "use client";
-import { Spin } from "antd";
-import { useAuth } from "@/context/auth/useAuth";
-import LoginPage from "./login/page";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useAuth } from '@/context/auth/useAuth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const Page = () => {
   const [isLoading, setIsLoading] = useState(true);

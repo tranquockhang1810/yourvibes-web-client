@@ -45,7 +45,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
         style={{
           padding: "10px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "center", 
           backgroundColor: backgroundColor,
           border: `1px solid ${lightGray}`,
           borderRadius: "10px",

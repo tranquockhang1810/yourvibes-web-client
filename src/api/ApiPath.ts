@@ -7,8 +7,8 @@ export const ApiPath = {
   // User
   PROFILE: getApiPath("users/"),
   SEARCH: getApiPath("users/"),
-
-  REPORT_USER: getApiPath("users/report/"),
+  CHANGE_PASSWORD: getApiPath("users/change_password"),
+  REPORT_USER: getApiPath("users/report"),
 
   //Friend
   FRIEND_REQUEST: getApiPath("users/friends/friend_request/"),
@@ -26,7 +26,7 @@ export const ApiPath = {
   SHARE_POST: getApiPath("posts/share_post/"),
   ADVERTISE_POST: getApiPath("advertise/"),
 
-  REPORT_POST: getApiPath("posts/report/"),
+  REPORT_POST: getApiPath("posts/report"),
 
   //Comment
   CREATE_COMMENT: getApiPath("comments/"),
@@ -35,7 +35,7 @@ export const ApiPath = {
   DELETE_COMMENT: getApiPath("comments/"),
   GET_COMMENT_REPLIES: getApiPath("comments/"),
 
-  REPORT_COMMENT: getApiPath("comments/report/"),
+  REPORT_COMMENT: getApiPath("comments/report"),
 
   //Like Comment
   GET_LIKE_COMMENT: getApiPath("comments/like_comment/"),
@@ -50,6 +50,10 @@ export const ApiPath = {
   //New Feeds
   GET_NEW_FEEDS: getApiPath('posts/new_feeds/'),
   DELETE_NEW_FEED: getApiPath('posts/new_feeds/'),
+
+  //Forgot Password
+  GET_OTP_FORGOOT_PASSWORD: getApiPath('users/get_otp_forgot_user_password'),
+  FORGOT_PASSWORD: getApiPath("users/forgot_user_password"),
 };
 
 function getApiPath(path: string) {

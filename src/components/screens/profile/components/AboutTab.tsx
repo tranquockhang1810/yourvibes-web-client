@@ -67,7 +67,8 @@ const AboutTab = ({
           </Flex>
         ) : (
           <div className="flex flex-col xl:flex-row w-full items-center gap-4 xl:items-start">
-            <div className="w-full max-w-[600px]">
+            <div className="w-full max-w-[600px] xl:max-w-96" style={{  position: "sticky",
+          top: 0,}}>
               <div
                 className="w-auto flex flex-col px-5 border rounded-md "
                 style={{ backgroundColor: backgroundColor }}

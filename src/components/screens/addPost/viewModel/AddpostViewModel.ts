@@ -44,8 +44,7 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
         console.error("Lỗi khi tạo bài viết:", response.error);
       } else {
         setPostContent("");
-        clearSavedPost?.();
-        //window.location.reload(); // Reload lại toàn bộ trang
+        clearSavedPost?.(); 
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);

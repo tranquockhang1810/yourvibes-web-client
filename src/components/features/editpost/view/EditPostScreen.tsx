@@ -6,65 +6,65 @@ import {
   Avatar,
   Typography,
   Upload,
-  Spin,
-  GetProp,
+  message,
   Select,
 } from "antd";
-import {
-  CloseOutlined,
-  PlusOutlined,
-  PictureOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import EditPostViewModel from "../viewModel/EditPostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile, UploadProps } from "antd/es/upload";
 import { useEffect, useState } from "react";
-
 const { TextArea } = Input;
 const { Text } = Typography;
 
 interface EditPostScreenProps {
   id: string;
+  postId: string;
+  onEditPostSuccess?: () => void;
 }
 
-const EditPostScreen = ({ id }: EditPostScreenProps) => {
+const EditPostScreen = ({
+  id,
+  postId,
+  onEditPostSuccess,
+}: EditPostScreenProps) => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
 
+  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const {
     handlePreview,
     handleChange,
     updateLoading,
     postContent,
     setPostContent,
-    originalImageFiles,
-    setOriginalImageFiles,
     privacy,
     setPrivacy,
-    updatePost,
     getDetailPost,
     fileList,
     handleSubmit,
     updateMedia,
-  } = EditPostViewModel(defaultPostRepo, id);
+    selectedMediaFiles,
+    getNewFeed,
+    setMediaIds,
+    previewImage,
+    setPreviewImage,
+  } = EditPostViewModel(defaultPostRepo, id, postId);
 
   useEffect(() => {
     getDetailPost(id);
   }, [id]);
-  
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-  const handleMediaChange = async (newMedia: any[]) => {
-    await updateMedia(newMedia);
-  };
+
   return (
     <div style={{ padding: "20px" }}>
       {/* Header */}
@@ -75,16 +75,9 @@ const EditPostScreen = ({ id }: EditPostScreenProps) => {
           marginBottom: "20px",
         }}
       >
-        <Button
-          icon={<CloseOutlined />}
-          onClick={() => window.history.back()}
-        />
         <Typography.Title level={4}>
           {localStrings.Post.EditPost}
         </Typography.Title>
-        <Button type="primary" onClick={handleSubmit} loading={updateLoading}>
-          {localStrings.Public.Save}
-        </Button>
       </div>
 
       {/* User Info */}
@@ -114,28 +107,77 @@ const EditPostScreen = ({ id }: EditPostScreenProps) => {
       <Upload
         listType="picture-card"
         fileList={fileList}
+        accept=".jpg, .jpeg, .gif, .png, .svg, .mp4, .mov"
         onPreview={handlePreview}
-        onChange={(info) => {
-          handleChange(info);
-          const newMedia = info.fileList.map((file) => file.originFileObj);
-          updateMedia(newMedia);
-        }}
+        onChange={handleChange}
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {uploadButton}
       </Upload>
+      {previewImage && (
+        <img
+          src={previewImage}
+          style={{ display: "block" }}
+          onClick={() => setPreviewOpen(true)}
+        />
+      )}
+      {previewOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onClick={() => setPreviewOpen(false)}
+        >
+          <img
+            src={previewImage}
+            style={{ maxWidth: "80%", maxHeight: "80%" }}
+          />
+        </div>
+      )}
 
       {/* Privacy Text */}
-      <div style={{ marginTop: "10px" }}>
-        <Text>{localStrings.AddPost.PrivacyText}: </Text>
-        <Select
-          value={privacy}
-          onChange={(value) => setPrivacy(value)}
-          style={{ width: 120 }}
-        >
-          <Select.Option value={Privacy.PUBLIC}>Public</Select.Option>
-          <Select.Option value={Privacy.FRIEND_ONLY}>Friends</Select.Option>
-          <Select.Option value={Privacy.PRIVATE}>Private</Select.Option>
-        </Select>
+      <div style={{ display: "flex" }}>
+        <div style={{ marginRight: "auto", marginTop: "10px" }}>
+          <Text style={{}}>{localStrings.AddPost.PrivacyText}: </Text>
+          <Select
+            value={privacy}
+            onChange={(value) => setPrivacy(value)}
+            style={{ width: 120 }}
+          >
+            <Select.Option value={Privacy.PUBLIC}>Public</Select.Option>
+            <Select.Option value={Privacy.FRIEND_ONLY}>Friends</Select.Option>
+            <Select.Option value={Privacy.PRIVATE}>Private</Select.Option>
+          </Select>
+        </div>
+        <div style={{ marginLeft: "auto" }}>
+          <Button
+            type="primary"
+            onClick={() => {
+              handleSubmit()
+                .then(() => {
+                  if (onEditPostSuccess) {
+                    onEditPostSuccess(); // Đóng màn hình chỉnh sửa (Modal hoặc Component)
+                  }
+                  getNewFeed(); // Làm mới danh sách bài viết
+                })
+                .catch((error) => {
+                  console.error("Error during post update:", error);
+                  message.error(localStrings.PostDetails.Error);
+                });
+            }}
+            disabled={!postContent.trim() && selectedMediaFiles.length === 0}
+            loading={updateLoading}
+          >
+            {localStrings.Public.Save}
+          </Button>
+        </div>
       </div>
     </div>
   );
