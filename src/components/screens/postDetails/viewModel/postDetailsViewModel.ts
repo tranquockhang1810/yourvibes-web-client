@@ -319,9 +319,7 @@ const PostDetailsViewModel = (
       postId: postId,
       page: 1,
       limit: 10,
-    });
-    console.log(postId, "post id");
-    console.log("ai like bài này: ", response);
+    }); 
     setUserLikePost(response?.data);
   };
 

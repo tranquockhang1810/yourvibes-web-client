@@ -7,9 +7,7 @@ import { useState } from "react";
 import { UploadFile, UploadChangeParam, UploadProps } from "antd/es/upload";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { GetProp } from "antd";
-import { RcFile } from "antd/es/upload";
-import { TransferToFormData } from "@/utils/helper/TransferToFormData";
-import { Select } from "antd"; 
+import { RcFile } from "antd/es/upload"; 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 

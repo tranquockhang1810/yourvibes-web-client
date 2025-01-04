@@ -25,7 +25,6 @@ export const ApiPath = {
   LIKE_POST: getApiPath("posts/like_post/"),
   SHARE_POST: getApiPath("posts/share_post/"),
   ADVERTISE_POST: getApiPath("advertise/"),
-
   REPORT_POST: getApiPath("posts/report/"),
 
   //Comment

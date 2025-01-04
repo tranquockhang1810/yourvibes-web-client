@@ -53,8 +53,9 @@ const EditPostViewModel = (
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
-  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]); 
+  const [selectedMediaFilesToSend, setSelectedMediaFilesToSend] = useState<any[]>([]);
+
 
   const getDetailPost = async (id: string) => {
     if (!repo) return;
@@ -91,10 +92,10 @@ const EditPostViewModel = (
   
     try {
       setUpdateLoading(true);
-      console.log("UpdatePostRequestModel:", data); // Log the request data
+      console.log("updatePost UpdatePostRequestModel:", data); // Log the request data
       const res = await repo.updatePost({
         ...data,
-        media_ids: mediaIds, // truyền id media từ post id vào trường media_ids
+        media: data.media,  // truyền mảng media vào trường media
       });
       console.log("API Response:", res); // Log the API response
       if (res && !res.error) {
@@ -105,7 +106,7 @@ const EditPostViewModel = (
         message.error(localStrings.UpdatePost.UpdatePostFailed);
       }
     } catch (error) {
-      console.error("Update Post Error:", error); // Log the error
+      console.error("Update Post Error:", error); 
       message.error(localStrings.UpdatePost.UpdatePostFailed);
     } finally {
       setUpdateLoading(false);
@@ -127,13 +128,15 @@ const EditPostViewModel = (
   
     const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, mediaFiles);
   
+    console.log("selectedMediaFilesToSend:", selectedMediaFilesToSend);
     const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
       privacy: privacy,
       media: newMediaFiles,
       media_ids: deletedMedias,
-    };
+    }; 
+    console.log("Submit UpdatePostRequestModel:", updatePostRequest);
   
     await updatePost(updatePostRequest);
   };
@@ -205,18 +208,20 @@ const EditPostViewModel = (
     const deletedMedias: string[] = [];
     const savedMedias: string[] = [];
     const newMediaFiles: any[] = [];
-  
+
     newMedias?.forEach((item) => {
-      if (!mediaIds.includes(item?.fileName as string)) {
+      if (!selectedMediaFiles.includes(item?.fileName as string)) {
         newMediaFiles.push(item);
       } else {
-        const ids = mediaIds.find((id) => id === item?.fileName) as string;
+        const ids = selectedMediaFiles.find(
+          (id) => id === item?.fileName
+        ) as string;
         savedMedias.push(ids);
       }
     });
-  
+
     const deletedMediaIds = mediaIds?.filter((id) => !savedMedias.includes(id));
-  
+
     return {
       deletedMedias: deletedMediaIds,
       newMediaFiles,
@@ -238,21 +243,14 @@ const EditPostViewModel = (
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-
+  
     const validFiles = newFileList
       .map((file) => file.originFileObj)
-      .filter((file): file is RcFile => !!file); // Lọc các file hợp lệ
-
-    const mediaFiles = await convertMediaToFiles(validFiles); // Chuyển đổi thành URI hợp lệ
+      .filter((file): file is RcFile => !!file);
+  
+    const mediaFiles = await convertMediaToFiles(validFiles);
     setSelectedMediaFiles(mediaFiles);
-  };
-
-  const updateMedia = (media: any[]) => {
-    const mediaFiles = media.map((item) => ({
-      uri: item?.originFileObj?.uri || "",
-      fileName: item?.originFileObj?.name || "",
-    }));
-    setSelectedMediaFiles(mediaFiles);
+    setSelectedMediaFilesToSend(mediaFiles); // Cập nhật biến mới
   };
 
   const fetchUserLikePosts = async (postId: string) => {
@@ -274,8 +272,7 @@ const EditPostViewModel = (
     setPrivacy,
     getDetailPost,
     fileList,
-    handleSubmit,
-    updateMedia,
+    handleSubmit, 
     selectedMediaFiles,
     getNewFeed,
     previewImage,

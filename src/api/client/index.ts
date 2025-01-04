@@ -2,10 +2,13 @@ import axios from "axios";
 import { BaseApiResponseModel } from "../baseApiResponseModel/baseApiResponseModel";
 import IApiClient from "./IApiClient";
 import ModelConverter from "@/utils/modelConvert/ModelConverter";
+import curlirize from 'axios-curlirize';
 
 const api = axios.create({
   timeout: 60000,
 });
+
+curlirize(api);
 
 //Request interceptors
 api.interceptors.request.use(
