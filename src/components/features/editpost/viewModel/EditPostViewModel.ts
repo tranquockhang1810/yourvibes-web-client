@@ -135,15 +135,14 @@ const EditPostViewModel = (
       postId: id,
       content: postContent,
       privacy: privacy,
-      media: selectedMediaFilesToSend.map(file => ({
-          uri: file.uri,
-          name: file.name,
-          type: file.type
+      media: selectedMediaFilesToSend.map((file) => ({
+        uri: file.uri,
+        name: file.name,
+        type: file.type,
       })),
       media_ids: deletedMedias,
-  };
+    };
     console.log("Submit UpdatePostRequestModel:", updatePostRequest);
-
     await updatePost(updatePostRequest);
   };
 

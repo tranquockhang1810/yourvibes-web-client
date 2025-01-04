@@ -45,7 +45,7 @@ const EditPostScreen = ({
     setPrivacy,
     getDetailPost,
     fileList,
-    handleSubmit, 
+    handleSubmit,
     selectedMediaFiles,
     getNewFeed,
     setMediaIds,
