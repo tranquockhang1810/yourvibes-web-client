@@ -53,9 +53,10 @@ const EditPostViewModel = (
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
-  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]); 
-  const [selectedMediaFilesToSend, setSelectedMediaFilesToSend] = useState<any[]>([]);
-
+  const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+  const [selectedMediaFilesToSend, setSelectedMediaFilesToSend] = useState<
+    any[]
+  >([]);
 
   const getDetailPost = async (id: string) => {
     if (!repo) return;
@@ -89,13 +90,13 @@ const EditPostViewModel = (
 
   const updatePost = async (data: UpdatePostRequestModel) => {
     if (!repo) return;
-  
+
     try {
       setUpdateLoading(true);
       console.log("updatePost UpdatePostRequestModel:", data); // Log the request data
       const res = await repo.updatePost({
         ...data,
-        media: data.media,  // truyền mảng media vào trường media
+        media: data.media, // truyền mảng media vào trường media
       });
       console.log("API Response:", res); // Log the API response
       if (res && !res.error) {
@@ -106,7 +107,7 @@ const EditPostViewModel = (
         message.error(localStrings.UpdatePost.UpdatePostFailed);
       }
     } catch (error) {
-      console.error("Update Post Error:", error); 
+      console.error("Update Post Error:", error);
       message.error(localStrings.UpdatePost.UpdatePostFailed);
     } finally {
       setUpdateLoading(false);
@@ -119,25 +120,30 @@ const EditPostViewModel = (
 
   const handleSubmit = async () => {
     if (!postContent.trim() && fileList.length === 0) return;
-  
+
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
-  
+
     const mediaFiles = await convertMediaToFiles(validFiles);
-  
+
     const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, mediaFiles);
-  
+
     console.log("selectedMediaFilesToSend:", selectedMediaFilesToSend);
+
     const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
       privacy: privacy,
-      media: newMediaFiles,
+      media: selectedMediaFilesToSend.map(file => ({
+          uri: file.uri,
+          name: file.name,
+          type: file.type
+      })),
       media_ids: deletedMedias,
-    }; 
+  };
     console.log("Submit UpdatePostRequestModel:", updatePostRequest);
-  
+
     await updatePost(updatePostRequest);
   };
 
@@ -243,11 +249,11 @@ const EditPostViewModel = (
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-  
+
     const validFiles = newFileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
-  
+
     const mediaFiles = await convertMediaToFiles(validFiles);
     setSelectedMediaFiles(mediaFiles);
     setSelectedMediaFilesToSend(mediaFiles); // Cập nhật biến mới
@@ -272,7 +278,7 @@ const EditPostViewModel = (
     setPrivacy,
     getDetailPost,
     fileList,
-    handleSubmit, 
+    handleSubmit,
     selectedMediaFiles,
     getNewFeed,
     previewImage,
