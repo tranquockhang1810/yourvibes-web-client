@@ -7,7 +7,8 @@ import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import ProfileTabs from '../components/ProfileTabs';
 import { FriendStatus, Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
 import ProfileViewModel from '../viewModel/ProfileViewModel';
-import { useRouter } from 'next/navigation';
+import {Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const ProfileFeature = () => {
     const { backgroundColor } = useColor();
@@ -32,18 +33,22 @@ const ProfileFeature = () => {
   }, [user]);
 
   return (
-    <div>
-        <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
-        <ProfileTabs
-          posts={posts}
-          loading={loading}
-          profileLoading={false}
-          loadMorePosts={loadMorePosts}
-          userInfo={user as UserModel}
-          friendCount={friendCount}
-          friends={friends}
-          resultCode={resultCode}
-        />
+    <div className='lg:mx-8'>
+      {loading ?(<Spin indicator={<LoadingOutlined spin />} size="large" />):(
+        <>
+          <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
+          <ProfileTabs
+            posts={posts}
+            loading={loading}
+            profileLoading={false}
+            loadMorePosts={loadMorePosts}
+            userInfo={user as UserModel}
+            friendCount={friendCount}
+            friends={friends}
+            resultCode={resultCode}
+          />
+        </>
+      )}
       </div>
   )
 }

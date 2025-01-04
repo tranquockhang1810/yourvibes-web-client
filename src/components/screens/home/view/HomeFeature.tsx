@@ -6,7 +6,7 @@ import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation"; 
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen";
 import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
 
@@ -61,7 +61,10 @@ const Homepage = () => {
         </div>
         <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+          <AddPostScreen onPostSuccess={() => {
+            setIsModalVisible(false);
+            fetchNewFeeds();
+          }} />
         </Modal>
      </>
     );
@@ -78,7 +81,6 @@ const Homepage = () => {
         backgroundColor,
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
         borderRadius: '8px', 
-        right: '10px',
       }}>
         {friends.map((user) => (
           <div
@@ -124,7 +126,7 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="flex mt-4 ">
+    <div className="lg:flex mt-4 ">
       {/* Content */}
       <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
@@ -139,16 +141,17 @@ const Homepage = () => {
             </div>
           ))
         ) : (
-          <p style={{ textAlign: "center", marginTop: "20px" }}>
-            No posts available
-          </p>
+          <div className="w-full h-screen flex justify-center items-center">
+          <Spin tip="Loading...">
+          </Spin>
+        </div>
         )}
   
         {renderFooter()}
       </div>
-      <div className="flex-initial w-[300px]">
-        {renderFriends()}
-      </div>
+      <div className="flex-initial w-[300px] hidden xl:block">
+  {renderFriends()}
+</div>
     </div>
   );
 }

@@ -13,11 +13,8 @@ import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
 
-const PostDetailsViewModel = (
-  postId: string,
-) => {
+const PostDetailsViewModel = (postId: string) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
-
   const [replyMap, setReplyMap] = useState<{
     [key: string]: CommentsResponseModel[];
   }>({});
@@ -270,7 +267,6 @@ const PostDetailsViewModel = (
     }
   };
 
-  
   const fetchUserLikePosts = async (postId: string) => {
     const response = await defaultPostRepo.getPostLikes({
       postId: postId,
@@ -296,20 +292,19 @@ const PostDetailsViewModel = (
 
   const handlePostAction = () => {
     if (replyToCommentId) {
-      handleAddReply(replyContent, replyToCommentId);  
-      setReplyToCommentId(null); 
-      setReplyContent(""); 
+      handleAddReply(replyContent, replyToCommentId);
+      setReplyToCommentId(null);
+      setReplyContent("");
     } else {
-      handleAddComment(newComment); 
-      setNewComment(""); 
+      handleAddComment(newComment);
+      setNewComment("");
     }
   };
 
   const handleReplyClick = (commentId: string) => {
     setReplyToCommentId(commentId);
-    setReplyContent("");  
+    setReplyContent("");
   };
-
 
   return {
     comments,
@@ -341,8 +336,8 @@ const PostDetailsViewModel = (
     replyContent,
     setReplyContent,
     handleReplyClick,
-    handlePostAction, 
-    handleTextChange,  
+    handlePostAction,
+    handleTextChange,
   };
 };
 

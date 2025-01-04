@@ -309,7 +309,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               strokeWidth: 2,
                               marginRight: 50,
                             }}
-                            onClick={() => handleReplyClick(reply.id, true)}
+                            onClick={() => handleReplyClick(reply.id)}
                           />
                         </Col>
                         <Col span={4}>
@@ -444,7 +444,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       marginRight: 50,
                                     }}
                                     onClick={() =>
-                                      handleReplyClick(nestedReply.id, true)
+                                      handleReplyClick(nestedReply.id)
                                     }
                                   />
                                 </Col>

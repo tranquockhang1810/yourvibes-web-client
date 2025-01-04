@@ -17,11 +17,7 @@ const ListFriends = ({
     
    
   return (
-    <div className="flex justify-center items-center mt-4">
-        
-        <div className='border rounded-md border-solidborder-gray-900 basis-3/4 lg:basis-2/4'>
-            <div className='text-xl font-bold pb-2'>{localStrings.ListFriends.ListFriends}</div>
-                   <div className=" m-2 grid md:grid-cols-2 gap-x-4 gap-y-2">
+                   <div className=" m-2 grid md:grid-cols-2 gap-x-4 gap-y-2 cursor-pointer">
                      {friends.map((friend, index) => (
                         <div key={index} className="flex flex-row items-center p-2 border rounded-md">
                             <div className='flex flex-row items-center' onClick={() => router.push(`/user/${friend?.id}`)}>
@@ -37,9 +33,6 @@ const ListFriends = ({
                         </div> ))
             } 
                     </div>
-            
-        </div>
-    </div>
     
   )
 }

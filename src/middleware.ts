@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-  if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
+  if (pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/forgotPassword")) {
     return NextResponse.next();
   }
 

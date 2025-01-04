@@ -25,7 +25,7 @@ export class ProfileRepo implements IProfileRepo {
     return client.get(ApiPath.PROFILE + userId);
   }
   async updateProfile(data: UpdateProfileRequestModel): Promise<BaseApiResponseModel<UserModel>> {
-    const formData = TransferToFormData(data);
+    const formData = TransferToFormData(data);   
     return client.patch(ApiPath.PROFILE, formData, { headers: { "Content-Type": "multipart/form-data" } });
   }
   async sendFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {

@@ -17,14 +17,17 @@ const updateProfile = async (data: UpdateProfileRequestModel) => {
   try {
     setLoading(true);
     const response = await defaultProfileRepo.updateProfile(data);
+    console.log("response", response);
     
     if (!response?.error) {
       onUpdateProfile(response?.data);
       message.success(localStrings.UpdateProfile.UpdateSuccess);
-      // router.back();
+      router.push("/profile?tab=info");
     } else {
+      console.log("error", response?.error);
+      
       message.error(localStrings.UpdateProfile.UpdateFailed);
-      // setLoading(false);
+      setLoading(false);
     }
   } catch (error: any) {
     console.error(error);

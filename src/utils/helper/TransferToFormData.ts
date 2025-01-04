@@ -27,8 +27,8 @@ export const convertMediaToFiles = async (media: RcFile[]) => {
     media.map(async (mediaItem, index) => {
       const { name, type } = mediaItem;
 
-      const fileExtension = type.split('/')[1];
-      const fileName = `${name}.${fileExtension}`;
+      // const fileExtension = type.split('/')[1];
+      const fileName = `${name}`;
 
       const fileReader = new FileReader();
       const file: CustomUploadFile = {
