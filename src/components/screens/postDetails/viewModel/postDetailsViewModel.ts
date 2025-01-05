@@ -223,7 +223,7 @@ const PostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
 
-  const handleDelete = (commentId: string) => {
+  const handleDelete = (commentId: string, parentId: string) => {
     Modal.confirm({
       title: `${localStrings.PostDetails.DeleteComment}`,
       content: "",
@@ -231,25 +231,39 @@ const PostDetailsViewModel = (
       cancelText: `${localStrings.PostDetails.No}`,
       onCancel: () => {},
       onOk: () => {
-        defaultCommentRepo.deleteComment(commentId).then(() => {
-          // Cập nhật trạng thái comments
-          setComments((prevComments) =>
-            prevComments.filter((comment) => comment.id !== commentId)
-          );
-
-          // Cập nhật trạng thái replyMap
-          if (replyMap[commentId]) {
-            setReplyMap((prevReplyMap) => {
-              const updatedReplies = prevReplyMap[commentId].filter(
-                (reply) => reply.id !== commentId
-              );
-              return { ...prevReplyMap, [commentId]: updatedReplies };
+        defaultCommentRepo.deleteComment(commentId)
+          .then(() => {
+            // Cập nhật trạng thái comments
+            setComments((prevComments) =>
+              prevComments.filter((comment) => comment.id !== commentId)
+            );
+            // Cập nhật trạng thái replyMap
+            if (replyMap[commentId]) {
+              setReplyMap((prevReplyMap) => {
+                const updatedReplies = prevReplyMap[commentId].filter(
+                  (reply) => reply.id !== commentId
+                );
+                return { ...prevReplyMap, [commentId]: updatedReplies };
+              });
+            }
+          })
+          .then(() => {
+            // Hiển thị thông báo khi xóa thành công
+            message.success({
+              content: localStrings.PostDetails.DeleteCommentSusesfully,
             });
-          }
-        });
+          })
+          .catch((error) => {
+            // Hiển thị thông báo khi xóa thất bại
+            message.error({
+              content: localStrings.PostDetails.DeleteCommentFailed,
+            });
+            console.error(error);
+          });
       },
     });
   };
+
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
@@ -257,17 +271,26 @@ const PostDetailsViewModel = (
         post_id: postId,
         content: comment,
       };
-
+  
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          message.success({
+            content: localStrings.PostDetails.CommentSuccess,
+          });
         } else {
+          message.error({
+            content: localStrings.PostDetails.CommentFailed,
+          });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+        message.error({
+          content: localStrings.PostDetails.CommentFailed,
+        });
       } finally {
         setNewComment("");
       }
@@ -277,7 +300,7 @@ const PostDetailsViewModel = (
   const handleAddReply = async (comment: string, id: string) => {
     if (comment.trim()) {
       const parentId = replyToReplyId || replyToCommentId;
-
+  
       const commentData: CreateCommentsRequestModel = {
         post_id: postId,
         content: comment,
@@ -303,10 +326,19 @@ const PostDetailsViewModel = (
             [parentId || ""]: updatedReplies,
           }));
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          message.success({
+            content: localStrings.PostDetails.ReplySuccess,
+          });
         } else {
+          message.error({
+            content: localStrings.PostDetails.ReplyFailed,
+          });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+        message.error({
+          content: localStrings.PostDetails.ReplyFailed,
+        });
       } finally {
         setNewComment("");
         setReplyToReplyId(null);
@@ -377,7 +409,5 @@ const PostDetailsViewModel = (
     visibleReplies, 
   };
 };
-
-
-
+ 
 export default PostDetailsViewModel;

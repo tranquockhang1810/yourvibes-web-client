@@ -166,6 +166,8 @@ export const ENGLocalizedStrings = {
     ReportComment: "Report comment",
     EditComment: "Edit comment",
     DeleteComment: "Delete comment",
+    DeleteCommentSusesfully: "Delete comment successful!",
+    DeleteCommentFailed: "Delete comment failed!",
     ActionOptions:"Action options",
     ReportSusesfully: "Reported succeeded!",
     Success: "Success",

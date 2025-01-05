@@ -6,7 +6,7 @@ import { usePostContext } from "@/context/post/usePostContext";
 import { useState } from "react";
 import { UploadFile, UploadChangeParam, UploadProps } from "antd/es/upload";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
-import { GetProp } from "antd";
+import { GetProp, message } from "antd";
 import { RcFile } from "antd/es/upload"; 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -37,15 +37,24 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
     try {
       setCreateLoading(true);
       const response = await repo.createPost(data);
-
+  
       if (response?.error) {
         console.error("Lỗi khi tạo bài viết:", response.error);
+        message.error({
+          content: localStrings.AddPost.CreatePostFailed,
+        });
       } else {
         setPostContent("");
-        clearSavedPost?.(); 
+        clearSavedPost?.();
+        message.success({
+          content: localStrings.AddPost.CreatePostSuccess,
+        });
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);
+      message.error({
+        content: localStrings.AddPost.CreatePostFailed,
+      });
     } finally {
       setCreateLoading(false);
     }

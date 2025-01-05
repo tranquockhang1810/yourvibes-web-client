@@ -2,8 +2,12 @@ import { AuthenRepo } from "@/api/features/authenticate/AuthenRepo";
 import { LoginRequestModel } from "@/api/features/authenticate/model/LoginModel";
 import { useState } from "react";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
+ 
 
 const LoginViewModel = (repo: AuthenRepo) => {
+  
+  const { localStrings } = useAuth();
   const { onLogin } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -15,9 +19,15 @@ const LoginViewModel = (repo: AuthenRepo) => {
         onLogin(res.data); // Gọi onLogin từ useAuth
       } else {
         console.error(res?.error?.message || "Login failed");
+        message.error({
+          content: localStrings.Login.LoginFailed
+        })
       }
     } catch (error: any) {
       console.error(error.message || "Error during login");
+      message.error({
+        content: localStrings.Login.LoginFailed
+      })
     } finally {
       setLoading(false);
     }
