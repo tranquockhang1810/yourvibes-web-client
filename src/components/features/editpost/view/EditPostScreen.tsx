@@ -150,9 +150,9 @@ const EditPostScreen = ({
             onChange={(value) => setPrivacy(value)}
             style={{ width: 120 }}
           >
-            <Select.Option value={Privacy.PUBLIC}>Public</Select.Option>
-            <Select.Option value={Privacy.FRIEND_ONLY}>Friends</Select.Option>
-            <Select.Option value={Privacy.PRIVATE}>Private</Select.Option>
+            <Select.Option value={Privacy.PUBLIC}>{localStrings.Public.Public}</Select.Option>
+            <Select.Option value={Privacy.FRIEND_ONLY}>{localStrings.Public.Friend}</Select.Option>
+            <Select.Option value={Privacy.PRIVATE}>{localStrings.Public.Private}</Select.Option>
           </Select>
         </div>
         <div style={{ marginLeft: "auto" }}>

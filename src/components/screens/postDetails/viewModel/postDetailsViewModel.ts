@@ -223,7 +223,7 @@ const PostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
 
-  const handleDelete = (commentId: string, parentId: string) => {
+  const handleDelete = (commentId: string) => {
     Modal.confirm({
       title: `${localStrings.PostDetails.DeleteComment}`,
       content: "",
