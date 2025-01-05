@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Layout, Menu, Input, Grid } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
 import { createElement } from "react";
 import {
   FaHome,
@@ -13,22 +12,23 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { useAuth } from "@/context/auth/useAuth";
-import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
+import { usePathname, useRouter, useSearchParams } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router`
 import SearchScreen from "@/components/screens/search/views/SearchScreen";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import useColor from "@/hooks/useColor";
+import { IoMenu } from "react-icons/io5";
 
 const { useBreakpoint } = Grid;
 const siderStyle: React.CSSProperties = {
-  overflow: 'auto',
-  height: '100vh',
-  position: 'fixed',
+  overflow: "auto",
+  height: "100vh",
+  position: "fixed",
   insetInlineStart: 0,
   top: 0,
   bottom: 0,
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'stable',
+  scrollbarWidth: "thin",
+  scrollbarGutter: "stable",
 };
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
@@ -37,7 +37,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { localStrings } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const screens = useBreakpoint();
+  const [selectedKey, setSelectedKey] = useState("0");
 
   const content = {
     nav: [
@@ -66,7 +69,19 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const { nav } = content;
 
+  const isActived = (link: string) => {
+    const [basePath, queryString] = link.split("?");
+    const linkParams = new URLSearchParams(queryString);
 
+    if (pathname !== basePath) return false;
+
+    // So sánh từng query parameter trong link với `useSearchParams`
+    for (const [key, value] of linkParams.entries()) {
+      if (searchParams.get(key) !== value) return false;
+    }
+
+    return true;
+  };
 
   const handleMenuClick = () => {
     setVisible(!visible);
@@ -82,7 +97,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <Layout>
       <Header
         style={{
-          position: 'sticky',
+          position: "sticky",
           top: 0,
           backgroundColor: backgroundColor,
           padding: "0 20px",
@@ -109,52 +124,63 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           />
           <SearchScreen />
         </div>
-        <MenuOutlined
-          type="menu"
-          style={{
-            fontSize: "24px",
-            color: "black",
-            cursor: "pointer",
-            alignItems: "center",
-            marginBottom: "9px",
-            marginLeft: "10px",
-          }}
-          onClick={handleMenuClick}
-        />
+        <div  className="block lg:hidden text-2xl mb-2.5 ml-2.5"
+          onClick={handleMenuClick}>
+           <IoMenu />
+        </div>
       </Header>
       <Layout>
         <Sider
           width={200}
           style={{
-            backgroundColor: backgroundColor,
             display: screens.lg ? "block" : "none",
-            overflow: 'auto',
-            height: '100vh',
-            position: 'fixed',
+            overflow: "auto",
+            height: "100vh",
+            position: "fixed",
             insetInlineStart: 0,
             top: 0,
             bottom: 0,
-            scrollbarWidth: 'thin',
-            scrollbarGutter: 'stable',
           }}
         >
           <div className="demo-logo-vertical" />
           <Menu
             mode="inline"
             className="flex flex-col gap-4 justify-center h-full"
-            items={nav.map((item, index) => ({
-              key: index.toString(),
-              icon: <item.icon style={{ fontSize: "24px",
-                color: "black",}} />,
-              label:<span style={{fontSize: "18px"}}>{item.content}</span>,
-              onClick: () => handleItemClick(item.link),
-            }))}
+            items={nav.map((item, index) => {
+              const actived = isActived(item.link);
+              return {
+                key: index.toString(),
+                label: (
+                  <div
+                    className={`flex items-center gap-4 w-full h-full px-4 pl-8`}
+                    style={{
+                      backgroundColor: actived ? "#1c1917" : "transparent",
+                      color: actived ? "white" : "black",
+                    }}
+                    onClick={() => handleItemClick(item.link)}
+                  >
+                    {createElement(item.icon, {
+                      size: 20,
+                    })}
+                    <span>{item.content}</span>
+                  </div>
+                ),
+                style: {
+                  padding: 0,
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                  },
+                },
+              };
+            })}
           />
         </Sider>
-        <Content style={{ marginInlineStart: screens.lg ? 200 : 0 }}>
-          <div>
-            {children}
-            </div>
+        <Content style={{ marginInlineStart: screens.lg ? 200 : 0, 
+        // backgroundColor: backgroundColor,
+         }}>
+          <div className="mx-1 lg:mx-4">{children}</div>
         </Content>
       </Layout>
       {visible && (

@@ -6,7 +6,8 @@ import { ENGLocalizedStrings } from "@/utils/localizedStrings/english";
 import translateLanguage from '../../utils/i18n/translateLanguage';
 import { useRouter } from 'next/navigation';
 import { UserModel } from '../../api/features/authenticate/model/LoginModel';
-import { cookies } from 'next/headers';
+import { jwtDecode } from 'jwt-decode';
+import { access } from 'fs';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -40,8 +41,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const onLogin = (user: any) => {
     localStorage.setItem('user', JSON.stringify(user.user));
     localStorage.setItem('accesstoken', user.access_token);
-    // localStorage.setItem('refreshtoken', user.refreshtoken);
-    document.cookie = "accesstoken=your_token; path=/; SameSite=None; Secure";
+
+    // Giải mã access_token để lấy thời gian hết hạn
+    const decodedToken: any = jwtDecode(user.access_token);
+    const expiresAt = new Date(decodedToken.exp * 1000); // Chuyển đổi từ giây sang mili giây
+    document.cookie = `accesstoken=${user.access_token}; path=/; SameSite=None; Secure; expires=${expiresAt.toUTCString()}`;
 
     setIsAuthenticated(true);
     setUser(user.user);
@@ -51,19 +55,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const onUpdateProfile = (user: any) => {
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify(user));
-    // localStorage.setItem('refreshtoken', user.refreshtoken);
     setIsAuthenticated(true);
     setUser(user);
-    router.push(`/profile`);
-
   }
 
   const onLogout = async () => {
-    //Xóa dữ liệu trong storage và trong biến
     localStorage.removeItem('user');
     localStorage.removeItem('accesstoken');
     document.cookie = 'accesstoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    // await localStorage.removeItem('refreshtoken');
     setIsAuthenticated(false);
     setUser(null);
     router.push('/login');
@@ -78,17 +77,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [language]);
 
   useEffect(() => {
-    // const checkAuthStatus = () => {
-    //   const storedUser = localStorage.getItem('user');
-    //   const storedAccessToken = localStorage.getItem('accesstoken');
-
-    //   if (storedUser && storedAccessToken) {
-    //     setUser(JSON.parse(storedUser));
-    //     setIsAuthenticated(true);
-    //   } else {
-    //     setIsAuthenticated(false);
-    //   }
-    // };
     const checkAuthStatus = () => {
       const storedUser = localStorage.getItem('user');
       const storedAccessToken = localStorage.getItem('accesstoken');
@@ -106,7 +94,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsAuthenticated(false);
       }
     };
-    
 
     checkAuthStatus();
   }, []);

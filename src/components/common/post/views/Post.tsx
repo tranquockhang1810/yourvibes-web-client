@@ -45,6 +45,8 @@ import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/pos
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { log } from "console";
 import { console } from "inspector";
+import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
+import ReportScreen from "@/components/screens/report/views/Report";
 
 interface IPost {
   post?: PostResponseModel;
@@ -67,7 +69,8 @@ const Post: React.FC<IPost> = React.memo(
       useColor();
     const { user, localStrings } = useAuth();
     const [shareForm] = Form.useForm();
-    const [showSharePopup, setShowSharePopup] = useState(false);
+    
+      const {showModal, setShowModal} = ReportViewModel();
 
     const {
       deleteLoading,
@@ -176,7 +179,8 @@ const Post: React.FC<IPost> = React.memo(
             label: localStrings.Post.ReportPost,
             type: "item",
             onClick: () => {
-              router.push(`/report?postId=${post?.id}`);
+              // router.push(`/report?postId=${post?.id}`);
+              setShowModal(true);
             },
           },
           {
@@ -329,6 +333,15 @@ const Post: React.FC<IPost> = React.memo(
                 <Dropdown trigger={["click"]} menu={{ items }}>
                   <HiDotsVertical size={16} />
                 </Dropdown>
+                <Modal
+        centered
+        title={localStrings.Public.ReportFriend}
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        footer={null}
+      >
+        <ReportScreen postId={post?.id} />
+      </Modal>
               </Col>
             )}
           </Row>

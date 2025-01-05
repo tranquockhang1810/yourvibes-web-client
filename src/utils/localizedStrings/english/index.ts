@@ -90,6 +90,7 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
+      PleaseOldPasswordDifferentNewPassword:"New password must be different from old password!",
     },
   },
   Login: {

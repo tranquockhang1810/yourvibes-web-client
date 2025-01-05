@@ -11,6 +11,8 @@ import { FaUserCheck, FaUserPlus } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { BsThreeDots } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import ReportViewModel from "../../report/ViewModel/reportViewModel";
+import ReportScreen from "../../report/views/Report";
 
 const ProfileHeader = ({
   total,
@@ -26,6 +28,7 @@ const ProfileHeader = ({
   const { lightGray, brandPrimary, backgroundColor } = useColor();
   const { localStrings, language, isLoginUser } = useAuth();
   const router = useRouter();
+  const {showModal, setShowModal} = ReportViewModel();
 
   const {
     sendFriendRequest,
@@ -72,7 +75,8 @@ const ProfileHeader = ({
       key: '1',
       label: localStrings.Public.ReportFriend,
       onClick: () => {
-        router.push(`/report?userId=${user?.id}`);
+        // router.push(`/report?userId=${user?.id}`);
+        setShowModal(true);
       },
     },
     {
@@ -295,6 +299,15 @@ const ProfileHeader = ({
           )}
         </>
       )}
+      <Modal
+        centered
+        title={localStrings.Public.ReportFriend}
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        footer={null}
+      >
+        <ReportScreen userId={user?.id} />
+      </Modal>
     </div>
   );
 };

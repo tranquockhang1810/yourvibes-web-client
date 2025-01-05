@@ -10,6 +10,7 @@ import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import { useRouter } from "next/navigation";
 import { Modal, Input, Button } from "antd";  
+import ReportScreen from "../../report/views/Report";
 interface CommentsScreenProps {
   postId?: string;
 }
@@ -53,7 +54,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   console.log(post);
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
-  const reportViewModel = ReportViewModel(defaultPostRepo);
+  const reportViewModel = ReportViewModel();
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
     null
   );
@@ -61,12 +62,22 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
-
+  
+  const {showModal, setShowModal} = ReportViewModel();
   const router = useRouter();
   const [currentCommentId, setCurrentCommentId] = useState<string>("");
   console.log(post, "post"); 
   const reportComment = (commentId: string) => {
-    router.push(`/report?commentId=${commentId}`);
+    // router.push(`/report?commentId=${commentId}`);
+    <Modal
+    centered
+    title={localStrings.Public.ReportFriend}
+    open={showModal}
+    onCancel={() => setShowModal(false)}
+    footer={null}
+  >
+    <ReportScreen commentId={commentId} />
+  </Modal>
   };
 
   const fetchPost = async (postId: string) => {

@@ -3,12 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router
 import { Button, Col, Form, Input, message, Modal, Row, Upload } from 'antd';
 import { useAuth } from '@/context/auth/useAuth';
+import ChangePassword from '../../changePassword/views/changePassword';
+import ChangePasswordViewModel from '../../changePassword/viewModel/changePasswordViewModel';
+import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
 
 const SettingsTab = () => {
   const router = useRouter();
   const { onLogout, changeLanguage, user, localStrings } = useAuth();
   const [showLogout, setShowLogout] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
+  const {showChangePassword, setShowChangePassword} = ChangePasswordViewModel(defaultProfileRepo);
   
   const handleOk = () => {
     setShowLogout(false);
@@ -42,10 +46,20 @@ const SettingsTab = () => {
 
       <Button
         className="w-80 text-brandPrimary border-none"
-        onClick={() => router.push('/changePassword')}
+        onClick={() => setShowChangePassword(true)}
       >
         {localStrings.Public.ChangePassword}
       </Button>
+      {/* //modal change password  */}
+      <Modal
+        centered
+        title={localStrings.Public.ChangePassword}
+        open={showChangePassword}
+        onCancel={() => setShowChangePassword(false)}
+        footer={null}
+      >
+        <ChangePassword />
+      </Modal>
       <Button
         className="w-80 text-brandPrimary border-none"
         onClick={showLanguageOptions}

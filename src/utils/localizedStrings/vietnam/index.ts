@@ -89,6 +89,7 @@ export const VnLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Xác nhận mật khẩu không hợp lệ!",
       OTPTypeMessage: "Mã OTP phải là chuỗi 6 số!",
       PhoneTypeMessage: "Số điện thoại phải là chuỗi 10 số!",
+      PleaseOldPasswordDifferentNewPassword: "Mật khẩu mới phải khác mật khẩu cũ!",
     },
   },
   Login: {

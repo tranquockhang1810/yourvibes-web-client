@@ -5,8 +5,8 @@ import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
-import { useRouter } from "next/navigation";
-import { Modal, Spin } from "antd";
+import { useRouter } from "next/navigation"; 
+import { Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen";
 import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
 
@@ -16,7 +16,7 @@ const Homepage = () => {
   const { user, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { friends, fetchMyFriends } = ProfileViewModel();
+  const { friends, fetchMyFriends, page } = ProfileViewModel();
 
   const handleScroll = useCallback(() => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -31,6 +31,14 @@ const Homepage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchMyFriends(page);
+      
+    }
+  }, [page, user]);
+  
 
   const handleModalClose = () => {
     setIsModalVisible(false);
@@ -84,19 +92,16 @@ const Homepage = () => {
 
   const renderFriends = () => {
     return (
-      <div
-        style={{
-          marginInline: "10px",
-          position: "fixed",
-          width: "280px",
-          maxHeight: "400px",
-          overflowY: "auto",
-          backgroundColor,
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          borderRadius: "8px",
-          right: "10px",
-        }}
-      >
+      <div style={{ 
+        marginInline: "10px",
+        position: 'fixed',  
+        width: '280px',
+        maxHeight: '400px', 
+        overflowY: 'auto', 
+        backgroundColor,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+        borderRadius: '8px', 
+      }}>
         {friends.map((user) => (
           <div
             key={user.id}
@@ -137,7 +142,7 @@ const Homepage = () => {
   };
 
   return (
-    <div className="flex mt-4 ">
+    <div className="lg:flex mt-4 ">
       {/* Content */}
       <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
@@ -160,7 +165,9 @@ const Homepage = () => {
         )}
         {renderFooter()}
       </div>
-      <div className="flex-initial w-[300px]">{renderFriends()}</div>
+      <div className="flex-initial w-[300px] hidden xl:block">
+  {renderFriends()}
+</div>
     </div>
   );
 };

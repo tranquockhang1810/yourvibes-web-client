@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { List, Spin, Modal } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import useColor from '@/hooks/useColor';
@@ -15,7 +16,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
   user: UserModel;
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
-  const { localStrings } = useAuth();
+  const {isLoginUser, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -49,8 +50,8 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
           border: `1px solid ${lightGray}`,
           borderRadius: "10px",
           cursor: "pointer",
-          width: "100%",
-          maxWidth: "600px",
+          width: "100%", 
+          maxWidth: "600px", 
         }}
       >
         <img
@@ -70,16 +71,6 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
           </p>
           <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-        {/* <Modal
-          visible={isModalVisible}
-          maskClosable={true} 
-          width={800}
-          footer={null}
-          closable={false}
-          onCancel={handleModalClose}
-        >
-          <AddPostScreen onPostSuccess={handlePostSuccess} />
-        </Modal> */}
       </div>
       <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
@@ -90,21 +81,23 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
   }, [user, backgroundColor, lightGray, localStrings, isModalVisible]);
 
   return (
-    <div className="flex justify-center items-center mt-4">
-      <div className="border-none rounded-md border-solid border-gray-900 basis-2/4">
+    <div className="w-auto flex flex-col items-center justify-center">
         {/* Add Post Button */}
-        {renderAddPost()}
+        {isLoginUser(user?.id as string) && renderAddPost()}
+        
 
-        {/* Posts List */}
-        {posts.map((item) => (
-          <div key={item?.id} className="mb-4">
+          {/* Posts List */}
+        {loading ? (<Spin indicator={<LoadingOutlined spin />} size="large" />) : (posts && posts.length > 0 ? (
+        posts.map((item) => (
+          <div key={item?.id} className='w-full  flex flex-col items-center'>
             <Post post={item}>
               {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
             </Post>
           </div>
-        ))}
+        ))
+      ) : null)}
+        
       </div>
-    </div>
   );
 };
 

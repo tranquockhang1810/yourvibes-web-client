@@ -12,25 +12,22 @@ import {
   Typography,
   Radio,
   Modal,
+  DatePicker,
 } from "antd";
 
 import {
   UploadOutlined,
   CameraOutlined,
   CloseOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "@/context/auth/useAuth";
 import dayjs from "dayjs";
 import { defaultProfileRepo } from "@/api/features/profile/ProfileRepository";
 import UpdateProfileViewModel from "../viewModel/UpdateProfileViewModel";
 import { useRouter } from "next/navigation";
-import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+
 import useColor from "@/hooks/useColor";
-import { FaGlobe, FaLock } from "react-icons/fa";
-import { IoMdPeople } from "react-icons/io";
-import { AiFillEdit } from "react-icons/ai";
-import ModalObjectProfile from "../../profile/components/ModalObjectProfile";
-import MydateTimePicker from "@/components/foundation/MydateTimePicker";
 
 const { Text } = Typography;
 
@@ -61,7 +58,7 @@ const UpdateProfileScreen = () => {
       name: user?.name,
       family_name: user?.family_name,
       email: user?.email,
-      birthday: dayjs(user?.birthday).format("DD/MM/YYYY"),
+      birthday: dayjs(user?.birthday),
       phone_number: user?.phone_number,
       biography: user?.biography,
     });
@@ -112,24 +109,17 @@ const UpdateProfileScreen = () => {
       ...updatedForm.getFieldsValue(),
       avatar_url: newAvatar?.file, // Sử dụng tệp avatar thực tế
       capwall_url: newCapwall?.file, // Sử dụng tệp capwall thực tế
+      birthday: (
+        dayjs(updatedForm.getFieldValue("birthday"), "DD/MM/YYYY").format(
+          "YYYY-MM-DDT00:00:00"
+        ) + "Z"
+      ).toString(),
     };
+
+    console.log("data đuoc update", data);
 
     // Gọi hàm updateProfile với dữ liệu đã chuẩn bị
     updateProfile(data);
-    router.back();
-  };
-
-  const renderPrivacyIcon = () => {
-    switch (user?.privacy) {
-      case Privacy.PUBLIC:
-        return <FaGlobe size={16} color={brandPrimaryTap} />;
-      case Privacy.FRIEND_ONLY:
-        return <IoMdPeople size={20} color={brandPrimaryTap} />;
-      case Privacy.PRIVATE:
-        return <FaLock name="lock-closed" size={17} color={brandPrimaryTap} />;
-      default:
-        return null;
-    }
   };
 
   return (
@@ -145,8 +135,8 @@ const UpdateProfileScreen = () => {
         </Text>
       </div>
 
-      <div className="flex justify-between mb-6">
-        <div className="flex-1 mr-6">
+      <div className="flex flex-col lg:flex-row justify-between mb-6">
+        <div className="flex-auto mr-2 xl:mr-6 xl:w-[550px]">
           {/* Cover Image */}
           <div className="relative mb-6">
             <img
@@ -170,8 +160,8 @@ const UpdateProfileScreen = () => {
           </div>
 
           {/* Profile Image */}
-          <div className="flex  ml-6 mt-[-80px]">
-            <div className="relative rounded-full border border-gray-950">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start  ml-6 mt-[-80px]">
+            <div className="w-44 h-44 relative rounded-full border border-gray-950">
               <img
                 src={newAvatar?.url || user?.avatar_url}
                 alt="avatar"
@@ -193,16 +183,16 @@ const UpdateProfileScreen = () => {
                 </div>
               )}
             </div>
-            <span className="font-bold text-lg ml-6 mt-[60px]">
+            <span className="font-bold text-lg ml-2 lg:mt-[60px]">
               {`${user?.family_name} ${user?.name}` ||
                 localStrings.Public.Username}
             </span>
           </div>
         </div>
 
-        <div className="flex-initial mr-6 w-1/3">
+        <div className="flex-auto xl:mr-6">
           {/* Form */}
-          <Form form={updatedForm} layout="vertical" onFinish={UpdateProfile}>
+          <Form form={updatedForm} layout="vertical">
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -231,15 +221,31 @@ const UpdateProfileScreen = () => {
             >
               <Input placeholder={localStrings.Form.Label.Phone} />
             </Form.Item>
-{/* 
 
             <Form.Item
               name="birthday"
               label={localStrings.Form.Label.BirthDay}
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                  message:
+                    localStrings.Form.RequiredMessages.BirthDayRequiredMessage,
+                },
+              ]}
             >
-              <Input placeholder={localStrings.Form.Label.BirthDay} />
-            </Form.Item> */}
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="w-full"
+                placeholder={localStrings.Form.Label.BirthDay}
+                // Gán giá trị ngày sinh từ form
+                value={
+                  updatedForm.getFieldValue("birthday")
+                    ? dayjs(updatedForm.getFieldValue("birthday"))
+                    : null
+                }
+                disabledDate={(current) => current && current > dayjs().endOf('day')}
+              />
+            </Form.Item>
 
             <Form.Item
               name="email"
@@ -262,7 +268,7 @@ const UpdateProfileScreen = () => {
             </Button>
           </div>
         </div>
-        <div className="flex-initial w-52">
+        <div className="flex-initial w-52 xl:block hidden">
           <p>{localStrings.Public.Language}</p>
           <Radio.Group value={language} onChange={changeLanguage}>
             <Space direction="vertical">
@@ -272,27 +278,6 @@ const UpdateProfileScreen = () => {
           </Radio.Group>
         </div>
       </div>
-
-      {/* Birthday Picker */}
-      <div className="mb-6">
-              {/* <MyDateTimePicker
-            value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
-            onSubmit={(date) => {
-              updatedForm.setFieldValue('birthday', dayjs(date).format('DD/MM/YYYY'));
-            }}
-            show={showPicker}
-            onCancel={() => setShowPicker(false)}
-          /> */}
-          <MydateTimePicker 
-          value={dayjs(updatedForm.getFieldValue('birthday')).toDate()}
-          onSubmit={(date) => {
-            updatedForm.setFieldsValue({ birthday: dayjs(date).format('DD/MM/YYYY') });
-          }
-          }
-          show={showPicker}
-          onCancel={() => setShowPicker(false)}
-          />
-            </div>
     </div>
   );
 };

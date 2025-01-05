@@ -55,29 +55,31 @@ const ProfileTabs = ({
                         loading={profileLoading} 
                         friendCount={friendCount} 
                         friends={friends} 
-                        resultCode={resultCode} 
-                    />,
-        },
-        {
-            key: 'posts',
-            label: <Link href={userInfo?.id === user?.id ? "/profile?tab=posts" : `/user/${userInfo?.id}?tab=posts`} style={{ textDecoration: 'none', color: 'inherit' }}>{ localStrings.Public.Post} </Link>,
-            children: <PostList 
-                        loading={loading} 
+                        resultCode={resultCode}
                         posts={posts} 
                         loadMorePosts={loadMorePosts} 
-                        user={userInfo} 
                     />,
         },
-        {
-            key: 'friends',
-            label: <Link href={userInfo?.id === user?.id ? "/profile?tab=friends" : `/user/${userInfo?.id}?tab=friends`} style={{ textDecoration: 'none', color: 'inherit' }}>{ localStrings.Public.Friend} </Link>,
-            children: <ListFriends 
-                        friends={friends} 
-                        page={1} 
-                        setPage={() => {}} 
-                        totalPage={1} 
-                    />,
-        },
+        // {
+        //     key: 'posts',
+        //     label: <Link href={userInfo?.id === user?.id ? "/profile?tab=posts" : `/user/${userInfo?.id}?tab=posts`} style={{ textDecoration: 'none', color: 'inherit' }}>{ localStrings.Public.Post} </Link>,
+        //     children: <PostList 
+        //                 loading={loading} 
+        //                 posts={posts} 
+        //                 loadMorePosts={loadMorePosts} 
+        //                 user={userInfo} 
+        //             />,
+        // },
+        // {
+        //     key: 'friends',
+        //     label: <Link href={userInfo?.id === user?.id ? "/profile?tab=friends" : `/user/${userInfo?.id}?tab=friends`} style={{ textDecoration: 'none', color: 'inherit' }}>{ localStrings.Public.Friend} </Link>,
+        //     children: <ListFriends 
+        //                 friends={friends} 
+        //                 page={1} 
+        //                 setPage={() => {}} 
+        //                 totalPage={1} 
+        //             />,
+        // },
         ...(userInfo?.id === user?.id ? [
             {
                 key: 'settings',
