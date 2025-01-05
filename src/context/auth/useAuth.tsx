@@ -7,7 +7,6 @@ import translateLanguage from '../../utils/i18n/translateLanguage';
 import { useRouter } from 'next/navigation';
 import { UserModel } from '../../api/features/authenticate/model/LoginModel';
 import { jwtDecode } from 'jwt-decode';
-import { access } from 'fs';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
