@@ -120,11 +120,17 @@ const EditPostViewModel = (
 
   const handleSubmit = async () => {
     if (!postContent.trim() && fileList.length === 0) return;
-
+      // Debug giá trị đầu vào
+  console.log("Media IDs (ban đầu):", mediaIds);
+  console.log("New Media List:", fileList);
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
     const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, validFiles);
+      // Debug giá trị đầu ra
+  console.log("Deleted Medias:", deletedMedias);
+  console.log("New Media Files:", newMediaFiles);
+
     const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
@@ -201,29 +207,41 @@ const EditPostViewModel = (
   };
 
   const handleMedias = (mediaIds: string[], newMedias: any[]) => {
-    const deletedMedias: string[] = [];
-    const savedMedias: string[] = [];
-    const newMediaFiles: any[] = [];
-
+    console.log("Media IDs (ban đầu):", mediaIds);
+    console.log("New Medias:", newMedias);
+  
+    // Danh sách ID cần xóa
+    let deletedMedias: string[] = [];
+    // Danh sách ID giữ nguyên
+    let savedMedias: string[] = [];
+    // Danh sách file ảnh mới
+    let newMediaFiles: any[] = [];
+  
+    // Lọc qua các ảnh mới
     newMedias?.forEach((item) => {
-      if (!selectedMediaFiles.includes(item?.fileName as string)) {
-        newMediaFiles.push(item);
+      if (item?.fileName && mediaIds.includes(item.fileName)) {
+        // Nếu ảnh trong danh sách gốc -> Lưu lại
+        savedMedias.push(item.fileName);
       } else {
-        const ids = selectedMediaFiles.find(
-          (id) => id === item?.fileName
-        ) as string;
-        savedMedias.push(ids);
+        // Nếu không -> Ảnh mới
+        newMediaFiles.push(item);
       }
     });
-
-    const deletedMediaIds = mediaIds?.filter((id) => !savedMedias.includes(id));
-
+  
+    // Tìm ảnh bị xóa
+    deletedMedias = mediaIds.filter((id) => !savedMedias.includes(id));
+  
+    console.log("Saved Medias:", savedMedias);
+    console.log("Deleted Medias:", deletedMedias);
+    console.log("New Media Files:", newMediaFiles);
+  
     return {
-      deletedMedias: deletedMediaIds,
+      deletedMedias,
       newMediaFiles,
     };
   };
-
+  
+  
   const handlePreview = async (file: UploadFile) => {
     let preview = file.url || file.preview;
 
