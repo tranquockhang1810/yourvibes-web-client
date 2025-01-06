@@ -10,7 +10,8 @@ import { useAuth } from "@/context/auth/useAuth";
 
 const LoginPage = () => {
   const { localStrings } = useAuth();
-  const { login, loading } = LoginViewModel(new AuthenRepo());
+  const router = useRouter();
+  const { login, loading, getGoogleLoginUrl, googleLoading } = LoginViewModel(new AuthenRepo());
 
   const onFinish = async (values: any) => {
     message.loading({
@@ -137,16 +138,19 @@ const LoginPage = () => {
             </div>
 
             <div className="mt-4 text-center">
-              <Button
-                type="default"
-                icon={<GoogleOutlined />}
-                className="w-full flex items-center justify-center border py-2 rounded-md hover:bg-gray-100"
-                onClick={() => console.log("Google login")}
-              >
-                Google
-              </Button>
-            </div>
-          </Form>
+            <Button
+              type="default"
+              icon={<GoogleOutlined />}
+              className="w-full flex items-center justify-center"
+              onClick={() => {
+                router.push(getGoogleLoginUrl)
+              }}
+              loading={googleLoading}
+            >
+              Google
+            </Button>
+          </div>
+        </Form>
         </div>
       </div>
     </div>
