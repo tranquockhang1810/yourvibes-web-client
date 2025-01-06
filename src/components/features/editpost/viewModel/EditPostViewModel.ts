@@ -10,8 +10,8 @@ import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
 import { UploadFile, UploadProps } from "antd/es/upload";
 import { RcFile } from "antd/es/upload";
 import {
+  convertMediaDataToFiles,
   convertMediaToFiles,
-  TransferToFormData,
 } from "@/utils/helper/TransferToFormData";
 import { GetProp } from "antd";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
@@ -64,6 +64,8 @@ const EditPostViewModel = (
     try {
       setGetPostLoading(true);
       const res = await repo.getPostById(id);
+      console.log("API Response:", res); // Log the API response
+      
       if (res && !res.error) {
         setPost(res.data);
         setPostContent(res.data?.content || "");
@@ -71,10 +73,8 @@ const EditPostViewModel = (
         setMediaIds(
           res.data?.media?.map((item) => item?.id?.toString() || "") || []
         );
-        const mediaFiles = res.data?.media?.map((item) => ({
-          uri: item?.media_url || "",
-          fileName: item?.id?.toString() || "",
-        })) as any[];
+        const mediaFiles = convertMediaDataToFiles(res.data?.media || []);
+        
         setOriginalImageFiles(mediaFiles);
         setFileList(mediaFiles); // Cập nhật giá trị của fileList
       } else {
@@ -121,15 +121,17 @@ const EditPostViewModel = (
   const handleSubmit = async () => {
     if (!postContent.trim() && fileList.length === 0) return;
       // Debug giá trị đầu vào
-  console.log("Media IDs (ban đầu):", mediaIds);
+  console.log("Media IDs (ban đầu)List:", mediaIds);
   console.log("New Media List:", fileList);
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
     const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, validFiles);
       // Debug giá trị đầu ra
-  console.log("Deleted Medias:", deletedMedias);
-  console.log("New Media Files:", newMediaFiles);
+  console.log("Saved MediasList:", validFiles);
+  
+  console.log("Deleted Medias list:", deletedMedias);
+  console.log("New Media Files List:", newMediaFiles);
 
     const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
@@ -206,40 +208,34 @@ const EditPostViewModel = (
     }
   };
 
-  const handleMedias = (mediaIds: string[], newMedias: any[]) => {
+  const handleMedias = (mediaIds: string[], newMedias: RcFile[]) => {
     console.log("Media IDs (ban đầu):", mediaIds);
-    console.log("New Medias:", newMedias);
+    console.log("New Medias (trước khi xử lý):", newMedias);
   
-    // Danh sách ID cần xóa
-    let deletedMedias: string[] = [];
-    // Danh sách ID giữ nguyên
-    let savedMedias: string[] = [];
-    // Danh sách file ảnh mới
-    let newMediaFiles: any[] = [];
+    const savedMedias: string[] = [];
+    const newMediaFiles: RcFile[] = [];
   
     // Lọc qua các ảnh mới
-    newMedias?.forEach((item) => {
-      if (item?.fileName && mediaIds.includes(item.fileName)) {
-        // Nếu ảnh trong danh sách gốc -> Lưu lại
-        savedMedias.push(item.fileName);
+    newMedias.forEach((item) => {
+      if (item?.name && mediaIds.includes(item.name)) {
+        savedMedias.push(item.name);
       } else {
-        // Nếu không -> Ảnh mới
         newMediaFiles.push(item);
       }
     });
   
-    // Tìm ảnh bị xóa
-    deletedMedias = mediaIds.filter((id) => !savedMedias.includes(id));
-  
     console.log("Saved Medias:", savedMedias);
-    console.log("Deleted Medias:", deletedMedias);
     console.log("New Media Files:", newMediaFiles);
   
+    const deletedMediaIds = mediaIds.filter((id) => !savedMedias.includes(id));
+    console.log("Deleted Medias:", deletedMediaIds);
+  
     return {
-      deletedMedias,
+      deletedMedias: deletedMediaIds,
       newMediaFiles,
     };
   };
+  
   
   
   const handlePreview = async (file: UploadFile) => {
@@ -252,7 +248,7 @@ const EditPostViewModel = (
     setPreviewImage(preview || "");
     setPreviewOpen(true);
   };
-
+  
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -266,6 +262,40 @@ const EditPostViewModel = (
     setSelectedMediaFiles(mediaFiles);
   };
 
+//   const handleChange: UploadProps["onChange"] = async ({
+//     fileList: newFileList,
+//   }) => {
+//     console.log("File List Updated:", newFileList);
+//     setFileList(newFileList); // Cập nhật danh sách file mới
+  
+//     // Phân loại ảnh cũ và ảnh mới
+//     const validFiles = newFileList
+//       .map((file) => file.originFileObj)
+//       .filter((file): file is RcFile => !!file);
+  
+//     const oldFiles = newFileList.filter((file) => !file.originFileObj && file.url);
+  
+//     // Xử lý ảnh mới
+//     const newMediaFiles = await convertMediaToFiles(validFiles);
+  
+//     // Thêm ảnh cũ vào danh sách media
+//     const combinedMediaFiles = [
+//       ...newMediaFiles,
+//       ...oldFiles.map((file) => ({
+//         uid: file.uid,
+//         name: file.fileName || "unknown",
+//         type: "image/jpeg", // Loại file mặc định, cần chỉnh nếu cần
+//         url: file.url,
+//       })),
+//     ];
+  
+//     setSelectedMediaFiles(combinedMediaFiles); // Cập nhật danh sách media đã xử lý
+//     console.log("Old Files:", oldFiles);
+// console.log("New Media Files (converted):", newMediaFiles);
+// console.log("Combined Media Files:", combinedMediaFiles);
+
+//   };
+  
   const fetchUserLikePosts = async (postId: string) => {
     const response = await defaultPostRepo.getPostLikes({
       postId: postId,
@@ -303,6 +333,7 @@ const EditPostViewModel = (
     fetchUserLikePosts,
     userLikePost,
     setUserLikePost,
+    originalImageFiles
   };
 };
 

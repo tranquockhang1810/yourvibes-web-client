@@ -4,6 +4,10 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; 
   const token = request.cookies.get('accesstoken');
 
+  // console.log("Pathname:", pathname);
+  // console.log("Token:", token);
+
+
     // Bỏ qua các tài nguyên tĩnh và Next.js nội bộ
     if (
       pathname.startsWith("/_next") || // Tài nguyên nội bộ của Next.js

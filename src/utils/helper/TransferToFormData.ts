@@ -49,6 +49,19 @@ export const convertMediaToFiles = async (media: RcFile[]) => {
       });
     })
   );
+  
 
   return mediaFiles;
+};
+export const convertMediaDataToFiles = (media: any[]): any[] => {
+  return media.map((item) => {
+    const file = new File([], item?.id?.toString() || ""); // Tạo đối tượng File trống
+    return {
+      uid: item?.id?.toString() || "",
+      name: item?.id?.toString() || "",
+      status: 'done',
+      url: item?.media_url || "",
+      originFileObj: file, // Thêm thuộc tính originFileObj
+    };
+  });
 };

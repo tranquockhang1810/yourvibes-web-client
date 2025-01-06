@@ -138,11 +138,11 @@ const UpdateProfileScreen = () => {
       <div className="flex flex-col lg:flex-row justify-between mb-6">
         <div className="flex-auto mr-2 xl:mr-6 xl:w-[550px]">
           {/* Cover Image */}
-          <div className="relative mb-6">
+          <div className="relative mb-6"  style={{ backgroundColor: lightGray }}>
             <img
               src={newCapwall?.url || user?.capwall_url}
               alt="cover"
-              className="w-full h-72"
+              className="w-full h-72 object-contain"
             />
             <div className="absolute top-4 left-4">
               <Upload showUploadList={false} beforeUpload={pickCapwallImage}>
@@ -165,7 +165,7 @@ const UpdateProfileScreen = () => {
               <img
                 src={newAvatar?.url || user?.avatar_url}
                 alt="avatar"
-                className="w-44 h-44 rounded-full"
+                className="w-44 h-44 rounded-full object-cover"
               />
               <div className="absolute top-0 left-2.5">
                 <Upload showUploadList={false} beforeUpload={pickAvatarImage}>

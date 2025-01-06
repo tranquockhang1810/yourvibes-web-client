@@ -3,7 +3,7 @@ import { defaultProfileRepo, ProfileRepo } from '@/api/features/profile/ProfileR
 import { useAuth } from '@/context/auth/useAuth';
 import { message } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 
 
@@ -11,6 +11,8 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
   const [loading, setLoading] = useState(false);
   const { localStrings, onUpdateProfile } = useAuth();
   const router = useRouter();
+  const [objectPosition, setObjectPosition] = useState("center");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   //update Profile
 const updateProfile = async (data: UpdateProfileRequestModel) => {
@@ -36,9 +38,26 @@ const updateProfile = async (data: UpdateProfileRequestModel) => {
   }
 }
 
+const handleScroll = () => {
+  const container = scrollContainerRef.current;
+  if (container) {
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+    const scrollPercent = scrollTop / (scrollHeight - clientHeight);
+    const positionValue = `${Math.min(Math.max(scrollPercent * 100, 0), 100)}%`;
+    setObjectPosition(`center ${positionValue}`);
+  }
+};
+
+
   return {
     loading,
     updateProfile,
+    handleScroll,
+    scrollContainerRef,
+    objectPosition,
+    
   };
 };
 

@@ -235,11 +235,13 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="h-[400px]" style={{ backgroundColor: lightGray }}>
+          <div className="md:mx-16 h-[350px]" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "center" }}
+
             />
           </div>
 
