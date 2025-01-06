@@ -120,6 +120,7 @@ export const VnLocalizedStrings = {
     CreatePostFailed: "Đăng bài thất bại!",
     EmptyContent: "Thiếu nội dung hoặc file media",
     PickImgFailed: "Tải file thất bại!",
+    UploadImage: "Tải hình ảnh",
   },
   ObjectPostPrivacy: {
     PublicDescription: "Bất kỳ ai ở trên YourVibes",

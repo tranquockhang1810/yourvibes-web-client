@@ -1,3 +1,4 @@
+import { Upload } from "antd";
 
 export const ENGLocalizedStrings = {
   Public: {
@@ -121,6 +122,7 @@ export const ENGLocalizedStrings = {
     CreatePostFailed: "Create post failed!",
     EmptyContent: "Missing content or media file",
     PickImgFailed: "Pick images failed!",
+    UploadImage: "Upload Image",
   },
   ObjectPostPrivacy: {
     PublicDescription: "Everyone on YourVibes",
