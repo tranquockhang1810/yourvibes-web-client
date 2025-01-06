@@ -241,7 +241,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       </div>
                     </div>
                     <p className="text-gray-700">{reply.content}</p>
-                    <div className="reply-actions flex space-x-4 text-xs">
+                    <div className="reply-actions mt-3 flex space-x-4 text-xs">
                       <Row>
                         <Col span={4} className="hover:cursor-pointer">
                           <FaHeart
@@ -363,7 +363,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             <p className="text-gray-700">
                               {nestedReply.content}
                             </p>
-                            <div className="reply-actions flex space-x-4 text-xs">
+                            <div className="reply-actions mt-3 flex space-x-4 text-xs">
                               <Row>
                                 <Col span={4} className="hover:cursor-pointer">
                                   <FaHeart
