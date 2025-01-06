@@ -8,8 +8,8 @@ import { DateTransfer, getDayDiff } from "@/utils/helper/DateTransfer";
 import { CurrencyFormat } from "@/utils/helper/CurrencyFormat";
 import dayjs from "dayjs";
 import { AdsCalculate } from "@/utils/helper/AdsCalculate";
-import { FaCalculator, FaCashRegister } from "react-icons/fa";
-import { Spin, Button, List } from "antd";
+import { FaCalculator, FaCashRegister, FaAd } from "react-icons/fa"; // Added FaAd icon
+import { Spin, Button, List, DatePicker } from "antd";
 import { Header } from "antd/es/layout/layout";
 
 const Ads = ({ postId }: { postId: string }) => {
@@ -30,13 +30,8 @@ const Ads = ({ postId }: { postId: string }) => {
     page,
     ads,
     adsAll,
+    getTomorrow,
   } = AdsViewModel(defaultPostRepo);
-
-  const getTomorrow = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow;
-  };
 
   const [date, setDate] = useState<Date>(getTomorrow());
 
@@ -235,6 +230,21 @@ const Ads = ({ postId }: { postId: string }) => {
                 </span>
               </button>
 
+              {/* Show Date Picker */}
+              {showDatePicker && (
+                <DatePicker
+                  value={dayjs(date)}
+                  onChange={(date) => {
+                    if (date) {
+                      setDate(date.toDate());
+                      setDiffDay(getDayDiff(date.toDate()));
+                    }
+                  }}
+                  style={{ width: "100%" }}
+                  disabledDate={(current) => current && current < dayjs().endOf("day")}
+                />
+              )}
+
               {/* Budget */}
               <div style={{ marginTop: 20 }}>
                 <FaCashRegister size={24} color={brandPrimary} />
@@ -267,12 +277,27 @@ const Ads = ({ postId }: { postId: string }) => {
                   ))}
                 </div>
               </div>
+
+              {/* New Advertisement Button */}
+              <Button
+                type="primary"
+                icon={<FaAd />}
+                onClick={() => alert("New Advertisement functionality")}
+                style={{
+                  marginTop: 20,
+                  borderRadius: 8,
+                  backgroundColor: brandPrimary,
+                  color: "white",
+                }}
+              >
+                {localStrings.Ads.Ads}
+              </Button>
             </div>
           </>
         )}
       </>
     );
-  }, [postId, adsLoading, ads, loading, post, showDatePicker]);
+  }, [postId, adsLoading, ads, loading, post, showDatePicker, date]);
 
   return (
     <div style={{ flex: 1 }}>
@@ -303,16 +328,14 @@ const Ads = ({ postId }: { postId: string }) => {
       </div>
 
       {/* Content */}
-      <div style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}
+      >
         {/* Left: Post */}
-        <div style={{ flex: 1, paddingRight: 20 }}>
-          {renderPost()}
-        </div>
+        <div style={{ flex: 1, paddingRight: 20 }}>{renderPost()}</div>
 
         {/* Right: Ads Information */}
-        <div style={{ flex: 1, paddingLeft: 20 }}>
-          {renderAds()}
-        </div>
+        <div style={{ flex: 1, paddingLeft: 20 }}>{renderAds()}</div>
       </div>
     </div>
   );

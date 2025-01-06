@@ -92,7 +92,14 @@ const AdsViewModel = (repo: PostRepo) => {
     }
   };
 
+   const getTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  };
+
   return {
+    getTomorrow,
     loading,
     post,
     getPostDetail,

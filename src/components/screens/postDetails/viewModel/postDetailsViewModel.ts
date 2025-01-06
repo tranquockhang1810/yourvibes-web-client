@@ -247,6 +247,10 @@ const PostDetailsViewModel = (
                 return { ...prevReplyMap, [commentId]: updatedReplies };
               });
             }
+  
+            // Fetch comments and replies
+            fetchComments();
+            fetchReplies(postId || "", commentId);
           })
           .then(() => {
             // Hiển thị thông báo khi xóa thành công
@@ -332,6 +336,7 @@ const PostDetailsViewModel = (
             [parentId || ""]: updatedReplies,
           }));
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          fetchReplies(postId || "", parentId || ""); // Gọi lại hàm fetchReplies để cập nhật lại danh sách reply
           message.success({
             content: localStrings.PostDetails.ReplySuccess,
           });
@@ -413,6 +418,7 @@ const PostDetailsViewModel = (
     handleOutsideClick,
     setVisibleReplies,
     visibleReplies, 
+    fetchComments,
   };
 };
  
