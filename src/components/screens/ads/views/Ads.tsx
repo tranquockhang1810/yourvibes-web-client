@@ -1,166 +1,321 @@
-import { useAuth } from '@/context/auth/useAuth';
-import useColor from '@/hooks/useColor';
-import React, { useCallback, useState } from 'react'
-import AdsViewModel from '../viewModel/AdsViewModel';
-import { defaultPostRepo } from '@/api/features/post/PostRepo';
-import Post from '@/components/common/post/views/Post';
-import { Space, Spin } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
-import { DateTransfer } from '@/utils/helper/DateTransfer';
-import { CurrencyFormat } from '@/utils/helper/CurrencyFormat';
-import { AdsCalculate } from '@/utils/helper/AdsCalculate';
+import React, { useCallback, useEffect, useState } from "react";
+import useColor from "@/hooks/useColor";
+import Post from "@/components/common/post/views/Post";
+import { useAuth } from "@/context/auth/useAuth";
+import AdsViewModel from "../viewModel/AdsViewModel";
+import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import { DateTransfer, getDayDiff } from "@/utils/helper/DateTransfer";
+import { CurrencyFormat } from "@/utils/helper/CurrencyFormat";
+import dayjs from "dayjs";
+import { AdsCalculate } from "@/utils/helper/AdsCalculate";
+import { FaCalculator, FaCashRegister } from "react-icons/fa";
+import { Spin, Button, List } from "antd";
+import { Header } from "antd/es/layout/layout";
 
-interface AdsProps {
-    postId: string
-}
+const Ads = ({ postId }: { postId: string }) => {
+  const price = 30000;
+  const { brandPrimary, backgroundColor } = useColor();
+  const [method, setMethod] = useState("momo");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const { language, localStrings } = useAuth();
+  const [diffDay, setDiffDay] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
+  const {
+    getPostDetail,
+    post,
+    loading,
+    advertisePost,
+    adsLoading,
+    getAdvertisePost,
+    page,
+    ads,
+    adsAll,
+  } = AdsViewModel(defaultPostRepo);
 
-const Ads: React.FC<AdsProps> = ({ postId }) => {
-    const price =300000;
-    const { brandPrimary, backgroundColor } = useColor();
-	const [method, setMethod] = useState("momo");
-	const [showDatePicker, setShowDatePicker] = useState(false);
-	const { language, localStrings } = useAuth();
-	const [diffDay, setDiffDay] = useState(1);
-	const [refreshing, setRefreshing] = useState(false);
-	const { getPostDetail, post, loading, advertisePost, adsLoading, getAdvertisePost, page, ads, adsAll } =
-		AdsViewModel(defaultPostRepo);
-    const router = useRouter();
+  const getTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  };
 
-    const getDateTomorrow = () => {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return tomorrow;
-    };
+  const [date, setDate] = useState<Date>(getTomorrow());
 
-    const [date, setDate] = useState<Date>(getDateTomorrow());
+  const paymentMethods = [
+    {
+      id: "momo",
+      name: "MoMo",
+      image: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png",
+    },
+  ];
 
-    const paymentMethods = [
-        {
-			id: "momo",
-			name: "MoMo",
-			image: "https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png",
-		},
-	];
-
-    const onRefresh = async () => {
-        setRefreshing(true);
-        try {
-            await getPostDetail(postId);
-            await getAdvertisePost(page, postId);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setRefreshing(false);
-        }
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await getPostDetail(postId);
+      await getAdvertisePost(page, postId);
+    } finally {
+      setRefreshing(false);
     }
+  }, [postId, page]);
 
-    const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
+  const [isHistoryExpanded, setHistoryExpanded] = useState(false);
 
-    const renderPost = useCallback(() => {
-        if (loading) {
-          return (
-            <div className="flex justify-center items-center h-full">
-              <Spin size="large" />
+  useEffect(() => {
+    if (postId) {
+      getPostDetail(postId);
+      getAdvertisePost(page, postId);
+    }
+  }, [postId]);
+
+  const renderPost = useCallback(() => {
+    if (loading) {
+      return (
+        <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Spin size="large" />
+        </div>
+      );
+    } else {
+      return (
+        <Post post={post} noFooter>
+          {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
+        </Post>
+      );
+    }
+  }, [post, loading]);
+
+  const renderAds = useCallback(() => {
+    if (loading) return null;
+    return (
+      <>
+        {post?.is_advertisement ? (
+          <>
+            {/* Advertisement history */}
+            <div style={{ flexDirection: "row", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  style={{
+                    height: 10,
+                    width: 10,
+                    backgroundColor: "green",
+                    borderRadius: 5,
+                    marginRight: 5,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 16,
+                    color: "green",
+                  }}
+                >
+                  {localStrings.Ads.ActiveCampaign}
+                </span>
+              </div>
             </div>
-          );
-        } else {
-          return (
-            <Post post={post} noFooter>
-              {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
-            </Post>
-          );
-        }
-      }, [post, loading]);
-    
+            <div style={{ marginTop: 10 }}>
+              <div
+                style={{
+                  backgroundColor: "#f7f7f7",
+                  padding: 20,
+                  borderRadius: 8,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
+                >
+                  <span>{localStrings.Ads.Campaign} #1</span>
+                  <FaCalculator size={20} color={brandPrimary} />
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color: "gray",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {localStrings.Ads.Campaign}:
+                    </span>{" "}
+                    {DateTransfer(ads?.start_date)}
+                  </span>
+                  <br />
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color: "gray",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {localStrings.Ads.End}:
+                    </span>{" "}
+                    {DateTransfer(ads?.end_date)}
+                  </span>
+                  <br />
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color: "gray",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {localStrings.Ads.RemainingTime}:
+                    </span>{" "}
+                    {ads?.day_remaining} {localStrings.Ads.Day}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Advertisement Information */}
+            <div style={{ flex: 1, paddingLeft: 10, paddingRight: 10 }}>
+              <div>
+                <span
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    marginBottom: 5,
+                  }}
+                >
+                  {localStrings.Ads.TimeAndBudget}
+                </span>
+                <span
+                  style={{
+                    color: "gray",
+                    fontSize: 14,
+                  }}
+                >
+                  {localStrings.Ads.Minimum.replace(
+                    "{{price}}",
+                    `${CurrencyFormat(price)}`
+                  )}
+                </span>
+                <span
+                  style={{
+                    color: "gray",
+                    fontSize: 14,
+                  }}
+                >
+                  VAT: 10%
+                </span>
+              </div>
+
+              {/* Select advertising date */}
+              <button
+                style={{
+                  backgroundColor: "transparent",
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  padding: 10,
+                  marginBottom: 15,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                onClick={() => setShowDatePicker(true)}
+              >
+                <FaCalculator size={24} color={brandPrimary} />
+                <span style={{ paddingLeft: 20 }}>
+                  {`${localStrings.Ads.TimeAds} ${DateTransfer(date)} (${diffDay} ${localStrings.Public.Day.toLowerCase()})`}
+                </span>
+              </button>
+
+              {/* Budget */}
+              <div style={{ marginTop: 20 }}>
+                <FaCashRegister size={24} color={brandPrimary} />
+                <span style={{ paddingLeft: 20 }}>
+                  {localStrings.Ads.BudgetAds}{" "}
+                  {CurrencyFormat(AdsCalculate(diffDay, price))}
+                </span>
+              </div>
+
+              {/* Payment Methods */}
+              <div style={{ marginTop: 20 }}>
+                <span style={{ fontWeight: "bold", marginRight: 10 }}>
+                  {localStrings.Ads.PaymentMethod}
+                </span>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {paymentMethods.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setMethod(item.id)}
+                      title={item.name}
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        padding: 5,
+                        marginRight: 10,
+                      }}
+                    >
+                      <img src={item.image} style={{ width: 50, height: 50 }} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </>
+    );
+  }, [postId, adsLoading, ads, loading, post, showDatePicker]);
 
   return (
-    <div>
-        <div className="mb-2 flex items-center">
-        <ArrowLeftOutlined
-          className="text-xl cursor-pointer text-blue-500"
-          onClick={() => router.back()}
-        />
-        <h1 className="text-2xl font-bold ml-2">{localStrings.Ads.Ads}</h1>
-    </div>
-    <div className="flex-1 overflow-auto">
-      {/* bài viết được chọn */}
-      {renderPost()}
-
-      {post?.is_advertisement ? (
-        <>
-          {/* Lịch sử Quảng Cáo */}
-          <div className="flex items-center">
-            <div className="flex items-center">
-              <div className="bg-green-500 rounded-full w-2.5 h-2.5 mr-2" />
-              <span className="text-green-500 font-bold">{localStrings.Ads.ActiveCampaign}</span>
-            </div>
-          </div>
-
-          <div className="bg-gray-100 p-4 rounded-lg shadow-lg mt-4">
-            <span className="font-semibold">{localStrings.Ads.Campaign} #1</span>
-            <div className="flex items-center space-x-2">
-              {/* <FontAwesome name="calendar" size={20} color={brandPrimary} /> */}
-              <span>{DateTransfer(ads?.start_date)}</span>
-              <span>{DateTransfer(ads?.end_date)}</span>
-            </div>
-          </div>
-        </>
-      ) : (
-        <div className="p-4">
-          {/* Thông tin quảng cáo */}
-          <div className="mb-4">
-            <span className="text-lg font-bold mb-2">{localStrings.Ads.TimeAndBudget}</span>
-            <span className="text-gray-500">{localStrings.Ads.Minimum.replace("{{price}}", `${CurrencyFormat(price)}`)}</span>
-            <span className="text-gray-500">VAT: 10%</span>
-          </div>
-
-          {/* Chọn thời gian quảng cáo */}
-          {/* <TouchableOpacity
-            onClick={() => setShowDatePicker(true)}
-            className="flex flex-row items-center border border-gray-300 p-4 mb-4 rounded-xl"
+    <div style={{ flex: 1 }}>
+      {/* Header */}
+      <div style={{ backgroundColor: backgroundColor }}>
+        <div
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-end",
+            height: 60,
+            paddingBottom: 10,
+          }}
+        >
+          <div
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingLeft: 10,
+              paddingRight: 10,
+            }}
           >
-            <Ionicons name="calendar" size={24} color={brandPrimary} />
-            <Text className="pl-4">
-              {`${localStrings.Ads.TimeAds} ${DateTransfer(date)} (${diffDay} ${localStrings.Public.Day.toLowerCase()})`}
-            </Text>
-          </TouchableOpacity> */}
-
-          {/* <MyDateTimePicker
-            value={date}
-            show={showDatePicker}
-            onCancel={() => setShowDatePicker(false)}
-            onSubmit={(selectedDate) => setDate(selectedDate)}
-            minDate={getTomorrow()}
-          /> */}
-
-          {/* Ngân sách */}
-          <div className="flex items-center border border-gray-300 p-4 mb-4 rounded-xl">
-            {/* <Ionicons name="cash" size={24} color={brandPrimary} /> */}
-            <span className="pl-4">{localStrings.Ads.BudgetAds} {CurrencyFormat(AdsCalculate(diffDay, price))}</span>
-          </div>
-
-          {/* Phương thức thanh toán */}
-          <div className="flex flex-row mt-4">
-            <span className="font-semibold mr-4">{localStrings.Ads.PaymentMethod}</span>
-            <div className="flex justify-around w-full">
-              {/* {paymentMethods.map((item) => (
-                // <TouchableOpacity
-                //   key={item.id}
-                //   onPress={() => setMethod(item.id)}
-                //   className={`border border-gray-300 p-2 rounded-xl ${method === item.id ? "bg-green-100" : ""}`}
-                // >
-                //   <img src={item.image} alt={item.name} className="w-12 h-12" />
-                // </TouchableOpacity>
-              ))} */}
-            </div>
+            <span style={{ fontWeight: "bold", fontSize: 20, marginLeft: 10 }}>
+              {localStrings.Ads.Ads}
+            </span>
           </div>
         </div>
-      )}
-    </div>
-    </div>
-  )
-}
+      </div>
 
-export default Ads
+      {/* Content */}
+      <div style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
+        {/* Left: Post */}
+        <div style={{ flex: 1, paddingRight: 20 }}>
+          {renderPost()}
+        </div>
+
+        {/* Right: Ads Information */}
+        <div style={{ flex: 1, paddingLeft: 20 }}>
+          {renderAds()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Ads;

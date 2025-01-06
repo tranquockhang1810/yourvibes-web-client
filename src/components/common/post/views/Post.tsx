@@ -69,8 +69,8 @@ const Post: React.FC<IPost> = React.memo(
       useColor();
     const { user, localStrings } = useAuth();
     const [shareForm] = Form.useForm();
-    
-      const {showModal, setShowModal} = ReportViewModel();
+
+    const { showModal, setShowModal } = ReportViewModel();
 
     const {
       deleteLoading,
@@ -106,7 +106,7 @@ const Post: React.FC<IPost> = React.memo(
     };
     const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
     const handleCommentClick = useCallback(() => {
-      setIsCommentModalVisible(true); 
+      setIsCommentModalVisible(true);
     }, [post]);
 
     const [isVisible, setIsVisible] = useState(false);
@@ -334,14 +334,14 @@ const Post: React.FC<IPost> = React.memo(
                   <HiDotsVertical size={16} />
                 </Dropdown>
                 <Modal
-        centered
-        title={localStrings.Public.ReportFriend}
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-        footer={null}
-      >
-        <ReportScreen postId={post?.id} />
-      </Modal>
+                  centered
+                  title={localStrings.Public.ReportFriend}
+                  open={showModal}
+                  onCancel={() => setShowModal(false)}
+                  footer={null}
+                >
+                  <ReportScreen postId={post?.id} />
+                </Modal>
               </Col>
             )}
           </Row>
@@ -371,7 +371,7 @@ const Post: React.FC<IPost> = React.memo(
                       {likedPost?.like_count}
                     </span>
                   </Row>
-                  
+
                   {!noComment && (
                     <Row align={"middle"} justify={"center"}>
                       <FaRegComments

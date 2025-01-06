@@ -15,6 +15,7 @@ import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+import { comment } from "postcss";
 
 const PostDetailsViewModel = (
   postId: string,
@@ -263,7 +264,12 @@ const PostDetailsViewModel = (
       },
     });
   };
-
+  
+  useEffect(() => {
+    if (replyMap && comments) { 
+      console.log("Reply map và comments đã thay đổi");
+    }
+  }, [replyMap, comments]);
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {

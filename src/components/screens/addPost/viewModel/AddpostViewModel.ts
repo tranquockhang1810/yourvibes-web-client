@@ -7,8 +7,9 @@ import { useState } from "react";
 import { UploadFile, UploadChangeParam, UploadProps } from "antd/es/upload";
 import { convertMediaToFiles } from "@/utils/helper/TransferToFormData";
 import { GetProp, message } from "antd";
-import { RcFile } from "antd/es/upload"; 
-
+import { RcFile } from "antd/es/upload";
+import HomeViewModel from "@/components/screens/home/viewModel/HomeViewModel";
+import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -31,13 +32,15 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
   const [image, setImage] = useState<File | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);;
+  const homeViewModel = HomeViewModel(defaultNewFeedRepo);
+const { fetchNewFeeds } = homeViewModel;
 
   const createPost = async (data: CreatePostRequestModel) => {
     try {
       setCreateLoading(true);
       const response = await repo.createPost(data);
-  
+
       if (response?.error) {
         console.error("Lỗi khi tạo bài viết:", response.error);
         message.error({
@@ -49,6 +52,7 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
         message.success({
           content: localStrings.AddPost.CreatePostSuccess,
         });
+        await fetchNewFeeds();
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);
@@ -63,17 +67,17 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
   // Xử lý đăng bài viết
   const handleSubmitPost = async () => {
     if (!postContent.trim() && fileList.length === 0) return;
-  
+
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
-  
+
     const createPostRequestModel: CreatePostRequestModel = {
       content: postContent,
       privacy: privacy,
       media: validFiles, // Đảm bảo rằng media được truyền đúng
     };
-  
+
     await createPost(createPostRequestModel);
   };
 
