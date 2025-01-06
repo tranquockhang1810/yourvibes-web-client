@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Form, Input, Button, message } from "antd"; 
+import { Form, Input, Button, message } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import LoginViewModel from "../viewModel/loginViewModel";
@@ -10,7 +10,8 @@ import { useAuth } from "@/context/auth/useAuth";
 
 const LoginPage = () => {
   const { localStrings } = useAuth();
-  const { login, loading } = LoginViewModel(new AuthenRepo());
+  const router = useRouter();
+  const { login, loading, getGoogleLoginUrl, googleLoading } = LoginViewModel(new AuthenRepo());
 
   const onFinish = async (values: any) => {
     message.loading({
@@ -103,7 +104,10 @@ const LoginPage = () => {
               type="default"
               icon={<GoogleOutlined />}
               className="w-full flex items-center justify-center"
-              onClick={() => console.log("Google login")}
+              onClick={() => {
+                router.push(getGoogleLoginUrl)
+              }}
+              loading={googleLoading}
             >
               Google
             </Button>
