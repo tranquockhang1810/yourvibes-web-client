@@ -1,9 +1,11 @@
 import LoginFeature from '@/components/screens/login/view/LoginFeature'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const LoginPage = () => {
   return (
-    <LoginFeature />
+    <Suspense>
+      <LoginFeature />
+    </Suspense>
   )
 }
 
