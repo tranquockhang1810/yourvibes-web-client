@@ -46,22 +46,22 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     nav: [
       {
         link: "/home",
-        content: "Home",
+        content: localStrings.Public.Home,
         icon: FaHome,
       },
       {
         link: "/profile?tab=info",
-        content: "Profile",
+        content: localStrings.Public.Profile,
         icon: FaUser,
       },
       {
         link: "/notifications",
-        content: "Notifications",
+        content: localStrings.Notification.Notification,
         icon: FaBell,
       },
       {
         link: "/profile?tab=settings",
-        content: "Settings",
+        content: localStrings.Public.Settings,
         icon: FaCog,
       },
     ],

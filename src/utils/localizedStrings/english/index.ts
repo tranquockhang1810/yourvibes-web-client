@@ -59,6 +59,9 @@ export const ENGLocalizedStrings = {
     ReplyClick:"Click and write your Reply here...",
     CommentClick:"Click and write your Comment here...",
     LoginLoading:"Loading Login ...",
+    Home: "Home",
+    Settings: "Settings",
+    Profile: "Profile",
   },
   Form: {
     Label: {
@@ -231,7 +234,7 @@ export const ENGLocalizedStrings = {
     TrySearch: "Try searching some keyword",
   },
   Notification: {
-    Notification: "Notification",
+    Notification: "Notifications",
     Items: {
       LikePost: "liked your post: ",
       SharePost: "shared your post: ",

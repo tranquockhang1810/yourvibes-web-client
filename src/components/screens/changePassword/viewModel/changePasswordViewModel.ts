@@ -18,8 +18,11 @@ const ChangePasswordViewModel = (repo : ProfileRepo) => {
               setLoading(true);
               const res = await repo.changePassword(data);
               if (!res?.error) {
+                console.log("success", res);
                 message.success(`${localStrings.ChangePassword.ChangePasswordSuccess}`);
                 setShowChangePassword(false);
+                console.log("showChangePasswordSuccess", showChangePassword);
+                
               } else {
                 console.log("failed", res?.error);
                 message.error(`${localStrings.ChangePassword.ChangePasswordFailed}`);

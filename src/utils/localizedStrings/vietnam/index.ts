@@ -57,6 +57,9 @@ export const VnLocalizedStrings = {
     ReplyClick: " Ấn vào đây và nhập câu trả lời của bạn nào !!!",
     CommentClick:" Ấn vào đây và viết bình luận của bạn nào !!!",
     LoginLoading:"Đang đăng nhập vui lòng đợi ...",
+    Home: "Trang chủ",
+    Settings: "Cài đặt",
+    Profile: "Tài khoản",
   },
   Form: {
     Label: {
