@@ -97,22 +97,16 @@ const PostDetailsViewModel = (
   const fetchReplies = async (postId: string, parentId: string) => {
     try {
       const replies = await defaultCommentRepo.getReplies(postId, parentId);
-      if (replies && replies.data) {
-        console.log("Data vừa lấy: ", replies.data);
+      if (replies && replies.data) { 
         setReplyMap((prevReplyMap) => {
-          console.log("replyMap updated: ", {
-            ...prevReplyMap,
-            [parentId]: replies.data,
-          });
-
           return {
             ...prevReplyMap,
             [parentId]: replies.data,
           };
         });
       }
-    } catch (error) {
-      console.error("Error fetching replies:", error);
+    } catch (error) { 
+      message.error(localStrings.PostDetails.CommentFailed);
     }
   };
 
@@ -167,7 +161,6 @@ const PostDetailsViewModel = (
   const [lastChange, setLastChange] = useState(false);
   useEffect(() => {
     if (!lastChange) {
-      console.log("editCommentContent:", editCommentContent);
       setLastChange(true);
     }
   }, [editCommentContent]);
@@ -219,8 +212,7 @@ const PostDetailsViewModel = (
   };
 
   useEffect(() => {
-    if (isEditModalVisible) {
-      console.log("Edit modal is now visible.");
+    if (isEditModalVisible) { 
     }
   }, [isEditModalVisible]);
 
@@ -270,8 +262,7 @@ const PostDetailsViewModel = (
   };
   
   useEffect(() => {
-    if (replyMap && comments) { 
-      console.log("Reply map và comments đã thay đổi");
+    if (replyMap && comments) {  
     }
   }, [replyMap, comments]);
 

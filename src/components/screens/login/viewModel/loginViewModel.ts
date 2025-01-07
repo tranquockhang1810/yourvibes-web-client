@@ -27,11 +27,11 @@ const LoginViewModel = (repo: AuthenRepo) => {
       const res = await repo.login(data);
       if (res?.data) {
         onLogin(res.data); // Gọi onLogin từ useAuth
-      } else {
-        console.error(res?.error?.message || "Login failed");
+      } else { 
+        message.error(localStrings.Login.LoginFailed);
       }
     } catch (error: any) {
-      console.error(error.message || "Error during login");
+      message.error(localStrings.Login.LoginFailed);
     } finally {
       setLoading(false);
     }
@@ -52,12 +52,10 @@ const LoginViewModel = (repo: AuthenRepo) => {
       });
       if (res?.data) {
         onLogin(res.data);
-      } else {
-        console.error(res?.error?.message || "Login failed");
+      } else { 
         message.error(localStrings.Login.LoginFailed);
       }
-    } catch (error: any) {
-      console.error(error?.error?.message || "Error during login");
+    } catch (error: any) { 
       message.error(localStrings.Login.LoginFailed);
     } finally {
       setGoogleLoading(false);

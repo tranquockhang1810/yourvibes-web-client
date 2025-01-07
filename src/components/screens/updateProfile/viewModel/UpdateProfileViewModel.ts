@@ -18,15 +18,13 @@ const UpdateProfileViewModel = (repo: ProfileRepo) => {
 const updateProfile = async (data: UpdateProfileRequestModel) => {
   try {
     setLoading(true);
-    const response = await defaultProfileRepo.updateProfile(data);
-    console.log("response", response);
+    const response = await defaultProfileRepo.updateProfile(data); 
     
     if (!response?.error) {
       onUpdateProfile(response?.data);
       message.success(localStrings.UpdateProfile.UpdateSuccess);
       router.push("/profile?tab=info");
-    } else {
-      console.log("error", response?.error);
+    } else { 
       
       message.error(localStrings.UpdateProfile.UpdateFailed);
       setLoading(false);

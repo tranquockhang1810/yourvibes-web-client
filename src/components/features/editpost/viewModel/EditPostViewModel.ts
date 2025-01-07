@@ -63,8 +63,7 @@ const EditPostViewModel = (
 
     try {
       setGetPostLoading(true);
-      const res = await repo.getPostById(id);
-      console.log("API Response:", res); // Log the API response
+      const res = await repo.getPostById(id); 
       
       if (res && !res.error) {
         setPost(res.data);
@@ -92,13 +91,11 @@ const EditPostViewModel = (
     if (!repo) return;
 
     try {
-      setUpdateLoading(true);
-      console.log("updatePost UpdatePostRequestModel:", data); // Log the request data
+      setUpdateLoading(true); 
       const res = await repo.updatePost({
         ...data,
         media: data.media, // truyền mảng media vào trường media
-      });
-      console.log("API Response:", res); // Log the API response
+      }); 
       if (res && !res.error) {
         message.success(localStrings.UpdatePost.UpdatePostSuccess);
         await getNewFeed(); // Gọi API làm mới dữ liệu
@@ -119,20 +116,11 @@ const EditPostViewModel = (
   };
 
   const handleSubmit = async () => {
-    if (!postContent.trim() && fileList.length === 0) return;
-      // Debug giá trị đầu vào
-  console.log("Media IDs (ban đầu)List:", mediaIds);
-  console.log("New Media List:", fileList);
+    if (!postContent.trim() && fileList.length === 0) return; 
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
-    const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, validFiles);
-      // Debug giá trị đầu ra
-  console.log("Saved MediasList:", validFiles);
-  
-  console.log("Deleted Medias list:", deletedMedias);
-  console.log("New Media Files List:", newMediaFiles);
-
+    const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, validFiles); 
     const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
@@ -140,8 +128,7 @@ const EditPostViewModel = (
       media: newMediaFiles.length > 0 ? newMediaFiles : undefined,
       media_ids: deletedMedias.length > 0 ? deletedMedias : undefined,
 
-    };
-    console.log("Submit UpdatePostRequestModel:", updatePostRequest);
+    }; 
     await updatePost(updatePostRequest);
   };
 
@@ -208,9 +195,7 @@ const EditPostViewModel = (
     }
   };
 
-  const handleMedias = (mediaIds: string[], newMedias: RcFile[]) => {
-    console.log("Media IDs (ban đầu):", mediaIds);
-    console.log("New Medias (trước khi xử lý):", newMedias);
+  const handleMedias = (mediaIds: string[], newMedias: RcFile[]) => { 
   
     const savedMedias: string[] = [];
     const newMediaFiles: RcFile[] = [];
@@ -223,12 +208,9 @@ const EditPostViewModel = (
         newMediaFiles.push(item);
       }
     });
+   
   
-    console.log("Saved Medias:", savedMedias);
-    console.log("New Media Files:", newMediaFiles);
-  
-    const deletedMediaIds = mediaIds.filter((id) => !savedMedias.includes(id));
-    console.log("Deleted Medias:", deletedMediaIds);
+    const deletedMediaIds = mediaIds.filter((id) => !savedMedias.includes(id)); 
   
     return {
       deletedMedias: deletedMediaIds,
