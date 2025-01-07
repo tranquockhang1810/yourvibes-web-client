@@ -116,14 +116,11 @@ const SearchScreen = React.memo(() => {
       onSearch={(value) => setKeyword(value)} 
       value={keyword}
       size="large"
-      dropdownRender={renderDropdown}
+      dropdownRender={renderDropdown} 
+      className='md:w-80'
     >
       <Input
         placeholder={localStrings.Search.Search}
-        style={{
-          maxWidth: '400px',
-          borderRadius: '8px',
-        }}
       />
     </AutoComplete>
   );

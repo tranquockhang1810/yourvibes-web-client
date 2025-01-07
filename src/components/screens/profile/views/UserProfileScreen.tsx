@@ -8,6 +8,7 @@ import { useAuth } from '@/context/auth/useAuth';
 import { useRouter } from 'next/navigation';
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 
+
 const UserProfileScreen = ({ id }: { id: string }) => {
   const { localStrings } = useAuth();
   const [tab, setTab] = useState(0);

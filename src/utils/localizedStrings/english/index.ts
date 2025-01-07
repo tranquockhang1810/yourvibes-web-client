@@ -1,3 +1,4 @@
+import { Upload } from "antd";
 
 export const ENGLocalizedStrings = {
   Public: {
@@ -53,6 +54,11 @@ export const ENGLocalizedStrings = {
     Day: "Day",
     HideInfo: "has hidden personal information",
     FriendOnly: "only friends can see",
+    UserLikePost: " List of users liked post",
+    NoUserLikePost: "No one liked this post",
+    ReplyClick:"Click and write your Reply here...",
+    CommentClick:"Click and write your Comment here...",
+    LoginLoading:"Loading Login ...",
   },
   Form: {
     Label: {
@@ -85,6 +91,7 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
+      PleaseOldPasswordDifferentNewPassword:"New password must be different from old password!",
     },
   },
   Login: {
@@ -115,6 +122,7 @@ export const ENGLocalizedStrings = {
     CreatePostFailed: "Create post failed!",
     EmptyContent: "Missing content or media file",
     PickImgFailed: "Pick images failed!",
+    UploadImage: "Upload Image",
   },
   ObjectPostPrivacy: {
     PublicDescription: "Everyone on YourVibes",
@@ -160,6 +168,8 @@ export const ENGLocalizedStrings = {
     ReportComment: "Report comment",
     EditComment: "Edit comment",
     DeleteComment: "Delete comment",
+    DeleteCommentSusesfully: "Delete comment successful!",
+    DeleteCommentFailed: "Delete comment failed!",
     ActionOptions:"Action options",
     ReportSusesfully: "Reported succeeded!",
     Success: "Success",

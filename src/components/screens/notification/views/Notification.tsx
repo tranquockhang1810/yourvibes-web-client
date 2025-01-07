@@ -40,8 +40,8 @@ const NotificationScreen = () => {
   };
 
   return (
-    <div className="flex justify-center mt-4">
-        <div className='border rounded-md border-solidborder-gray-900  basis-2/4'>
+    <div className="mt-4 md:mx-16 xl:mx-64">
+        <div className='border rounded-md border-solidborder-gray-900'>
             {/* Header */}
             <div
                 className="w-full py-3 px-4 flex justify-between items-center"

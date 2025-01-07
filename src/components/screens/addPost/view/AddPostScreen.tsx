@@ -62,7 +62,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>{localStrings.AddPost.UploadImage}</div>
     </button>
   );
 
@@ -100,7 +100,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
 
       <Upload
         className="pt-4"
-        accept="image/*,video/*"
+        accept=".jpg, .jpeg, .gif, .png, .svg, .mp4, .mov"
         listType="picture-card"
         fileList={fileList}
         onChange={handleChange}
@@ -134,7 +134,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
         <Select
           value={privacy}
           onChange={(value) => setPrivacy(value)}
-          style={{ width: 120 }}
+          style={{ width: 120, marginLeft: "10px" }}
         >
           <Select.Option value={Privacy.PUBLIC}>
             {localStrings.Public.Everyone}
@@ -146,25 +146,25 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
             {localStrings.Public.Private}
           </Select.Option>
         </Select>
+
         <Button
           style={{ marginLeft: "auto" }}
           type="primary"
           onClick={() => {
             handleSubmitPost()
-            .then(() => {
-              if (onPostSuccess) {
-                onPostSuccess();
-              }
-            })
-            .catch((error) => console.error(error));
+              .then(() => {
+                if (onPostSuccess) {
+                  onPostSuccess();
+                }
+              })
+              .catch((error) => console.error(error));
           }}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
+          loading={createLoading}
         >
-          {createLoading ? (
-            <Spin style={{ color: "white" }} />
-          ) : (
-            localStrings.AddPost.PostNow
-          )}
+          {createLoading
+            ? createLoading && <Spin style={{ color: "white" }} />
+            : localStrings.AddPost.PostNow}
         </Button>
       </div>
     </div>

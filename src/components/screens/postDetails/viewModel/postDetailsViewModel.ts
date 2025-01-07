@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 //Comments
 import { CommentsResponseModel } from "@/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
@@ -9,11 +10,17 @@ import { UpdateCommentsRequestModel } from "@/api/features/comment/models/Update
 import { defaultLikeCommentRepo } from "@/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/api/features/likeComment/models/LikeCommentResponses";
 //UserLikePost
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import { defaultPostRepo, PostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
+import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
+import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+import { comment } from "postcss";
 
-const PostDetailsViewModel = (postId: string) => {
+const PostDetailsViewModel = (
+  postId: string,
+  repo: PostRepo,
+) => {
   const [comments, setComments] = useState<CommentsResponseModel[]>([]);
   const [replyMap, setReplyMap] = useState<{
     [key: string]: CommentsResponseModel[];
@@ -35,6 +42,47 @@ const PostDetailsViewModel = (postId: string) => {
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
   const [replyContent, setReplyContent] = useState("");
+  const [getPostLoading, setGetPostLoading] = useState<boolean>(false);
+  const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
+  const [postContent, setPostContent] = useState("");
+  const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
+  const [mediaIds, setMediaIds] = useState<string[]>([]);
+  const [originalImageFiles, setOriginalImageFiles] = useState<any[]>([]);
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [visibleReplies, setVisibleReplies] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const toggleRepliesVisibility = (commentId: string) => {
+    setVisibleReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
+  const handleReplyClick = (commentId: string, isReply: boolean = false) => {
+    if (isReply) {
+      setReplyToReplyId(commentId);
+    } else {
+      setReplyToCommentId(commentId);
+    }
+    setReplyContent("");
+    fetchReplies(postId || "", commentId);
+  };
+
+  const handleShowEditModal = (commentId: string, content: string) => {
+    setEditCommentContent(content);
+    setCurrentCommentId(commentId);
+    setEditModalVisible(true);
+  };
+
+  const handleOutsideClick = () => {
+    if (replyToCommentId || replyToReplyId) {
+      setReplyToCommentId(null);
+      setReplyToReplyId(null);
+      setReplyContent("");
+    }
+  };
+
   const fetchComments = async () => {
     const response = await defaultCommentRepo.getComments({
       PostId: postId,
@@ -184,25 +232,48 @@ const PostDetailsViewModel = (postId: string) => {
       cancelText: `${localStrings.PostDetails.No}`,
       onCancel: () => {},
       onOk: () => {
-        defaultCommentRepo.deleteComment(commentId).then(() => {
-          // Cập nhật trạng thái comments
-          setComments((prevComments) =>
-            prevComments.filter((comment) => comment.id !== commentId)
-          );
-
-          // Cập nhật trạng thái replyMap
-          if (replyMap[commentId]) {
-            setReplyMap((prevReplyMap) => {
-              const updatedReplies = prevReplyMap[commentId].filter(
-                (reply) => reply.id !== commentId
-              );
-              return { ...prevReplyMap, [commentId]: updatedReplies };
+        defaultCommentRepo.deleteComment(commentId)
+          .then(() => {
+            // Cập nhật trạng thái comments
+            setComments((prevComments) =>
+              prevComments.filter((comment) => comment.id !== commentId)
+            );
+            // Cập nhật trạng thái replyMap
+            if (replyMap[commentId]) {
+              setReplyMap((prevReplyMap) => {
+                const updatedReplies = prevReplyMap[commentId].filter(
+                  (reply) => reply.id !== commentId
+                );
+                return { ...prevReplyMap, [commentId]: updatedReplies };
+              });
+            }
+  
+            // Fetch comments and replies
+            fetchComments();
+            fetchReplies(postId || "", commentId);
+          })
+          .then(() => {
+            // Hiển thị thông báo khi xóa thành công
+            message.success({
+              content: localStrings.PostDetails.DeleteCommentSusesfully,
             });
-          }
-        });
+          })
+          .catch((error) => {
+            // Hiển thị thông báo khi xóa thất bại
+            message.error({
+              content: localStrings.PostDetails.DeleteCommentFailed,
+            });
+            console.error(error);
+          });
       },
     });
   };
+  
+  useEffect(() => {
+    if (replyMap && comments) { 
+      console.log("Reply map và comments đã thay đổi");
+    }
+  }, [replyMap, comments]);
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
@@ -210,17 +281,26 @@ const PostDetailsViewModel = (postId: string) => {
         post_id: postId,
         content: comment,
       };
-
+  
       try {
         const response = await defaultCommentRepo.createComment(commentData);
         if (!response.error) {
           const newComment = { ...response.data, replies: [] };
           setComments((prev) => [...prev, newComment]); // Cập nhật lại state comments
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          message.success({
+            content: localStrings.PostDetails.CommentSuccess,
+          });
         } else {
+          message.error({
+            content: localStrings.PostDetails.CommentFailed,
+          });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+        message.error({
+          content: localStrings.PostDetails.CommentFailed,
+        });
       } finally {
         setNewComment("");
       }
@@ -230,7 +310,7 @@ const PostDetailsViewModel = (postId: string) => {
   const handleAddReply = async (comment: string, id: string) => {
     if (comment.trim()) {
       const parentId = replyToReplyId || replyToCommentId;
-
+  
       const commentData: CreateCommentsRequestModel = {
         post_id: postId,
         content: comment,
@@ -256,10 +336,20 @@ const PostDetailsViewModel = (postId: string) => {
             [parentId || ""]: updatedReplies,
           }));
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          fetchReplies(postId || "", parentId || ""); // Gọi lại hàm fetchReplies để cập nhật lại danh sách reply
+          message.success({
+            content: localStrings.PostDetails.ReplySuccess,
+          });
         } else {
+          message.error({
+            content: localStrings.PostDetails.ReplyFailed,
+          });
         }
       } catch (error) {
         console.error("Error adding comment:", error);
+        message.error({
+          content: localStrings.PostDetails.ReplyFailed,
+        });
       } finally {
         setNewComment("");
         setReplyToReplyId(null);
@@ -272,9 +362,7 @@ const PostDetailsViewModel = (postId: string) => {
       postId: postId,
       page: 1,
       limit: 10,
-    });
-    console.log(postId, "post id");
-    console.log("ai like bài này: ", response);
+    }); 
     setUserLikePost(response?.data);
   };
 
@@ -301,44 +389,37 @@ const PostDetailsViewModel = (postId: string) => {
     }
   };
 
-  const handleReplyClick = (commentId: string) => {
-    setReplyToCommentId(commentId);
-    setReplyContent("");
-  };
-
   return {
     comments,
+    replyMap,
     likeCount,
     userLikes,
     newComment,
-    replyToCommentId,
-    replyToReplyId,
-    handleLike,
-    handleAddComment,
-    handleAddReply,
-    setNewComment,
-    setReplyToReplyId,
-    fetchReplies,
-    handleUpdate,
-    handleDelete,
     isEditModalVisible,
-    setEditModalVisible,
     editCommentContent,
-    setEditCommentContent,
+    handleLike,
+    handleDelete,
     handleEditComment,
-    currentCommentId,
-    replyMap,
-    likeIcon,
-    fetchComments,
-    userLikePost,
-    fetchUserLikePosts,
-    setReplyToCommentId,
+    setEditCommentContent,
     replyContent,
     setReplyContent,
-    handleReplyClick,
     handlePostAction,
     handleTextChange,
+    setReplyToCommentId,
+    setReplyToReplyId,
+    replyToCommentId,
+    replyToReplyId,
+    fetchReplies,
+    setEditModalVisible,
+    handleUpdate,
+    toggleRepliesVisibility,
+    handleReplyClick,
+    handleShowEditModal,
+    handleOutsideClick,
+    setVisibleReplies,
+    visibleReplies, 
+    fetchComments,
   };
 };
-
+ 
 export default PostDetailsViewModel;

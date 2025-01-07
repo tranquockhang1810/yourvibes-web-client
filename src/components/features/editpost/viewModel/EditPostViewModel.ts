@@ -4,20 +4,19 @@ import { UpdatePostRequestModel } from "@/api/features/post/models/UpdatePostReq
 import { PostRepo } from "@/api/features/post/PostRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { message } from "antd";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { UploadFile, UploadChangeParam, UploadProps } from "antd/es/upload";
+import { UploadFile, UploadProps } from "antd/es/upload";
 import { RcFile } from "antd/es/upload";
 import {
+  convertMediaDataToFiles,
   convertMediaToFiles,
-  TransferToFormData,
 } from "@/utils/helper/TransferToFormData";
 import { GetProp } from "antd";
-//UserLikePost
-import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
-import { Modal } from "antd";
+import { defaultPostRepo } from "@/api/features/post/PostRepo";
+import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -55,6 +54,9 @@ const EditPostViewModel = (
   const [previewOpen, setPreviewOpen] = useState(false);
   const [selectedMediaFiles, setSelectedMediaFiles] = useState<any[]>([]);
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
+  const [selectedMediaFilesToSend, setSelectedMediaFilesToSend] = useState<
+    any[]
+  >([]);
 
   const getDetailPost = async (id: string) => {
     if (!repo) return;
@@ -62,6 +64,8 @@ const EditPostViewModel = (
     try {
       setGetPostLoading(true);
       const res = await repo.getPostById(id);
+      console.log("API Response:", res); // Log the API response
+      
       if (res && !res.error) {
         setPost(res.data);
         setPostContent(res.data?.content || "");
@@ -69,14 +73,12 @@ const EditPostViewModel = (
         setMediaIds(
           res.data?.media?.map((item) => item?.id?.toString() || "") || []
         );
-        const mediaFiles = res.data?.media?.map((item) => ({
-          uri: item?.media_url || "",
-          fileName: item?.id?.toString() || "",
-        })) as any[];
+        const mediaFiles = convertMediaDataToFiles(res.data?.media || []);
+        
         setOriginalImageFiles(mediaFiles);
+        setFileList(mediaFiles); // Cập nhật giá trị của fileList
       } else {
         message.error(localStrings.Profile.Posts.GetOnePostFailed);
-        // router.back();
       }
     } catch (err: any) {
       console.error(err);
@@ -86,35 +88,69 @@ const EditPostViewModel = (
     }
   };
 
-  useEffect(() => {
-    if (id && !post && repo) {
-      getDetailPost(id);
-    }
-  }, [id, post, repo]);
-
   const updatePost = async (data: UpdatePostRequestModel) => {
     if (!repo) return;
 
     try {
       setUpdateLoading(true);
-      const res = await repo.updatePost(data);
+      console.log("updatePost UpdatePostRequestModel:", data); // Log the request data
+      const res = await repo.updatePost({
+        ...data,
+        media: data.media, // truyền mảng media vào trường media
+      });
+      console.log("API Response:", res); // Log the API response
       if (res && !res.error) {
-        // router.push('/profile?tab');
+        message.success(localStrings.UpdatePost.UpdatePostSuccess);
+        await getNewFeed(); // Gọi API làm mới dữ liệu
+        router.push("/profile?tabNum=posts");
+      } else {
+        message.error(localStrings.UpdatePost.UpdatePostFailed);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Update Post Error:", error);
+      message.error(localStrings.UpdatePost.UpdatePostFailed);
     } finally {
       setUpdateLoading(false);
     }
   };
+
+  const getNewFeed = async () => {
+    await defaultNewFeedRepo.getNewFeed({ limit: 10, page: 1 });
+  };
+
   const handleSubmit = async () => {
-    const data: UpdatePostRequestModel = {
+    if (!postContent.trim() && fileList.length === 0) return;
+      // Debug giá trị đầu vào
+  console.log("Media IDs (ban đầu)List:", mediaIds);
+  console.log("New Media List:", fileList);
+    const validFiles = fileList
+      .map((file) => file.originFileObj)
+      .filter((file): file is RcFile => !!file);
+    const { deletedMedias, newMediaFiles } = handleMedias(mediaIds, validFiles);
+      // Debug giá trị đầu ra
+  console.log("Saved MediasList:", validFiles);
+  
+  console.log("Deleted Medias list:", deletedMedias);
+  console.log("New Media Files List:", newMediaFiles);
+
+    const updatePostRequest: UpdatePostRequestModel = {
       postId: id,
       content: postContent,
       privacy: privacy,
+      media: newMediaFiles.length > 0 ? newMediaFiles : undefined,
+      media_ids: deletedMedias.length > 0 ? deletedMedias : undefined,
+
     };
-    await updatePost(data);
+    console.log("Submit UpdatePostRequestModel:", updatePostRequest);
+    await updatePost(updatePostRequest);
   };
+
+  useEffect(() => {
+    if (!updateLoading && post) {
+      getNewFeed(); // Làm mới dữ liệu
+    }
+  }, [updateLoading]);
+
   const deletePost = async (id: string) => {
     if (!repo) return;
 
@@ -172,66 +208,36 @@ const EditPostViewModel = (
     }
   };
 
-  const handleMedias = (mediaIds: string[], newMedias: any[]) => {
-    const deletedMedias: string[] = [];
+  const handleMedias = (mediaIds: string[], newMedias: RcFile[]) => {
+    console.log("Media IDs (ban đầu):", mediaIds);
+    console.log("New Medias (trước khi xử lý):", newMedias);
+  
     const savedMedias: string[] = [];
-    const newMediaFiles: any[] = [];
-
-    newMedias?.forEach((item) => {
-      if (!mediaIds.includes(item?.fileName as string)) {
-        newMediaFiles.push(item);
+    const newMediaFiles: RcFile[] = [];
+  
+    // Lọc qua các ảnh mới
+    newMedias.forEach((item) => {
+      if (item?.name && mediaIds.includes(item.name)) {
+        savedMedias.push(item.name);
       } else {
-        const ids = mediaIds.find((id) => id === item?.fileName) as string;
-        savedMedias.push(ids);
+        newMediaFiles.push(item);
       }
     });
-
-    const deletedMediaIds = mediaIds?.filter((id) => !savedMedias.includes(id));
-
+  
+    console.log("Saved Medias:", savedMedias);
+    console.log("New Media Files:", newMediaFiles);
+  
+    const deletedMediaIds = mediaIds.filter((id) => !savedMedias.includes(id));
+    console.log("Deleted Medias:", deletedMediaIds);
+  
     return {
       deletedMedias: deletedMediaIds,
       newMediaFiles,
     };
   };
-
-  // Xử lý đăng bài viết
-  const handleSubmitPost = async () => {
-    if (!postContent.trim() && fileList.length === 0) return;
-
-    const validFiles = fileList
-      .map((file) => file.originFileObj)
-      .filter((file): file is RcFile => !!file);
-
-    const mediaFiles = await convertMediaToFiles(validFiles);
-
-    // Chuyển đổi mediaFiles sang dạng file
-    const mediaFilesAsFiles = mediaFiles
-      .map((file) => {
-        if (file.uri) {
-          const blob = new Blob([file.uri], { type: file.type });
-          return new File([blob], file.name, { type: file.type });
-        } else {
-          console.log(`File ${file.name} không có URI, bỏ qua`);
-          return null;
-        }
-      })
-      .filter((file) => file !== null);
-
-    const formData = TransferToFormData({
-      content: postContent,
-      privacy,
-      media: mediaFilesAsFiles,
-    });
-
-    const UpdatePostRequestModel: UpdatePostRequestModel = {
-      content: postContent,
-      privacy: privacy,
-      media: mediaFilesAsFiles, // Đảm bảo rằng media được truyền đúng
-    };
-
-    await updatePost(UpdatePostRequestModel);
-  };
-
+  
+  
+  
   const handlePreview = async (file: UploadFile) => {
     let preview = file.url || file.preview;
 
@@ -242,7 +248,7 @@ const EditPostViewModel = (
     setPreviewImage(preview || "");
     setPreviewOpen(true);
   };
-
+  
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -250,76 +256,50 @@ const EditPostViewModel = (
 
     const validFiles = newFileList
       .map((file) => file.originFileObj)
-      .filter((file): file is RcFile => !!file); // Lọc các file hợp lệ
+      .filter((file): file is RcFile => !!file);
 
-    const mediaFiles = await convertMediaToFiles(validFiles); // Chuyển đổi thành URI hợp lệ
+    const mediaFiles = await convertMediaToFiles(validFiles);
     setSelectedMediaFiles(mediaFiles);
   };
-
-  const updateMedia = async (newMedia: any[]) => {
-    const mediaIds = newMedia.map((item) => item.fileName);
-    const originalImageFiles = newMedia.map((item) => ({
-      uri: item.uri,
-      fileName: item.fileName,
-    }));
-
-    setMediaIds(mediaIds);
-    setOriginalImageFiles(originalImageFiles);
-  };
-
+  
   const fetchUserLikePosts = async (postId: string) => {
     const response = await defaultPostRepo.getPostLikes({
       postId: postId,
       page: 1,
       limit: 10,
-    }); 
+    });
     setUserLikePost(response?.data);
   };
-  useEffect(() => {
-    if (postId) {
-      fetchUserLikePosts(postId);
-    }
-  }, [postId]);
 
   return {
-    updateMedia,
-    handleSubmit,
     handlePreview,
     handleChange,
     updateLoading,
     postContent,
     setPostContent,
-    originalImageFiles,
-    setOriginalImageFiles,
     privacy,
     setPrivacy,
-    updatePost,
     getDetailPost,
-    post,
-    mediaIds,
-    handleMedias,
-    deletePost,
+    fileList,
+    handleSubmit,
+    selectedMediaFiles,
+    getNewFeed,
+    previewImage,
+    setMediaIds,
+    setPreviewImage,
+    setFileList,
     deleteLoading,
     likePost,
     likedPost,
     setLikedPost,
     sharePost,
     shareLoading,
-    hidePost,
-    setHidePost,
-    getPostLoading,
-    previewOpen,
-    setPreviewOpen,
-    previewImage,
-    setPreviewImage,
-    selectedMediaFiles,
-    setSelectedMediaFiles,
-    handleSubmitPost,
-    fileList,
-    setFileList,
+    deletePost,
+    updatePost,
     fetchUserLikePosts,
     userLikePost,
     setUserLikePost,
+    originalImageFiles
   };
 };
 

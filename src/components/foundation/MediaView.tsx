@@ -5,7 +5,9 @@ import "slick-carousel/slick/slick-theme.css";
 import useColor from '@/hooks/useColor';
 import { PostMediaModel } from '@/api/features/post/models/PostResponseModel'; 
 import ReactPlayer from 'react-player';
-
+import { dot } from 'node:test/reporters';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css"; 
 interface MediaViewProps {
   mediaItems: PostMediaModel[];
 }
@@ -30,10 +32,12 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
         }}
       />
     ),
+    dotsClass: 'slick-dots',
   };
+  
 
   return (
-    <div style={{ position: 'relative', maxWidth: '100%', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
       <Slider {...settings}>
         {mediaItems?.map((media, index) => {
           const isVideo = media?.media_url?.endsWith('.mp4') || media?.media_url?.endsWith('.mov');
@@ -46,13 +50,13 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
                   loop
                   muted
                   playing
-                  style={{ maxWidth: '100%', objectFit: 'cover' }}
+                  style={{ width: '100%', objectFit: 'cover' }}
                 />
               ) : (
                 <img
                   src={media?.media_url || ""}
                   alt={`media-${index}`}
-                  style={{ maxWidth: '100%', objectFit: 'cover' }}
+                  style={{ width: '100%', objectFit: 'cover' }}
                 />
               )}
             </div>

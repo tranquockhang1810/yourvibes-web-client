@@ -31,8 +31,9 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
     };
 
     const connectWebSocket = () => {
+        console.log('OBIJECT ',connectWebSocket);
         const ws = new WebSocket(`${ApiPath.GET_WS_PATH}${user?.id}`);
-    
+        console.log("WebSocket:", ws);
         ws.onopen = () => {
             console.log('WebSocket connected');
         };
@@ -62,6 +63,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
+            // alert('Không thể kết nối WebSocket: Kiểm tra lại đường dẫn hoặc thử lại sau.');
         };
 
         // Cleanup WebSocket on component unmount

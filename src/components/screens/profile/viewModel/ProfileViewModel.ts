@@ -93,13 +93,6 @@ const ProfileViewModel = () => {
     console.error(error);
   }
 }
-useEffect(() => {
-  if (user) {
-    fetchMyFriends(page);
-    console.log("Số lượng bạn bè ở list friends:", friendCount);
-    
-  }
-}, [page, user, friendCount]);
 
 //Privacy setting
 const fetchUserProfile = async (id: string) => {

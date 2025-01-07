@@ -1,7 +1,7 @@
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
 import { ReportCommentRequestModel } from "@/api/features/comment/models/ReportComment";
 import { ReportPostRequestModel } from "@/api/features/post/models/ReportPost";
-import { PostRepo } from "@/api/features/post/PostRepo";
+import { defaultPostRepo, PostRepo } from "@/api/features/post/PostRepo";
 import { ReportUserRequestModel } from "@/api/features/profile/model/ReportUser";
 import { defaultProfileRepo } from "@/api/features/profile/ProfileRepository";
 import { useAuth } from "@/context/auth/useAuth";
@@ -9,38 +9,27 @@ import { message } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const ReportViewModel = (repo: PostRepo) => {
+const ReportViewModel = () => {
     const router = useRouter();
     const { localStrings } = useAuth();
-    const [loading, setLoading] = useState(false);
     const [reportLoading, setReportLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const reportPost = async (params: ReportPostRequestModel) => {
         try {
             setReportLoading(true);
-            const res = await repo.reportPost(params);
+            const res = await defaultPostRepo.reportPost(params);
             console.log("resPost", res);
             
             if (!res?.error) {
-                // Toast.show({
-                //     type: 'success',
-                //     text1: localStrings.Report.ReportSuccess,
-                // });
-                router.back();
+                message.success(localStrings.Report.ReportSuccess);
+                setShowModal(false);
             } else {
-            //    Toast.show({
-            //          type: 'error',
-            //          text1: localStrings.Report.ReportFailed,
-            //          text2: res?.error?.message,
-            //     });
+                message.error(localStrings.Report.ReportFailed);
             }
         } catch (error: any) {
             console.error(error);
-            // Toast.show({
-            //     type: 'error',
-            //     text1: localStrings.Report.ReportFailed,
-            //     text2: error?.error?.message,
-            // });
+            message.error(localStrings.Report.ReportFailed);
         } finally {
             setReportLoading(false);
         }
@@ -51,20 +40,15 @@ const ReportViewModel = (repo: PostRepo) => {
           setReportLoading(true);
           const res = await defaultProfileRepo.reportUser(params);
           console.log("resUser", res);
-          
           if (!res?.error) {
            message.success(localStrings.Report.ReportSuccess);
-            router.back();
+           setShowModal(false);
           } else {
             message.error(localStrings.Report.ReportFailed);
           }
         } catch (error: any) {
           console.error(error);
-        //   Toast.show({
-        //     type: 'error',
-        //     text1: localStrings.Report.ReportFailed,
-        //     text2: error?.message,
-        //   });
+          message.error(localStrings.Report.ReportFailed);
         } finally {
           setReportLoading(false);
         }
@@ -77,36 +61,25 @@ const ReportViewModel = (repo: PostRepo) => {
             console.log("resComment", res);
             
             if (!res?.error) {
-            //   Toast.show({
-            //     type: 'success',
-            //     text1: localStrings.Report.ReportSuccess,
-            //   });
-              router.back();
+              message.success(localStrings.Report.ReportSuccess);
+              setShowModal(false);
             } else {
-            //   Toast.show({
-            //     type: 'error',
-            //     text1: localStrings.Report.ReportFailed,
-            //     text2: res?.error?.message,
-            //   });
+              message.error(localStrings.Report.ReportFailed);
             }
           } catch (error: any) {
             console.error(error);
-            // Toast.show({
-            //   type: 'error',
-            //   text1: localStrings.Report.ReportFailed,
-            //   text2: error?.message,
-            // });
+            message.error(localStrings.Report.ReportFailed);
           } finally {
             setReportLoading(false);
           }
         }
     return {
-        loading,
         reportLoading,
         reportPost,
         reportUser,
         reportComment,
-        setLoading,
+        setShowModal,
+        showModal,
     }
 }
 export default ReportViewModel;

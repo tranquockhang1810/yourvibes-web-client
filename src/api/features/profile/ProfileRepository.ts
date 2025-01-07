@@ -8,6 +8,7 @@ import { ReportUserRequestModel } from "./model/ReportUser";
 import { GetFriendRequestModel } from "./model/GetFriendModel";
 import { FriendResponseModel, } from "./model/FriendReponseModel";
 import { TransferToFormData } from "@/utils/helper/TransferToFormData";
+import { ChangePasswordRequestModel } from "./model/ChangPasswordModel";
 
 interface IProfileRepo {
   getProfile(userId: string): Promise<BaseApiResponseModel<UserModel>>;
@@ -18,6 +19,7 @@ interface IProfileRepo {
   refuseFriendRequest(userId: string): Promise<BaseApiResponseModel<any>>;
   unfriend(userId: string): Promise<BaseApiResponseModel<any>>;
   getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>>; 
+  changePassword(data: ChangePasswordRequestModel): Promise<BaseApiResponseModel<any>>;
 }
 
 export class ProfileRepo implements IProfileRepo {
@@ -25,7 +27,7 @@ export class ProfileRepo implements IProfileRepo {
     return client.get(ApiPath.PROFILE + userId);
   }
   async updateProfile(data: UpdateProfileRequestModel): Promise<BaseApiResponseModel<UserModel>> {
-    const formData = TransferToFormData(data);
+    const formData = TransferToFormData(data);   
     return client.patch(ApiPath.PROFILE, formData, { headers: { "Content-Type": "multipart/form-data" } });
   }
   async sendFriendRequest(userId: string): Promise<BaseApiResponseModel<any>> {
@@ -49,6 +51,9 @@ export class ProfileRepo implements IProfileRepo {
   async getListFriends(data: GetFriendRequestModel): Promise<BaseApiResponseModel<FriendResponseModel>> {
     return client.get(ApiPath.LIST_FRIENDS + data.user_id, data);
   } 
+  async changePassword(data: ChangePasswordRequestModel): Promise<BaseApiResponseModel<any>> {
+    return client.patch(ApiPath.CHANGE_PASSWORD, data);
+  }
 }
 
 export const defaultProfileRepo = new ProfileRepo();

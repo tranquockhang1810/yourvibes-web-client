@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; 
   const token = request.cookies.get('accesstoken');
+  console.log("token", token);
+  console.log("pathname", pathname);
+  
+  
 
     // Bỏ qua các tài nguyên tĩnh và Next.js nội bộ
     if (
@@ -13,10 +17,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-  if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
+  if (pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/forgotPassword")) {
     return NextResponse.next();
   }
-
 
   // Nếu không có token và đang truy cập trang login thì không redirect lại
   if (!token) {
