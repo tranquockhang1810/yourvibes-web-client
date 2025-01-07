@@ -44,7 +44,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Giải mã access_token để lấy thời gian hết hạn
     const decodedToken: any = jwtDecode(user.access_token);
     const expiresAt = new Date(decodedToken.exp * 1000); // Chuyển đổi từ giây sang mili giây
-    document.cookie = `accesstoken=${user.access_token}; path=/; SameSite=None; Secure; expires=${expiresAt.toUTCString()}`;
+    document.cookie = `accesstoken=${user.access_token}; path=/; ${
+      window.location.protocol === 'http:' 
+        ? 'SameSite=Lax' 
+        : 'SameSite=None; Secure'
+    }; expires=${expiresAt.toUTCString()}`;
+    
+    
 
     setIsAuthenticated(true);
     setUser(user.user);

@@ -15,6 +15,7 @@ import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import { Modal } from "antd";
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
+import { comment } from "postcss";
 
 const PostDetailsViewModel = (
   postId: string,
@@ -223,7 +224,7 @@ const PostDetailsViewModel = (
     }
   }, [isEditModalVisible]);
 
-  const handleDelete = (commentId: string, parentId: string) => {
+  const handleDelete = (commentId: string) => {
     Modal.confirm({
       title: `${localStrings.PostDetails.DeleteComment}`,
       content: "",
@@ -246,6 +247,10 @@ const PostDetailsViewModel = (
                 return { ...prevReplyMap, [commentId]: updatedReplies };
               });
             }
+  
+            // Fetch comments and replies
+            fetchComments();
+            fetchReplies(postId || "", commentId);
           })
           .then(() => {
             // Hiển thị thông báo khi xóa thành công
@@ -263,7 +268,12 @@ const PostDetailsViewModel = (
       },
     });
   };
-
+  
+  useEffect(() => {
+    if (replyMap && comments) { 
+      console.log("Reply map và comments đã thay đổi");
+    }
+  }, [replyMap, comments]);
 
   const handleAddComment = async (comment: string) => {
     if (comment.trim()) {
@@ -326,6 +336,7 @@ const PostDetailsViewModel = (
             [parentId || ""]: updatedReplies,
           }));
           fetchComments(); // Gọi lại hàm fetchComments để cập nhật lại danh sách comment
+          fetchReplies(postId || "", parentId || ""); // Gọi lại hàm fetchReplies để cập nhật lại danh sách reply
           message.success({
             content: localStrings.PostDetails.ReplySuccess,
           });
@@ -407,6 +418,7 @@ const PostDetailsViewModel = (
     handleOutsideClick,
     setVisibleReplies,
     visibleReplies, 
+    fetchComments,
   };
 };
  

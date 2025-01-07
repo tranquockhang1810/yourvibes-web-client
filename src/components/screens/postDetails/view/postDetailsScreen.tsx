@@ -47,6 +47,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     handleOutsideClick,
     setVisibleReplies,
     visibleReplies, 
+    fetchComments,
   } = PostDetailsViewModel(postId || "", defaultPostRepo);
    
 
@@ -217,10 +218,17 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
             >
               {replyMap[comment.id]?.length > 0 && (
                 <button
-                  onClick={() => toggleRepliesVisibility(comment.id)}
+                onClick={() => {
+                  toggleRepliesVisibility(comment.id);
+                  if (visibleReplies[comment.id]) {
+                    fetchReplies(postId || "", comment.id);
+                  } else {
+                    fetchComments();
+                  }
+                }}
                   className="show-replies-btn text-blue-500 text-xs mb-2"
                 >
-                  {visibleReplies[comment.id] ? "Hide Replies" : "Show Replies"}
+                  {visibleReplies[comment.id] ? `${localStrings.PostDetails.HideReplies}` : `${localStrings.PostDetails.ViewReplies}`}
                 </button>
               )}
               {visibleReplies[comment.id] &&
@@ -241,7 +249,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       </div>
                     </div>
                     <p className="text-gray-700">{reply.content}</p>
-                    <div className="reply-actions flex space-x-4 text-xs">
+                    <div className="reply-actions mt-3 flex space-x-4 text-xs">
                       <Row>
                         <Col span={4} className="hover:cursor-pointer">
                           <FaHeart
@@ -363,7 +371,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             <p className="text-gray-700">
                               {nestedReply.content}
                             </p>
-                            <div className="reply-actions flex space-x-4 text-xs">
+                            <div className="reply-actions mt-3 flex space-x-4 text-xs">
                               <Row>
                                 <Col span={4} className="hover:cursor-pointer">
                                   <FaHeart
