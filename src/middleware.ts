@@ -21,7 +21,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-
   // Nếu không có token và đang truy cập trang login thì không redirect lại
   if (!token) {
     return NextResponse.redirect(new URL('/login', request.url));
