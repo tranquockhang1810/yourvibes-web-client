@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; 
   const token = request.cookies.get('accesstoken');
-
-  console.log("Pathname:", pathname);
-  console.log("Token:", token);
-
+  console.log("token", token);
+  console.log("pathname", pathname);
+  
+  
 
     // Bỏ qua các tài nguyên tĩnh và Next.js nội bộ
     if (

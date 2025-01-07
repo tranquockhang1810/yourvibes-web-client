@@ -31,8 +31,9 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
     };
 
     const connectWebSocket = () => {
+        console.log('OBIJECT ',connectWebSocket);
         const ws = new WebSocket(`${ApiPath.GET_WS_PATH}${user?.id}`);
-        console.log(ws,"ws");
+        console.log("WebSocket:", ws);
         ws.onopen = () => {
             console.log('WebSocket connected');
         };
