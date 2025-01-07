@@ -4,9 +4,7 @@ import React, { Suspense } from 'react';
 
 const ProfilePage = () => {
   return (
-    <Suspense>
-      <ProfileFeature />
-    </Suspense>
+    <ProfileFeature />
   );
 };
 

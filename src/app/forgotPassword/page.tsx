@@ -1,9 +1,11 @@
 import ForgotPasswordFeature from '@/components/screens/forgotPassword/view/ForgotPasswordFeature'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const ForGotPasswordPage = () => {
   return (
-    <ForgotPasswordFeature />
+    <Suspense>
+      <ForgotPasswordFeature />
+    </Suspense>
   )
 }
 
