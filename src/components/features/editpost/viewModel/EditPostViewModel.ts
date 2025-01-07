@@ -261,40 +261,6 @@ const EditPostViewModel = (
     const mediaFiles = await convertMediaToFiles(validFiles);
     setSelectedMediaFiles(mediaFiles);
   };
-
-//   const handleChange: UploadProps["onChange"] = async ({
-//     fileList: newFileList,
-//   }) => {
-//     console.log("File List Updated:", newFileList);
-//     setFileList(newFileList); // Cập nhật danh sách file mới
-  
-//     // Phân loại ảnh cũ và ảnh mới
-//     const validFiles = newFileList
-//       .map((file) => file.originFileObj)
-//       .filter((file): file is RcFile => !!file);
-  
-//     const oldFiles = newFileList.filter((file) => !file.originFileObj && file.url);
-  
-//     // Xử lý ảnh mới
-//     const newMediaFiles = await convertMediaToFiles(validFiles);
-  
-//     // Thêm ảnh cũ vào danh sách media
-//     const combinedMediaFiles = [
-//       ...newMediaFiles,
-//       ...oldFiles.map((file) => ({
-//         uid: file.uid,
-//         name: file.fileName || "unknown",
-//         type: "image/jpeg", // Loại file mặc định, cần chỉnh nếu cần
-//         url: file.url,
-//       })),
-//     ];
-  
-//     setSelectedMediaFiles(combinedMediaFiles); // Cập nhật danh sách media đã xử lý
-//     console.log("Old Files:", oldFiles);
-// console.log("New Media Files (converted):", newMediaFiles);
-// console.log("Combined Media Files:", combinedMediaFiles);
-
-//   };
   
   const fetchUserLikePosts = async (postId: string) => {
     const response = await defaultPostRepo.getPostLikes({
