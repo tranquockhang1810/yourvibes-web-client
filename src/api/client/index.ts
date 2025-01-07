@@ -8,9 +8,7 @@ const api = axios.create({
   timeout: 60000,
 });
 
-// curlirize(api);
-
-//Request interceptors
+// curlirize(api); 
 api.interceptors.request.use(
   (config) => {
     // Get from async storage
