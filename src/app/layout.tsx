@@ -20,7 +20,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AntdRegistry>
-        <ConfigProvider theme={{ token: { colorPrimary: brandPrimary } }}>
+        <ConfigProvider
+          theme={{
+            token: { colorPrimary: brandPrimary },
+            components: {
+              Select: {
+                optionSelectedColor: "#fff",
+              }
+            }
+          }}
+        >
           <AuthProvider>
             <PostProvider>
               <body>{children}</body>

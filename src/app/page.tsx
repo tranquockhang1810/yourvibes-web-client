@@ -17,7 +17,7 @@ const Page = () => {
   }, [isAuthenticated, router]); // Chỉ chạy khi trạng thái xác thực hoặc router thay đổi
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className="w-screen h-screen flex justify-center items-center bg-white">
       <img 
         src="/image/yourvibes_black.png" 
         alt="YourVibes" 

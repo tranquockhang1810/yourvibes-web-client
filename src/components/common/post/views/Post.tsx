@@ -258,7 +258,7 @@ const Post: React.FC<IPost> = React.memo(
       <Card
         style={{
           marginTop: 10,
-          borderColor: isParentPost ? brandPrimary : "black",
+          borderColor: isParentPost ? brandPrimary : "white",
           maxWidth: 600,
           width: "100%",
         }}
@@ -266,10 +266,10 @@ const Post: React.FC<IPost> = React.memo(
           <Row
             gutter={[8, 8]}
             className="m-2"
-            // onClick={() => {
-            //   setIsCommentModalVisible(false);
-            //   router.push(`postDetails?postId=${likedPost?.id}`);
-            // }}
+          // onClick={() => {
+          //   setIsCommentModalVisible(false);
+          //   router.push(`postDetails?postId=${likedPost?.id}`);
+          // }}
           >
             <Col
               xs={4}
@@ -328,7 +328,7 @@ const Post: React.FC<IPost> = React.memo(
                 xs={2}
                 md={1}
                 className="hover:cursor-pointer"
-                // onClick={showAction}
+              // onClick={showAction}
               >
                 <Dropdown trigger={["click"]} menu={{ items }}>
                   <HiDotsVertical size={16} />
@@ -350,50 +350,50 @@ const Post: React.FC<IPost> = React.memo(
           isParentPost || noFooter
             ? undefined
             : [
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  <Row align={"middle"} justify={"center"}>
-                    {renderLikeIcon()}
-                    <span
-                      style={{ color: brandPrimary }}
-                      className="ml-2"
-                      onClick={() => {
-                        fetchUserLikePosts(likedPost!.id as string);
-                        setIsVisible(true);
-                      }}
-                    >
-                      {likedPost?.like_count}
-                    </span>
-                  </Row>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Row align={"middle"} justify={"center"}>
+                  {renderLikeIcon()}
+                  <span
+                    style={{ color: brandPrimary }}
+                    className="ml-2"
+                    onClick={() => {
+                      fetchUserLikePosts(likedPost!.id as string);
+                      setIsVisible(true);
+                    }}
+                  >
+                    {likedPost?.like_count}
+                  </span>
+                </Row>
 
-                  {!noComment && (
-                    <Row align={"middle"} justify={"center"}>
-                      <FaRegComments
-                        size={24}
-                        color={brandPrimary}
-                        onClick={() => setIsCommentModalVisible(true)}
-                      />
-                      <span style={{ color: brandPrimary }} className="ml-2">
-                        {likedPost?.comment_count}
-                      </span>
-                    </Row>
-                  )}
-
+                {!noComment && (
                   <Row align={"middle"} justify={"center"}>
-                    <IoShareSocialOutline
+                    <FaRegComments
                       size={24}
                       color={brandPrimary}
-                      onClick={() => setIsShareModalVisible(true)}
+                      onClick={() => setIsCommentModalVisible(true)}
                     />
+                    <span style={{ color: brandPrimary }} className="ml-2">
+                      {likedPost?.comment_count}
+                    </span>
                   </Row>
-                </div>,
-              ]
+                )}
+
+                <Row align={"middle"} justify={"center"}>
+                  <IoShareSocialOutline
+                    size={24}
+                    color={brandPrimary}
+                    onClick={() => setIsShareModalVisible(true)}
+                  />
+                </Row>
+              </div>,
+            ]
         }
       >
         <Row gutter={[8, 8]} className="mx-2">
@@ -431,7 +431,7 @@ const Post: React.FC<IPost> = React.memo(
               </div>
             </div>
           ) : (
-            <Col span={22}>
+            <Col span={24}>
               {likedPost?.content && (
                 <span className="pl-0.3">{likedPost?.content}</span>
               )}

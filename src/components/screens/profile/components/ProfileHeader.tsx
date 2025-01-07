@@ -87,8 +87,6 @@ const ProfileHeader = ({
       },
     },
   ];
-  
-
 
   const renderFriendButton = useCallback(() => {
     switch (newFriendStatus) {
@@ -225,7 +223,6 @@ const ProfileHeader = ({
     if (user) setNewFriendStatus(user?.friend_status);
   }, [user]);
 
-  console.log("reload page")
   return (
     <div>
       {loading ? (
@@ -235,13 +232,12 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="md:mx-16 h-[350px]" style={{ backgroundColor: lightGray }}>
+          <div className="md:mx-16" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
-              className="w-full h-full object-cover"
+              className="w-full max-h-[350px] object-top object-cover"
               style={{ objectPosition: "center" }}
-
             />
           </div>
 
