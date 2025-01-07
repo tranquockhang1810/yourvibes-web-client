@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   const onFinish = async (values: any) => {
     message.loading({
-      content: "Đang đăng nhập, vui lòng đợi...",
+      content: `${localStrings.Public.LoginLoading}`,
       key: "login",
     });
 
@@ -27,77 +27,100 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-5">
-      <div className="flex-1 flex items-center justify-center">
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen w-full bg-gray-100 px-4 md:px-8 lg:px-16">
+      {/* Logo (Hiển thị trên mobile) */}
+      <div className="flex md:hidden justify-center mt-12 mb-6">
         <img
           src="/image/yourvibes_black.png"
           alt="YourVibes"
-          className="text-4xl font-cursive text-black"
+          className="w-52 md:w-120" // Đặt chiều rộng ảnh ở kích thước 32 trên mobile và 64 trên desktop
         />
       </div>
 
-      <div className="flex-1 max-w-md p-8 border border-gray-300 rounded-lg shadow-lg bg-white">
-        <Form
-          name="login"
-          layout="vertical"
-          onFinish={onFinish}
-          className="w-full"
+      {/* Cột hình ảnh và Form Login (Cả 2 cột đều nhau) */}
+      <div className="flex flex-1 w-full">
+        {/* Cột Hình ảnh */}
+        <div className="hidden md:flex flex-1 items-center justify-center mt-12">
+          <img
+            src="/image/yourvibes_black.png"
+            alt="YourVibes"
+            className="text-4xl font-cursive text-black"
+          />
+        </div>
+
+        {/* Cột Form Login */}
+        <div
+          className="flex-1 w-full max-w-md p-6 md:p-8 border border-gray-300 rounded-lg shadow-lg bg-white mt-24 md:mt-0"
+          style={{
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            borderRadius: "8px",
+          }}
         >
-          <Form.Item
-            name="email"
-            rules={[
-              {
-                required: true,
-                message: localStrings.Form.RequiredMessages.EmailRequiredMessage,
-              },
-              {
-                type: "email",
-                message: localStrings.Form.TypeMessage.EmailTypeMessage,
-              },
-            ]}
+          <Form
+            name="login"
+            layout="vertical"
+            onFinish={onFinish}
+            className="w-full"
           >
-            <Input placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: localStrings.Form.RequiredMessages.PasswordRequiredMessage,
-              },
-            ]}
-          >
-            <Input.Password placeholder={localStrings.Form.Label.Password} />
-          </Form.Item>
-
-          <div className="mb-4 text-center text-xs">
-            <a href="/forgotPassword" className="text-blue-500">
-              {localStrings.Login.ForgotPasswordText}
-            </a>
-          </div>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="w-full bg-black text-white"
-              loading={loading}
+            {/* Trường Email */}
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    localStrings.Form.RequiredMessages.EmailRequiredMessage,
+                },
+                {
+                  type: "email",
+                  message: localStrings.Form.TypeMessage.EmailTypeMessage,
+                },
+              ]}
             >
-              {localStrings.Login.LoginButton}
-            </Button>
-          </Form.Item>
+              <Input
+                placeholder="Email"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </Form.Item>
 
-          <div className="text-center">
-            <span>
-              {localStrings.Login.DontHaveAccout}{" "}
-              <a href="/register" className="text-blue-500">
-                {localStrings.Login.SignUpNow}
+            {/* Trường Password */}
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    localStrings.Form.RequiredMessages.PasswordRequiredMessage,
+                },
+              ]}
+            >
+              <Input.Password
+                placeholder={localStrings.Form.Label.Password}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </Form.Item>
+
+            {/* Quên mật khẩu */}
+            <div className="mb-4 text-center text-xs">
+              <a
+                href="/forgotPassword"
+                className="text-blue-500 hover:underline"
+              >
+                {localStrings.Login.ForgotPasswordText}
               </a>
-            </span>
-          </div>
+            </div>
 
-          <div className="mt-4 text-center text-sm">{localStrings.Login.Or}</div>
+            {/* Nút Đăng nhập */}
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800"
+                loading={loading}
+              >
+                {localStrings.Login.LoginButton}
+              </Button>
+            </Form.Item>
 
             {/* Đăng ký */}
             <div className="text-center text-sm">
@@ -129,7 +152,8 @@ const LoginPage = () => {
           </div>
         </Form>
         </div>
-      </div> 
+      </div>
+    </div>
   );
 };
 
