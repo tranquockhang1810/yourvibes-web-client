@@ -12,14 +12,12 @@ const Content = () => {
     return <div className="text-center text-gray-500">Đang tải...</div>;
   } else {
     return <PostDetailsScreen postId={postId} />;
-  } 
+  }
 }
 
 const PostDetailsPage = () => {
   return (
-    <Suspense>
-      <Content />
-    </Suspense>
+    <Content />
   )
 };
 

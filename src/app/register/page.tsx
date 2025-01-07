@@ -1,9 +1,11 @@
 import SignUpFeature from '@/components/screens/register/view/SignUpFeature'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const RegsiterPage = () => {
   return (
-    <SignUpFeature />
+    <Suspense>
+      <SignUpFeature />
+    </Suspense>
   )
 }
 
