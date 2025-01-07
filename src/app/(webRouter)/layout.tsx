@@ -32,15 +32,11 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 
   const connectWebSocket = () => {
     const ws = new WebSocket(`${ApiPath.GET_WS_PATH}${user?.id}`);
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-    };
 
     ws.onmessage = (e) => {
       const notificationData = JSON.parse(e.data);
       const { from: userName, content, notification_type: type } = notificationData;
-
-      console.log("Message:", notificationData);
+ 
       setStatusNotifi(true);
 
       const mappedType = mapNotifiCationContent(type);
@@ -55,16 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
       });
     };
 
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      // alert('Không thể kết nối WebSocket: Kiểm tra lại đường dẫn hoặc thử lại sau.');
-    };
-
-    // Cleanup WebSocket on component unmount
     return () => {
       ws.close();
     };

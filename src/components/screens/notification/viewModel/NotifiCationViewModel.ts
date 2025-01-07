@@ -1,5 +1,6 @@
 import { NotificationResponseModel } from '@/api/features/notification/models/NotifiCationModel';
 import { NotifiCationRepo } from '@/api/features/notification/NotifiCationRepo';
+import { message } from 'antd';
 import { useState } from 'react';
 
 const NotifiCationViewModel = (repo: NotifiCationRepo) => {
@@ -66,14 +67,12 @@ const NotifiCationViewModel = (repo: NotifiCationRepo) => {
     const updateAllNotification = async () => {
         try {
             setLoading(true);
-            const response = await repo.updateAllNotification();
-            console.log("responseNoti", response);
+            const response = await repo.updateAllNotification(); 
             
             if (!response?.error) {
                 fetchNotifications();
-            } else {
-                console.log("error", response?.error);
-                
+            } else {  
+                message.error(response?.message);
             }
         } catch (error: any) {
             console.error("error", error);

@@ -42,7 +42,6 @@ const SignUpViewModel = (repo: AuthenRepo) => {
     try {
       setOtpLoading(true);
       const response = await repo.verifyOTP(data);
-      console.log(response);
 
       if (!response?.error) {
       }

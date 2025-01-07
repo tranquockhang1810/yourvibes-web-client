@@ -51,8 +51,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   } = PostDetailsViewModel(postId || "", defaultPostRepo);
    
 
-  const [post, setPost] = useState<PostResponseModel | null>(null);
-  console.log(post);
+  const [post, setPost] = useState<PostResponseModel | null>(null); 
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
   const reportViewModel = ReportViewModel();
@@ -66,8 +65,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   
   const {showModal, setShowModal} = ReportViewModel();
   const router = useRouter();
-  const [currentCommentId, setCurrentCommentId] = useState<string>("");
-  console.log(post, "post"); 
+  const [currentCommentId, setCurrentCommentId] = useState<string>(""); 
   const reportComment = (commentId: string) => {
     // router.push(`/report?commentId=${commentId}`);
     <Modal

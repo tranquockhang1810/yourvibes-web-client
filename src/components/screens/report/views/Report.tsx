@@ -14,14 +14,11 @@ const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?:
 
   const handleReport = async () => {
     if (postId) {
-      await reportPost({ report_post_id: postId, reason: reportReason });
-      console.log('Report Post:', { report_post_id: postId, reason: reportReason });
+      await reportPost({ report_post_id: postId, reason: reportReason }); 
     } else if (userId) {
-      await reportUser({ reported_user_id: userId, reason: reportReason });
-      console.log('Report User:', { reported_user_id: userId, reason: reportReason });
+      await reportUser({ reported_user_id: userId, reason: reportReason }); 
     } else if (commentId) {
-      await reportComment({ report_comment_id: commentId, reason: reportReason });
-      console.log('Report Comment:', { report_comment_id: commentId, reason: reportReason });
+      await reportComment({ report_comment_id: commentId, reason: reportReason }); 
     }
   };
 

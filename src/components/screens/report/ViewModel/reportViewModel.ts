@@ -18,8 +18,7 @@ const ReportViewModel = () => {
     const reportPost = async (params: ReportPostRequestModel) => {
         try {
             setReportLoading(true);
-            const res = await defaultPostRepo.reportPost(params);
-            console.log("resPost", res);
+            const res = await defaultPostRepo.reportPost(params); 
             
             if (!res?.error) {
                 message.success(localStrings.Report.ReportSuccess);
@@ -38,8 +37,7 @@ const ReportViewModel = () => {
       const reportUser = async (params: ReportUserRequestModel) => {
         try {
           setReportLoading(true);
-          const res = await defaultProfileRepo.reportUser(params);
-          console.log("resUser", res);
+          const res = await defaultProfileRepo.reportUser(params); 
           if (!res?.error) {
            message.success(localStrings.Report.ReportSuccess);
            setShowModal(false);
@@ -57,8 +55,7 @@ const ReportViewModel = () => {
         const reportComment = async (params: ReportCommentRequestModel) => {
           try{
             setReportLoading(true);
-            const res = await defaultCommentRepo.reportComment(params);
-            console.log("resComment", res);
+            const res = await defaultCommentRepo.reportComment(params); 
             
             if (!res?.error) {
               message.success(localStrings.Report.ReportSuccess);

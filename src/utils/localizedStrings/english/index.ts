@@ -95,6 +95,7 @@ export const ENGLocalizedStrings = {
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
       PleaseOldPasswordDifferentNewPassword:"New password must be different from old password!",
+      PleaseInformationDifferent: "Please enter all information",
     },
   },
   Login: {

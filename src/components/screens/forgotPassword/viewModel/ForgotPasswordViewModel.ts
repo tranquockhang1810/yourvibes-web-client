@@ -1,10 +1,16 @@
 import { ForgotPasswordRepo } from "@/api/features/forgotPassword/ForgotPasswordRepo";
 import {ForgotPasswordResponseModel } from "@/api/features/forgotPassword/models/ForgotPassword";
+import { VnLocalizedStrings } from "@/utils/localizedStrings/vietnam";
 import { message } from "antd";
+import { Content } from "antd/es/layout/layout";
+import { useAuth } from "@/context/auth/useAuth";
+
+const {localStrings} = useAuth();
+        
 
 export class ForgotPasswordViewModel {
-  private repo: ForgotPasswordRepo;
-
+  private repo: ForgotPasswordRepo; 
+        
   constructor() {
     this.repo = new ForgotPasswordRepo();
   }
@@ -12,14 +18,14 @@ export class ForgotPasswordViewModel {
   // Yêu cầu OTP
   public async requestOTP(email: string, otp: string): Promise<void> {
     try {
-      if (!email) {
-        message.error("Vui lòng nhập email hợp lệ.");
+      if (!email) { 
+        message.error(localStrings.Form.RequiredMessages.EmailRequiredMessage);
         return;
       }
       await this.repo.verifyOTP({ email });
-      message.success("OTP đã được gửi thành công đến email của bạn.");
+      message.success(localStrings.SignUp.OTPSuccess); 
     } catch (error) {
-      message.error("Không thể gửi OTP. Vui lòng thử lại sau.");
+      message.error(localStrings.SignUp.OTPFailed);
     }
   }
 
@@ -28,13 +34,13 @@ export class ForgotPasswordViewModel {
     try {
       const { email, new_password, otp } = request;
       if (!email || !new_password || !otp) {
-        message.error("Vui lòng nhập đầy đủ thông tin.");
+        message.error(localStrings.Form.TypeMessage.PleaseInformationDifferent);
         return;
       }
       await this.repo.resetPassword({ email, new_password, otp });
-      message.success("Mật khẩu đã được đặt lại thành công.");
+      message.success(localStrings.PostDetails.Success);
     } catch (error) {
-      message.error("Đặt lại mật khẩu thất bại. Vui lòng thử lại.");
+      message.error(localStrings.PostDetails.Error);
     }
   }
 }

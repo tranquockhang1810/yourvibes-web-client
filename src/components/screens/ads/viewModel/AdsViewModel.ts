@@ -5,6 +5,7 @@ import {
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import { PostRepo } from "@/api/features/post/PostRepo";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 import { useState } from "react";
 
 const AdsViewModel = (repo: PostRepo) => {
@@ -30,14 +31,11 @@ const AdsViewModel = (repo: PostRepo) => {
       const res = await repo.getPostById(id);
       if (!res?.error) {
         setPost(res?.data);
-        if (newAds && res?.data?.is_advertisement) {
-          console.log(localStrings.Ads.AdvertisePostSuccess);
+        if (newAds && res?.data?.is_advertisement) { 
         }
-      } else {
-        console.error("Get Post Detail Failed:", res?.error?.message);
+      } else { 
       }
-    } catch (error: any) {
-      console.error("Get Post Detail Error:", error?.message);
+    } catch (error: any) { 
     } finally {
       setLoading(false);
     }
@@ -51,25 +49,18 @@ const AdsViewModel = (repo: PostRepo) => {
       if (!res?.error) {
         if (res?.data) {
           const result = window.open(res.data, '_blank');
-          console.log("WebBrowser result:", result);
           await getPostDetail(params?.post_id || "", true);
           await getAdvertisePost(1, params?.post_id || "");
         }
-      } else {
-        console.error("Advertise Post Failed:", res?.error?.message);
+      } else { 
       }
-    } catch (error: any) {
-      console.error("Advertise Post Error:", error?.message);
+    } catch (error: any) { 
     } finally {
       setAdsLoading(false);
     }
   };
-
-  /**
-   * Lấy danh sách quảng cáo
-   * @param page Trang hiện tại
-   * @param post_id ID bài viết
-   */
+ 
+  // Lấy danh sách quảng cáo  
   const getAdvertisePost = async (page: number, post_id: string) => {
     try {
       setLoading(true);
@@ -85,8 +76,7 @@ const AdsViewModel = (repo: PostRepo) => {
         setAdsPost(undefined);
         setAdsAll([]);
       }
-    } catch (error: any) {
-      console.error("Get Advertise Post Error:", error?.message);
+    } catch (error: any) { 
     } finally {
       setLoading(false);
     }

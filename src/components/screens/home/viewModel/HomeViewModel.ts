@@ -1,6 +1,7 @@
 import { NewFeedResponseModel } from "@/api/features/newFeed/Model/NewFeedModel";
 import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
+import { message } from "antd";
 import { useState } from "react";
 
 const HomeViewModel = (repo: NewFeedRepo) => {
@@ -51,9 +52,9 @@ const HomeViewModel = (repo: NewFeedRepo) => {
         newFeeds.filter((post) => post.id !== id)
       );
       if (!res?.error) {
-        // Handle success
+        message.success(localStrings.DeletePost.DeleteSuccess);
       } else {
-        // Handle error
+        message.error(localStrings.DeletePost.DeleteFailed);
       }
     } catch (err: any) {
       console.error(err);
