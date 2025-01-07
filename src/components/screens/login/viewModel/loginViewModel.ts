@@ -29,15 +29,9 @@ const LoginViewModel = (repo: AuthenRepo) => {
         onLogin(res.data); // Gọi onLogin từ useAuth
       } else {
         console.error(res?.error?.message || "Login failed");
-        message.error({
-          content: localStrings.Login.LoginFailed
-        })
       }
     } catch (error: any) {
       console.error(error.message || "Error during login");
-      message.error({
-        content: localStrings.Login.LoginFailed
-      })
     } finally {
       setLoading(false);
     }

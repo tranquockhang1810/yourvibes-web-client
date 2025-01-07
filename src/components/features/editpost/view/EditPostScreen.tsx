@@ -117,6 +117,7 @@ const EditPostScreen = ({
           src={previewImage}
           style={{ display: "block" }}
           onClick={() => setPreviewOpen(true)}
+          
         />
       )}
       {previewOpen && (
