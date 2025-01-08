@@ -35,8 +35,7 @@ const SignUpViewModel = (repo: AuthenRepo) => {
     } finally {
       setLoading(false);
     }
-  };
-
+  }; 
   // Kiểm tra gửi OTP 
   const verifyOTP = async (data: VerifyOTPRequestModel) => {
     try {
