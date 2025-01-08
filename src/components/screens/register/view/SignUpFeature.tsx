@@ -9,7 +9,7 @@ const SignUpFeature: React.FC = () => {
   const [form] = Form.useForm();
   const repo = new AuthenRepo(); // Khởi tạo AuthenRepo
   const { handleSignUp, verifyOTP, loading, otpLoading } = SignUpViewModel(repo);
-	const { language, localStrings } = useAuth();
+  const { language, localStrings } = useAuth();
 
   const onSignUp = async (values: any) => {
     try {
@@ -58,7 +58,7 @@ const SignUpFeature: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
               name="firstName"
-              rules={[{ required: true, message: localStrings.Form.RequiredMessages.FamilyNameRequiredMessage } ]}
+              rules={[{ required: true, message: localStrings.Form.RequiredMessages.FamilyNameRequiredMessage }]}
             >
               <Input placeholder={localStrings.Form.Label.FamilyName} className="w-full" />
             </Form.Item>
@@ -74,19 +74,41 @@ const SignUpFeature: React.FC = () => {
           {/* Date of Birth */}
           <Form.Item
             name="dob"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.BirthDayRequiredMessage }]}
+            rules={[
+              { required: true, message: localStrings.Form.RequiredMessages.BirthDayRequiredMessage },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const today = new Date();
+                  const selectedDate = value;
+                  if (selectedDate > today) {
+                    return Promise.reject(new Error(localStrings.Form.RequiredMessages.BirthDayInvalidMessage));
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <DatePicker
               placeholder={localStrings.Form.Label.BirthDay}
               className="w-full"
               format="DD/MM/YYYY"
+              disabledDate={(current) => {
+                const today = new Date();
+                return current.toDate() > today;
+              }}
             />
           </Form.Item>
 
           {/* Phone Number */}
           <Form.Item
             name="phone"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage }]}
+            rules={[
+              { required: true, message: localStrings.Form.RequiredMessages.PhoneRequiredMessage },
+              {
+                pattern: /^\d{10}$/,
+                message: localStrings.Form.RequiredMessages.PhoneInvalidMessage,
+              },
+            ]}
           >
             <Input placeholder={localStrings.Public.Phone} className="w-full" />
           </Form.Item>
@@ -96,7 +118,13 @@ const SignUpFeature: React.FC = () => {
             <Form.Item
               name="email"
               className="col-span-2"
-              rules={[{ required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage }]}
+              rules={[
+                { required: true, message: localStrings.Form.RequiredMessages.EmailRequiredMessage },
+                {
+                  pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: localStrings.Form.RequiredMessages.InvalidEmailMessage,
+                },
+              ]}
             >
               <Input placeholder="Email" className="w-full" />
             </Form.Item>
@@ -111,10 +139,25 @@ const SignUpFeature: React.FC = () => {
             </Button>
           </div>
 
+          {/* Confirm OTP */}
+          <Form.Item
+            name="otp"
+            rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
+          >
+            <Input placeholder={localStrings.Form.Label.OTP} className="w-full" />
+          </Form.Item>
+
+
           {/* Password */}
           <Form.Item
             name="password"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage }]}
+            rules={[
+              { required: true, message: localStrings.Form.RequiredMessages.PasswordRequiredMessage },
+              {
+                min: 8,
+                message: localStrings.Form.RequiredMessages.PasswordMinLengthMessage,
+              },
+            ]}
           >
             <Input.Password placeholder={localStrings.Form.Label.Password} className="w-full" />
           </Form.Item>
@@ -132,21 +175,14 @@ const SignUpFeature: React.FC = () => {
                   }
                   return Promise.reject(
                     {
-                      message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage}
+                      message: localStrings.Form.RequiredMessages.ConfirmPasswordRequiredMessage
+                    }
                   );
                 },
               }),
             ]}
           >
             <Input.Password placeholder={localStrings.Form.Label.ConfirmPassword} className="w-full" />
-          </Form.Item>
-
-          {/* Confirm OTP */}
-          <Form.Item
-            name="otp"
-            rules={[{ required: true, message: localStrings.Form.RequiredMessages.OTPRequiredMessage }]}
-          >
-            <Input placeholder={localStrings.Form.Label.OTP} className="w-full" />
           </Form.Item>
 
           {/* Terms and Conditions */}
@@ -159,7 +195,7 @@ const SignUpFeature: React.FC = () => {
                   value
                     ? Promise.resolve()
                     : Promise.reject(
-                        localStrings.Form.RequiredMessages.AgreeRequiredMessage),
+                      localStrings.Form.RequiredMessages.AgreeRequiredMessage),
               },
             ]}
           >

@@ -87,6 +87,10 @@ export const ENGLocalizedStrings = {
       AgreeRequiredMessage: "Please agree to the terms!",
       OTPRequiredMessage: "Please enter OTP code!",
       OTPPressRequiredMessage: "Please receive OTP code!",
+      BirthDayInvalidMessage: "Invalid birth date!",
+      PhoneInvalidMessage: "Invalid phone number!",
+      InvalidEmailMessage: "Invalid email!",
+      PasswordMinLengthMessage: "Password must be at least 8 characters long!",
     },
     TypeMessage: {
       EmailTypeMessage: "Invalid email!",

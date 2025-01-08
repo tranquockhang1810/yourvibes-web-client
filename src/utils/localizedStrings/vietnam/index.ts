@@ -85,6 +85,10 @@ export const VnLocalizedStrings = {
       AgreeRequiredMessage: "Vui lòng đồng ý các điều khoản!",
       OTPRequiredMessage: "Vui lòng nhập mã OTP!",
       OTPPressRequiredMessage: "Vui lòng nhận mã OTP!",
+      BirthDayInvalidMessage: "Ngày không phù hợp!",
+      PhoneInvalidMessage: "Số điện thoại không phù hợp!",
+      InvalidEmailMessage: "Email không hợp lệ!",
+      PasswordMinLengthMessage: "Mật khẩu phải từ 8 kí tự!",
     },
     TypeMessage: {
       EmailTypeMessage: "Email không hợp lệ!",
