@@ -1,12 +1,10 @@
 "use client"; // Đảm bảo rằng đây là một client-side component
 
 import React, { useState } from "react";
-import { Layout, Menu, Input, Grid } from "antd";
+import { Layout, Menu, Input, Grid, ConfigProvider } from "antd";
 import { createElement } from "react";
 import {
   FaHome,
-  FaSearch,
-  FaShoppingCart,
   FaBell,
   FaCog,
   FaUser,
@@ -33,7 +31,7 @@ const siderStyle: React.CSSProperties = {
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [visible, setVisible] = useState(false);
-  const { backgroundColor } = useColor();
+  const { backgroundColor, lightGray } = useColor();
   const [searchQuery, setSearchQuery] = useState("");
   const { localStrings } = useAuth();
   const router = useRouter();
@@ -124,9 +122,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           />
           <SearchScreen />
         </div>
-        <div  className="block lg:hidden text-2xl mb-2.5 ml-2.5"
+        <div className="block lg:hidden text-2xl mb-2.5 ml-2.5"
           onClick={handleMenuClick}>
-           <IoMenu />
+          <IoMenu />
         </div>
       </Header>
       <Layout>
@@ -143,43 +141,55 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <div className="demo-logo-vertical" />
-          <Menu
-            mode="inline"
-            className="flex flex-col gap-4 justify-center h-full"
-            items={nav.map((item, index) => {
-              const actived = isActived(item.link);
-              return {
-                key: index.toString(),
-                label: (
-                  <div
-                    className={`flex items-center gap-4 w-full h-full px-4 pl-8`}
-                    style={{
-                      backgroundColor: actived ? "#1c1917" : "transparent",
-                      color: actived ? "white" : "black",
-                    }}
-                    onClick={() => handleItemClick(item.link)}
-                  >
-                    {createElement(item.icon, {
-                      size: 20,
-                    })}
-                    <span>{item.content}</span>
-                  </div>
-                ),
-                style: {
-                  padding: 0,
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: "#f59e0b",
-                    color: "white",
+          <ConfigProvider
+            theme={{
+              components: {
+                Menu: {
+                  itemActiveBg: lightGray,
+                  itemSelectedBg: lightGray,
+                }
+              }
+            }}
+          >
+            <Menu
+              mode="inline"
+              className="flex flex-col gap-4 justify-center h-full"
+              items={nav.map((item, index) => {
+                const actived = isActived(item.link);
+                return {
+                  key: index.toString(),
+                  label: (
+                    <div
+                      className={`flex items-center gap-4 w-full h-full px-4 pl-8`}
+                      style={{
+                        backgroundColor: actived ? "#1c1917" : "transparent",
+                        color: actived ? "white" : "black",
+                      }}
+                      onClick={() => handleItemClick(item.link)}
+                    >
+                      {createElement(item.icon, {
+                        size: 20,
+                      })}
+                      <span>{item.content}</span>
+                    </div>
+                  ),
+                  style: {
+                    padding: 0,
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "#f59e0b",
+                      color: "white",
+                    },
                   },
-                },
-              };
-            })}
-          />
+                };
+              })}
+            />
+          </ConfigProvider>
         </Sider>
-        <Content style={{ marginInlineStart: screens.lg ? 200 : 0, 
-        // backgroundColor: backgroundColor,
-         }}>
+        <Content style={{
+          marginInlineStart: screens.lg ? 200 : 0,
+          // backgroundColor: backgroundColor,
+        }}>
           <div className="mx-1 lg:mx-4">{children}</div>
         </Content>
       </Layout>

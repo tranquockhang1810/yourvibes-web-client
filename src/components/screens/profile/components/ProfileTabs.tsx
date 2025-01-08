@@ -15,7 +15,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 const ProfileTabs = ({
   posts,
-  loading,
+  hasMore,
   profileLoading,
   loadMorePosts,
   userInfo,
@@ -23,9 +23,10 @@ const ProfileTabs = ({
   friends,
   resultCode,
   fetchUserPosts,
+  loading,
 }: {
   posts: PostResponseModel[],
-  loading: boolean,
+  hasMore: boolean,
   profileLoading: boolean,
   loadMorePosts: () => void,
   userInfo: UserModel,
@@ -33,6 +34,7 @@ const ProfileTabs = ({
   friends: FriendResponseModel[],
   resultCode: number,
   fetchUserPosts: () => void, 
+  loading: boolean,
 }) => {
     const { brandPrimary } = useColor();
     const { localStrings, user } = useAuth();
@@ -61,6 +63,7 @@ const ProfileTabs = ({
                         posts={posts} 
                         loadMorePosts={loadMorePosts} 
                         fetchUserPosts={fetchUserPosts}
+                        hasMore={hasMore}
                     />,
         },
         // {

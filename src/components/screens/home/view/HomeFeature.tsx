@@ -35,7 +35,6 @@ const Homepage = () => {
   useEffect(() => {
     if (user) {
       fetchMyFriends(page);
-      
     }
   }, [page, user]);
   
