@@ -17,13 +17,16 @@ import {
   PlusOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth/useAuth";
 import { usePostContext } from "@/context/post/usePostContext";
 import AddPostViewModel from "../viewModel/AddpostViewModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
 import { UploadFile, UploadProps } from "antd/es/upload";
+import HomeViewModel from "../../home/viewModel/HomeViewModel";
+import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
+import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -32,9 +35,11 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 interface AddPostScreenProps {
   onPostSuccess?: () => void;
+  fetchNewFeeds?: () => void;
+  fetchUserPosts?: () => void;
 }
 
-const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
+const AddPostScreen = ({ onPostSuccess, fetchNewFeeds, fetchUserPosts }: AddPostScreenProps) => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
   const router = useRouter();
@@ -58,6 +63,8 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
     setPreviewOpen,
     setPreviewImage,
   } = AddPostViewModel(defaultPostRepo, router);
+  const pathname = usePathname();
+
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -65,6 +72,23 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
       <div style={{ marginTop: 8 }}>{localStrings.AddPost.UploadImage}</div>
     </button>
   );
+
+  const handleSubmit = async () => {
+    try {
+      await handleSubmitPost(); // Gọi hàm tạo bài đăng
+      if (pathname === "/home" && fetchNewFeeds) {
+        fetchNewFeeds(); // Fetch lại newFeeds ở trang Home
+      } else if (pathname === "/profile" && fetchUserPosts) {
+        fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
+      }
+      if (onPostSuccess) {
+        onPostSuccess();
+      }
+    } catch (error) {
+      console.error("Error submitting post:", error);
+    }
+  };
+  
 
   return (
     <div style={{ padding: "20px" }}>
@@ -150,15 +174,7 @@ const AddPostScreen = ({ onPostSuccess }: AddPostScreenProps) => {
         <Button
           style={{ marginLeft: "auto" }}
           type="primary"
-          onClick={() => {
-            handleSubmitPost()
-              .then(() => {
-                if (onPostSuccess) {
-                  onPostSuccess();
-                }
-              })
-              .catch((error) => console.error(error));
-          }}
+          onClick={handleSubmit}
           disabled={!postContent.trim() && selectedMediaFiles.length === 0}
           loading={createLoading}
         >

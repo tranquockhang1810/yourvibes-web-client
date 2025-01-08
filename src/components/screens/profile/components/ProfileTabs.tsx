@@ -22,6 +22,7 @@ const ProfileTabs = ({
   friendCount,
   friends,
   resultCode,
+  fetchUserPosts,
 }: {
   posts: PostResponseModel[],
   loading: boolean,
@@ -31,6 +32,7 @@ const ProfileTabs = ({
   friendCount: number,
   friends: FriendResponseModel[],
   resultCode: number,
+  fetchUserPosts: () => void, 
 }) => {
     const { brandPrimary } = useColor();
     const { localStrings, user } = useAuth();
@@ -58,6 +60,7 @@ const ProfileTabs = ({
                         resultCode={resultCode}
                         posts={posts} 
                         loadMorePosts={loadMorePosts} 
+                        fetchUserPosts={fetchUserPosts}
                     />,
         },
         // {

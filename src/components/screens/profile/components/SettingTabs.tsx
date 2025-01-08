@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation"; // Sử dụng `next/navigation` thay vì `next/router
-import { Button, Col, Form, Input, message, Modal, Row, Upload } from 'antd';
+import { Button, Col, Form, Input, message, Modal, Radio, Row, Space, Upload } from 'antd';
 import { useAuth } from '@/context/auth/useAuth';
 import ChangePassword from '../../changePassword/views/changePassword';
 import ChangePasswordViewModel from '../../changePassword/viewModel/changePasswordViewModel';
@@ -9,10 +9,11 @@ import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
 
 const SettingsTab = () => {
   const router = useRouter();
-  const { onLogout, changeLanguage, user, localStrings } = useAuth();
+  const { onLogout, changeLanguage, language, localStrings } = useAuth();
   const [showLogout, setShowLogout] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const {showChangePassword, setShowChangePassword} = ChangePasswordViewModel(defaultProfileRepo);
+
+  const [showChangePassword, setShowChangePassword] = useState(false);
   
   const handleOk = () => {
     setShowLogout(false);
@@ -58,7 +59,7 @@ const SettingsTab = () => {
         onCancel={() => setShowChangePassword(false)}
         footer={null}
       >
-        <ChangePassword />
+        <ChangePassword setShowChangePassword={setShowChangePassword} />
       </Modal>
       <Button
         className="w-80 text-brandPrimary border-none"
@@ -67,28 +68,19 @@ const SettingsTab = () => {
         {localStrings.Public.Language}
       </Button>
       {/* //modal language  */}
-      <Modal centered title={localStrings.Public.Language} open={showLanguage} onCancel={handleLanguageChange}
-       footer={[
+      <Modal centered   title={localStrings.Public.Language} open={showLanguage} onCancel={handleLanguageChange} width="250px" footer={[
         <Button key="cancel" onClick={handleLanguageChange}>
           {localStrings.Public.Cancel}
         </Button>,
       ]}
       >
       <div className="space-y-2">
-          <Button
-            className="w-full"
-            type="default"
-            onClick={() => changeLanguage()}
-          >
-            {localStrings.Public.English}
-          </Button>
-          <Button
-            className="w-full"
-            type="default"
-            onClick={() => changeLanguage()}
-          >
-            {localStrings.Public.Vietnamese}
-          </Button>
+      <Radio.Group value={language} onChange={changeLanguage}>
+            <Space direction="vertical">
+              <Radio value="en">{localStrings.Public.English}</Radio>
+              <Radio value="vi">{localStrings.Public.Vietnamese}</Radio>
+            </Space>
+          </Radio.Group>
         </div>
       </Modal>
 

@@ -292,8 +292,8 @@ export const ENGLocalizedStrings = {
   },
   ChangePassword: {
     ChangePassword: "Change password",
-    ChangePasswordFailed: "Change password failed!",
-    ChangePasswordSuccess: "Change password successful!",
+    ChangePasswordFailed: "Password change failed, please check the password again",
+    ChangePasswordSuccess: "Password change successful!",
     OldPassword: "Old password",
     NewPassword: "New password",
     ConformPassword: "Confirm password",

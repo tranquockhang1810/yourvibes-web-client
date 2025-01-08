@@ -292,7 +292,7 @@ Report: {
 },
 ChangePassword:{
   ChangePassword: "Thay đổi mật khẩu",
-  ChangePasswordFailed: "Thay đổi mật khẩu thất bại!",
+  ChangePasswordFailed: "Thay đổi mật khẩu thất bại, vui lòng kiểm tra lại mật khẩu!",
   ChangePasswordSuccess: "Thay đổi mật khẩu thành công!",
   OldPassword: "Mật khẩu cũ",
   NewPassword: "Mật khẩu mới",

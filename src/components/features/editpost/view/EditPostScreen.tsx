@@ -63,6 +63,19 @@ const EditPostScreen = ({
     </button>
   );
 
+  const handleSubmitEditPost = async () => {
+   try {
+    await handleSubmit();
+    if (onEditPostSuccess) {
+      onEditPostSuccess();
+    }
+  } catch (error) {
+    console.error("Error submitting post:", error);
+  }
+  }
+
+
+
   return (
     <div style={{ padding: "20px" }}>
       {/* Header */}
@@ -158,19 +171,7 @@ const EditPostScreen = ({
         <div style={{ marginLeft: "auto" }}>
           <Button
             type="primary"
-            onClick={() => {
-              handleSubmit()
-                .then(() => {
-                  if (onEditPostSuccess) {
-                    onEditPostSuccess(); // Đóng màn hình chỉnh sửa (Modal hoặc Component)
-                  }
-                  getNewFeed(); // Làm mới danh sách bài viết
-                })
-                .catch((error) => {
-                  console.error("Error during post update:", error);
-                  message.error(localStrings.PostDetails.Error);
-                });
-            }}
+            onClick={handleSubmitEditPost}
             disabled={!postContent.trim() && selectedMediaFiles.length === 0}
             loading={updateLoading}
           >

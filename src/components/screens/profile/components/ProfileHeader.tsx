@@ -227,7 +227,7 @@ const ProfileHeader = ({
 
   console.log("reload page")
   return (
-    <div>
+    <div className="md:mx-16">
       {loading ? (
         <Flex align="center" gap="middle">
           <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -235,7 +235,7 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="md:mx-16 h-[350px]" style={{ backgroundColor: lightGray }}>
+          <div className=" h-[350px]" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
@@ -308,7 +308,7 @@ const ProfileHeader = ({
         onCancel={() => setShowModal(false)}
         footer={null}
       >
-        <ReportScreen userId={user?.id} />
+        <ReportScreen userId={user?.id} setShowModal={setShowModal} />
       </Modal>
     </div>
   );

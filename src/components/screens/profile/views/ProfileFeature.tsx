@@ -55,6 +55,7 @@ const ProfileFeature = () => {
             friendCount={friendCount}
             friends={friends}
             resultCode={resultCode}
+            fetchUserPosts={fetchUserPosts}
           />
         </>
       )}

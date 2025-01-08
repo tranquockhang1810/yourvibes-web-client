@@ -9,11 +9,12 @@ import Post from '@/components/common/post/views/Post';
 import { useRouter } from 'next/navigation';
 import AddPostScreen from '@/components/screens/addPost/view/AddPostScreen';
 
-const PostList = ({ loading, posts, loadMorePosts, user }: {
+const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
   user: UserModel;
+  fetchUserPosts: () => void;
 }) => {
   const { backgroundColor, lightGray, grayBackground, brandPrimary } = useColor();
   const {isLoginUser, localStrings } = useAuth();
@@ -34,7 +35,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
 
   const handlePostSuccess = () => {
     setIsModalVisible(false);
-    loadMorePosts(); // Optionally reload posts
+    fetchUserPosts();
   };
 
   const renderAddPost = useCallback(() => {
@@ -74,7 +75,7 @@ const PostList = ({ loading, posts, loadMorePosts, user }: {
       </div>
       <Modal centered title={localStrings.AddPost.NewPost} 
         open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={800} footer={null}>
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+          <AddPostScreen onPostSuccess={handlePostSuccess} />
         </Modal>
     </>
     );
