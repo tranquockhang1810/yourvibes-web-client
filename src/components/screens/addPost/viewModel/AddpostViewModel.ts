@@ -34,7 +34,7 @@ const AddPostViewModel = (repo: PostRepo, router: any) => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);;
   const homeViewModel = HomeViewModel(defaultNewFeedRepo);
-const { fetchNewFeeds } = homeViewModel;
+
 
   const createPost = async (data: CreatePostRequestModel) => {
     try {
@@ -52,7 +52,6 @@ const { fetchNewFeeds } = homeViewModel;
         message.success({
           content: localStrings.AddPost.CreatePostSuccess,
         });
-        await fetchNewFeeds();
       }
     } catch (error) {
       console.error("Lỗi không mong muốn:", error);

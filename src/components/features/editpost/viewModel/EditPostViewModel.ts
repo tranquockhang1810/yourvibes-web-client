@@ -183,7 +183,6 @@ const EditPostViewModel = (
       const res = await repo.sharePost(id, data);
       if (!res?.error) {
         message.success(localStrings.Post.SharePostSuccess);
-        router.push("/profile?tabNum=1");
       } else {
         message.error(localStrings.Post.SharePostFailed);
       }

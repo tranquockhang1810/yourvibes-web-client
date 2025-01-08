@@ -35,7 +35,6 @@ const Homepage = () => {
   useEffect(() => {
     if (user) {
       fetchMyFriends(page);
-      
     }
   }, [page, user]);
   
@@ -84,7 +83,7 @@ const Homepage = () => {
           width={800}
           footer={null}
         >
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} fetchNewFeeds={fetchNewFeeds} />
         </Modal>
       </>
     );
@@ -147,7 +146,6 @@ const Homepage = () => {
       <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
         {newFeeds?.length > 0 ? (
-          console.log(newFeeds),
           newFeeds.map((item) => (
             <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
               <Post post={item} /> 

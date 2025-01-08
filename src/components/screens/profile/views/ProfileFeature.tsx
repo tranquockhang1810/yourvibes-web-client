@@ -27,6 +27,7 @@ const ProfileFeature = () => {
     fetchUserProfile,
     fetchMyFriends,
     page,
+    hasMore
   } = ProfileViewModel();
 
   useEffect(() => {
@@ -55,6 +56,8 @@ const ProfileFeature = () => {
             friendCount={friendCount}
             friends={friends}
             resultCode={resultCode}
+            fetchUserPosts={fetchUserPosts}
+            hasMore={hasMore}
           />
         </>
       )}

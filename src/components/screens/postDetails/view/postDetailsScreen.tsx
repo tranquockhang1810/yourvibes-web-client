@@ -75,7 +75,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     onCancel={() => setShowModal(false)}
     footer={null}
   >
-    <ReportScreen commentId={commentId} />
+    <ReportScreen commentId={commentId} setShowModal={setShowModal} />
   </Modal>
   };
 

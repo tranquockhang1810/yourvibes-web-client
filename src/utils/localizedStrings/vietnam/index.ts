@@ -241,7 +241,7 @@ Notification: {
     LikePost: "đã thích bài viết của bạn: ",
     SharePost: "đã chia sẻ bài viết của bạn: ",
     CommentPost: "đã bình luận về bài viết của bạn: ",
-    Friend: "đã gưi lời mời kết bạn.",
+    Friend: "đã gửi lời mời kết bạn.",
     AcceptFriend: "đã chấp nhận lời mời kết bạn của bạn.",
     NewPost: "đã đăng một bài viết mới.",
     LikeComment: "đã thích bình luận của bạn: ",
@@ -292,7 +292,7 @@ Report: {
 },
 ChangePassword:{
   ChangePassword: "Thay đổi mật khẩu",
-  ChangePasswordFailed: "Thay đổi mật khẩu thất bại!",
+  ChangePasswordFailed: "Thay đổi mật khẩu thất bại, vui lòng kiểm tra lại mật khẩu!",
   ChangePasswordSuccess: "Thay đổi mật khẩu thành công!",
   OldPassword: "Mật khẩu cũ",
   NewPassword: "Mật khẩu mới",

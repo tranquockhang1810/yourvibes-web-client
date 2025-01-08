@@ -87,9 +87,6 @@ const ProfileHeader = ({
       },
     },
   ];
-  
-
-
   const renderFriendButton = useCallback(() => {
     switch (newFriendStatus) {
       case FriendStatus.NotFriend:
@@ -225,9 +222,8 @@ const ProfileHeader = ({
     if (user) setNewFriendStatus(user?.friend_status);
   }, [user]);
 
-  console.log("reload page")
   return (
-    <div>
+    <div className="md:mx-16">
       {loading ? (
         <Flex align="center" gap="middle">
           <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -235,13 +231,12 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="md:mx-16 h-[350px]" style={{ backgroundColor: lightGray }}>
+          <div className=" h-[350px]" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
-              className="w-full h-full object-cover"
-              style={{ objectPosition: "center" }}
-
+              className="w-full max-h-[350px] object-top object-contain"
+              // style={{ objectPosition: "center" }}
             />
           </div>
 
@@ -308,7 +303,7 @@ const ProfileHeader = ({
         onCancel={() => setShowModal(false)}
         footer={null}
       >
-        <ReportScreen userId={user?.id} />
+        <ReportScreen userId={user?.id} setShowModal={setShowModal} />
       </Modal>
     </div>
   );

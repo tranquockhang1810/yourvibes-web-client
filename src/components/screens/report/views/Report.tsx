@@ -1,27 +1,35 @@
 // filepath: /c:/cntt/HK3/BE-GO/Gran-Project/yourvibes-web-client/src/components/screens/report/views/Report.tsx
 import React, { useState } from 'react';
-import { Input, Button, Typography } from 'antd';
+import { Input, Button, Typography, message } from 'antd';
 import { useAuth } from '@/context/auth/useAuth';
 import ReportViewModel from '../ViewModel/reportViewModel';
 
 const { TextArea } = Input;
 const { Text, Title } = Typography;
 
-const ReportScreen = ({ postId, userId, commentId }: { postId?: string; userId?: string; commentId?: string }) => {
+const ReportScreen = ({ postId, userId, commentId, setShowModal }: { postId?: string; userId?: string; commentId?: string; setShowModal: (show: boolean) => void }) => {
   const [reportReason, setReportReason] = useState('');
   const { localStrings } = useAuth();
-  const { reportPost, reportLoading, reportUser, reportComment, setShowModal } = ReportViewModel();
+  const { reportPost, reportLoading, reportUser, reportComment } = ReportViewModel();
 
   const handleReport = async () => {
+    let res;
+  
     if (postId) {
-      await reportPost({ report_post_id: postId, reason: reportReason }); 
+      res = await reportPost({ report_post_id: postId, reason: reportReason });
     } else if (userId) {
-      await reportUser({ reported_user_id: userId, reason: reportReason }); 
+      res = await reportUser({ reported_user_id: userId, reason: reportReason });
     } else if (commentId) {
-      await reportComment({ report_comment_id: commentId, reason: reportReason }); 
+      res = await reportComment({ report_comment_id: commentId, reason: reportReason });
+    }
+  
+    // Đóng modal nếu báo cáo thành công
+    if (res && !res.error) {
+      setShowModal(false);
+      setReportReason('');
     }
   };
-
+  
   return (
     <div className="p-2.5">
       {/* Content */}

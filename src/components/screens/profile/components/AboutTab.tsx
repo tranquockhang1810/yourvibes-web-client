@@ -30,6 +30,8 @@ const AboutTab = ({
   resultCode,
   posts,
   loadMorePosts,
+  fetchUserPosts,
+  hasMore,
 }: {
   user: UserModel;
   loading: boolean;
@@ -38,6 +40,8 @@ const AboutTab = ({
   resultCode: number;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
+  fetchUserPosts: () => void;
+  hasMore: boolean;
 }) => {
   const router = useRouter();
   const { brandPrimaryTap, backgroundColor } = useColor();
@@ -237,6 +241,8 @@ const AboutTab = ({
                 posts={posts}
                 loadMorePosts={loadMorePosts}
                 user={user}
+                fetchUserPosts={fetchUserPosts}
+                hasMore={hasMore}
               />
             </div>
           </div>

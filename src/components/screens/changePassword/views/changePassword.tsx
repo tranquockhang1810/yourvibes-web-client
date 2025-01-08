@@ -7,9 +7,10 @@ import { Button, Form, Input, message } from 'antd';
 import { log } from 'console';
 import ChangePasswordViewModel from '../viewModel/changePasswordViewModel';
 
-const ChangePassword = () => {
-    const {localStrings} = useAuth();
-    const {loading, changePassword, setShowChangePassword} = ChangePasswordViewModel(defaultProfileRepo);
+const ChangePassword = ({ setShowChangePassword }: { setShowChangePassword: React.Dispatch<React.SetStateAction<boolean>> }) => {
+    const {localStrings} = useAuth()
+    const {loading, changePassword,} = ChangePasswordViewModel(defaultProfileRepo);
+    const [form] = Form.useForm();
     const onFinish = async (values: any) => {
         if(values.oldPassword === values.newPassword) {
             message.error(localStrings.Form.TypeMessage.PleaseOldPasswordDifferentNewPassword);
@@ -19,8 +20,21 @@ const ChangePassword = () => {
             message.error(localStrings.Form.TypeMessage.ConfirmPasswordTypeMessage);
             return;
         }
-        await changePassword({ old_password: values.oldPassword, new_password: values.newPassword });
-        setShowChangePassword(false);
+        try {
+          await changePassword({
+              old_password: values.oldPassword,
+              new_password: values.newPassword,
+          }).then((res) => {
+              if (!res?.error) {
+                  form.resetFields();
+                  setShowChangePassword(false);
+              }
+          });
+      } catch (error) {
+          console.error("Error changing password:", error);
+          // Thất bại: Modal vẫn mở, chỉ hiển thị thông báo lỗi
+          message.error(localStrings.ChangePassword.ChangePasswordFailed || 'Failed to change password');
+      }
     }
 
   return (
@@ -29,7 +43,8 @@ const ChangePassword = () => {
       name="changePassword"
       layout="vertical"
       className="w-full"
-        onFinish={onFinish}
+      onFinish={onFinish}
+      form={form}
     >
       {/* Mật Khẩu cũ */}
       <Form.Item

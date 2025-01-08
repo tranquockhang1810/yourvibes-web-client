@@ -22,10 +22,10 @@ const ReportViewModel = () => {
             
             if (!res?.error) {
                 message.success(localStrings.Report.ReportSuccess);
-                setShowModal(false);
             } else {
                 message.error(localStrings.Report.ReportFailed);
             }
+            return res;
         } catch (error: any) {
             console.error(error);
             message.error(localStrings.Report.ReportFailed);
@@ -40,10 +40,10 @@ const ReportViewModel = () => {
           const res = await defaultProfileRepo.reportUser(params); 
           if (!res?.error) {
            message.success(localStrings.Report.ReportSuccess);
-           setShowModal(false);
           } else {
             message.error(localStrings.Report.ReportFailed);
           }
+          return res;
         } catch (error: any) {
           console.error(error);
           message.error(localStrings.Report.ReportFailed);
@@ -59,10 +59,10 @@ const ReportViewModel = () => {
             
             if (!res?.error) {
               message.success(localStrings.Report.ReportSuccess);
-              setShowModal(false);
             } else {
               message.error(localStrings.Report.ReportFailed);
             }
+            return res;
           } catch (error: any) {
             console.error(error);
             message.error(localStrings.Report.ReportFailed);
