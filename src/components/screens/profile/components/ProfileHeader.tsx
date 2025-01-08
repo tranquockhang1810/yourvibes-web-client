@@ -87,7 +87,6 @@ const ProfileHeader = ({
       },
     },
   ];
-
   const renderFriendButton = useCallback(() => {
     switch (newFriendStatus) {
       case FriendStatus.NotFriend:
