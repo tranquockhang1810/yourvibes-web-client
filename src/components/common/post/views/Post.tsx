@@ -28,7 +28,7 @@ import {
   FaRegComments,
   FaRegHeart,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { getTimeDiff } from "@/utils/helper/DateTransfer";
 import { RiAdvertisementLine } from "react-icons/ri";
 import { HiDotsVertical } from "react-icons/hi";
@@ -43,8 +43,6 @@ import EditPostScreen from "@/components/features/editpost/view/EditPostScreen";
 import PostDetailsScreen from "@/components/screens/postDetails/view/postDetailsScreen";
 import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/postDetailsViewModel";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
-import { log } from "console";
-import { console } from "inspector";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import ReportScreen from "@/components/screens/report/views/Report";
 
@@ -54,6 +52,8 @@ interface IPost {
   noFooter?: boolean;
   children?: React.ReactNode;
   noComment?: boolean;
+  fecthNewFeeds?: () => void;
+  fetchUserPosts?: () => void;
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -63,15 +63,16 @@ const Post: React.FC<IPost> = React.memo(
     noFooter = false,
     children,
     noComment = false,
+    fecthNewFeeds,
+    fetchUserPosts,
   }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
       useColor();
     const { user, localStrings } = useAuth();
     const [shareForm] = Form.useForm();
-
     const { showModal, setShowModal } = ReportViewModel();
-
+    const pathname = usePathname();
     const {
       deleteLoading,
       likePost,
@@ -117,6 +118,30 @@ const Post: React.FC<IPost> = React.memo(
         likePost(likedPost.id);
       }
     }, [likedPost?.id, likePost]);
+
+    const handleSubmitShare = useCallback(() => {
+      if (likedPost) {
+        // Gọi hàm sharePost để chia sẻ bài viết
+        sharePost(likedPost.id!, {
+          privacy: sharePostPrivacy,
+          content: shareContent,
+        })
+          .then(() => {
+            setIsShareModalVisible(false);
+            setShareContent("");
+            if (pathname === "/home" && fecthNewFeeds) {
+              fecthNewFeeds(); // Fetch lại newFeeds ở trang Home
+            } else if (pathname === "/profile" && fetchUserPosts) {
+              fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
+            }
+          })
+          .catch((error) => {
+            console.error("Error sharing post:", error);
+            // Xử lý lỗi nếu cần
+          });
+      }
+    }
+    , [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
 
     const renderLikeIcon = () => {
       if (likedPost?.is_liked) {
@@ -340,7 +365,7 @@ const Post: React.FC<IPost> = React.memo(
                   onCancel={() => setShowModal(false)}
                   footer={null}
                 >
-                  <ReportScreen postId={post?.id} />
+                  <ReportScreen postId={post?.id} setShowModal={setShowModal} />
                 </Modal>
               </Col>
             )}
@@ -451,7 +476,7 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsEditModalVisible(false)}
         >
           {post?.id ? (
-            <EditPostScreen id={post.id} postId={post.id} />
+            <EditPostScreen id={post.id} postId={post.id}   onEditPostSuccess = {()=> setIsEditModalVisible(false)}/>
           ) : (
             <div>No post ID available</div>
           )}
@@ -480,14 +505,8 @@ const Post: React.FC<IPost> = React.memo(
               key="submit"
               type="primary"
               loading={shareLoading}
-              onClick={(event) =>
-                likedPost &&
-                sharePost(likedPost.id!, {
-                  privacy: sharePostPrivacy,
-                  content: shareContent,
-                })
-              }
-            >
+              onClick={handleSubmitShare}
+                  >
               {localStrings.Public.Conform}
             </Button>,
           ]}

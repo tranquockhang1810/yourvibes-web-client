@@ -83,7 +83,7 @@ const Homepage = () => {
           width={800}
           footer={null}
         >
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} />
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} fetchNewFeeds={fetchNewFeeds} />
         </Modal>
       </>
     );

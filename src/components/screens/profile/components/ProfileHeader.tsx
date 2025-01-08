@@ -223,7 +223,7 @@ const ProfileHeader = ({
   }, [user]);
 
   return (
-    <div>
+    <div className="md:mx-16">
       {loading ? (
         <Flex align="center" gap="middle">
           <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -231,12 +231,12 @@ const ProfileHeader = ({
       ) : (
         <>
           {/* Cover Image */}
-          <div className="md:mx-16" style={{ backgroundColor: lightGray }}>
+          <div className=" h-[350px]" style={{ backgroundColor: lightGray }}>
             <img
               src={user?.capwall_url}
               alt="Cover"
-              className="w-full max-h-[350px] object-top object-cover"
-              style={{ objectPosition: "center" }}
+              className="w-full max-h-[350px] object-top object-contain"
+              // style={{ objectPosition: "center" }}
             />
           </div>
 
@@ -303,7 +303,7 @@ const ProfileHeader = ({
         onCancel={() => setShowModal(false)}
         footer={null}
       >
-        <ReportScreen userId={user?.id} />
+        <ReportScreen userId={user?.id} setShowModal={setShowModal} />
       </Modal>
     </div>
   );
