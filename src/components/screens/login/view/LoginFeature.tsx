@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Form, Input, Button, message, Row, Col } from "antd";
+import { Form, Input, Button, message, Row, Col, Switch } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import LoginViewModel from "../viewModel/loginViewModel";
@@ -9,16 +9,20 @@ import "antd/dist/reset.css";
 import { useAuth } from "@/context/auth/useAuth";
 
 const LoginPage = () => {
-  const { localStrings } = useAuth();
+  const { localStrings, changeLanguage } = useAuth();
   const router = useRouter();
   const { login, loading, getGoogleLoginUrl, googleLoading } = LoginViewModel(new AuthenRepo());
+
+  const handleLanguageChange = () => {
+    changeLanguage();
+  };
 
   const onFinish = async (values: any) => {
     message.loading({
       content: `${localStrings.Public.LoginLoading}`,
       key: "login",
     });
-  
+
     try {
       await login(values);
     } catch (error: any) {
@@ -161,9 +165,18 @@ const LoginPage = () => {
                 </Button>
               </div>
             </Form>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={handleLanguageChange}
+              className="w-full mt-4 bg-black text-white py-2 rounded-md hover:bg-gray-800"
+            >
+              {localStrings.Login.changeLanguage}
+            </Button>
           </div>
         </Row>
       </Col>
+
     </Row>
   );
 };

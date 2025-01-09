@@ -108,6 +108,7 @@ export const VnLocalizedStrings = {
     Or: "Hoặc",
     LoginFailed: "Đăng nhập thất bại!",
     AccountLocked:"Tài khoản của bạn đã bị khóa",
+    changeLanguage: "Thay đổi ngôn ngữ sang: Tiếng Anh",
   },
   SignUp: {
     SignUpButton: "Đăng ký",

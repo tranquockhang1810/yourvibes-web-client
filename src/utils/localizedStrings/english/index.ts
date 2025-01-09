@@ -1,4 +1,5 @@
 import { Upload } from "antd";
+import { changeLanguage } from "i18next";
 
 export const ENGLocalizedStrings = {
   Public: {
@@ -110,6 +111,7 @@ export const ENGLocalizedStrings = {
     Or: "Or",
     LoginFailed: "Login failed!",
     AccountLocked: "Your account is locked!",
+    changeLanguage: "Change Language: Vietnamese",
   },
   SignUp: {
     SignUpButton: "Sign up",
