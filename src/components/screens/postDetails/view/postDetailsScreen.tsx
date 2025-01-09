@@ -67,7 +67,9 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const { showModal, setShowModal } = ReportViewModel();
   const router = useRouter();
   const [currentCommentId, setCurrentCommentId] = useState<string>("");
-  const reportComment = (commentId: string) => {
+
+  const reportComment = (commentId: string) => () => {
+    setShowModal(true);
     <Modal
       centered
       title={localStrings.Public.ReportFriend}
@@ -106,7 +108,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
       });
     }
   }, [postId, comments]);
- 
+
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -192,7 +194,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             strokeWidth: 2,
                             marginRight: 50,
                           }}
-                          onClick={() => reportComment(comment.id)}
+                          onClick={reportComment(comment.id)}
                         />
                       )}
                     </Col>
@@ -306,15 +308,15 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             />
                           ) : (
                             <FaFlag
-                              size={16}
-                              color="gray"
-                              style={{
-                                stroke: "black",
-                                strokeWidth: 2,
-                                marginRight: 50,
-                              }}
-                              onClick={() => reportComment(reply.id)}
-                            />
+                            size={16}
+                            color="gray"
+                            style={{
+                              stroke: "black",
+                              strokeWidth: 2,
+                              marginRight: 50,
+                            }}
+                            onClick={reportComment(reply.id)}
+                          />
                           )}
                         </Col>
                         <Col span={4} className="hover:cursor-pointer">
@@ -434,17 +436,15 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                     />
                                   ) : (
                                     <FaFlag
-                                      size={16}
-                                      color="gray"
-                                      style={{
-                                        stroke: "black",
-                                        strokeWidth: 2,
-                                        marginRight: 50,
-                                      }}
-                                      onClick={() =>
-                                        reportComment(nestedReply.id)
-                                      }
-                                    />
+                                    size={16}
+                                    color="gray"
+                                    style={{
+                                      stroke: "black",
+                                      strokeWidth: 2,
+                                      marginRight: 50,
+                                    }}
+                                    onClick={reportComment(nestedReply.id)}
+                                  />
                                   )}
                                 </Col>
                                 <Col span={4} className="hover:cursor-pointer">
@@ -483,7 +483,8 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
               ? `${localStrings.Public.ReplyClick}`
               : `${localStrings.Public.CommentClick}`
           }
-          value={replyToCommentId || replyToReplyId ? replyContent : newComment}
+          // value={replyToCommentId || replyToReplyId ? replyContent : newComment}
+          value={newComment}
           onChange={handleTextChange}
         />
         <button

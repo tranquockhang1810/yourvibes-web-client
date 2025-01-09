@@ -115,82 +115,82 @@ const PostDetailsViewModel = (
   }, []);
  
 
-  // const handleLike = async (commentOrReplyId: string) => {
-  //   const isLike =
-  //     userLikes[commentOrReplyId] === undefined
-  //       ? true
-  //       : !userLikes[commentOrReplyId];
-  
-  //   try {
-  //     const response = await defaultLikeCommentRepo.postLikeComment({
-  //       commentId: commentOrReplyId,
-  //       isLike,
-  //     });
-  
-  //     if (response && response.data) {
-  //       const likeCommentResponse: LikeCommentResponseModel = response.data;
-  //       // Cập nhật trạng thái like dựa trên response trả về
-  //       setUserLikes((prevUserLikes) => ({
-  //         ...prevUserLikes,
-  //         [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
-  //       }));
-  //       setLikeCount((prevLikes) => ({
-  //         ...prevLikes,
-  //         [commentOrReplyId]: likeCommentResponse.like_count,
-  //       }));
-  
-  //       // Cập nhật biến renderLikeIconState
-  //       setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
-  
-  //       // Cập nhật màu sắc của biểu tượng FaHeart
-  //       setHeartColors((prevHeartColors) => ({
-  //         ...prevHeartColors,
-  //         [commentOrReplyId]: isLike ? 'red' : 'gray',
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error liking comment:", error);
-  //   }
-  // };
-
-
-  const handleLike = async (commentId: string) => {
+  const handleLike = async (commentOrReplyId: string) => {
     const isLike =
-      userLikes[commentId] === undefined
+      userLikes[commentOrReplyId] === undefined
         ? true
-        : !userLikes[commentId];
+        : !userLikes[commentOrReplyId];
   
     try {
       const response = await defaultLikeCommentRepo.postLikeComment({
-        commentId: commentId,
+        commentId: commentOrReplyId,
         isLike,
       });
   
       if (response && response.data) {
         const likeCommentResponse: LikeCommentResponseModel = response.data;
-        const oldLikeCount = likeCount[commentId] || 0;
-        const newLikeCount = isLike ? oldLikeCount + 1 : oldLikeCount - 1;
-  
+        // Cập nhật trạng thái like dựa trên response trả về
         setUserLikes((prevUserLikes) => ({
           ...prevUserLikes,
-          [commentId]: likeCommentResponse.is_liked ?? false,
+          [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
         }));
-  
         setLikeCount((prevLikes) => ({
           ...prevLikes,
-          [commentId]: newLikeCount,
+          [commentOrReplyId]: likeCommentResponse.like_count,
         }));
+  
+        // Cập nhật biến renderLikeIconState
+        setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
   
         // Cập nhật màu sắc của biểu tượng FaHeart
         setHeartColors((prevHeartColors) => ({
           ...prevHeartColors,
-          [commentId]: isLike ? 'red' : 'gray',
+          [commentOrReplyId]: isLike ? 'red' : 'gray',
         }));
       }
     } catch (error) {
       console.error("Error liking comment:", error);
     }
   };
+
+
+  // const handleLike = async (commentId: string) => {
+  //   const isLike =
+  //     userLikes[commentId] === undefined
+  //       ? true
+  //       : !userLikes[commentId];
+  
+  //   try {
+  //     const response = await defaultLikeCommentRepo.postLikeComment({
+  //       commentId: commentId,
+  //       isLike,
+  //     });
+  
+  //     if (response && response.data) {
+  //       const likeCommentResponse: LikeCommentResponseModel = response.data;
+  //       const oldLikeCount = likeCount[commentId] || 0;
+  //       const newLikeCount = isLike ? oldLikeCount + 1 : oldLikeCount - 1;
+  
+  //       setUserLikes((prevUserLikes) => ({
+  //         ...prevUserLikes,
+  //         [commentId]: likeCommentResponse.is_liked ?? false,
+  //       }));
+  
+  //       setLikeCount((prevLikes) => ({
+  //         ...prevLikes,
+  //         [commentId]: newLikeCount,
+  //       }));
+  
+  //       // Cập nhật màu sắc của biểu tượng FaHeart
+  //       setHeartColors((prevHeartColors) => ({
+  //         ...prevHeartColors,
+  //         [commentId]: isLike ? 'red' : 'gray',
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error liking comment:", error);
+  //   }
+  // };
   
 
   const handleEditComment = async (commentId: string) => {
