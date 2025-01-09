@@ -9,7 +9,7 @@ import { PostResponseModel } from "@/api/features/post/models/PostResponseModel"
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import { useRouter } from "next/navigation";
-import { Modal, Input, Button } from "antd";  
+import { Modal, Input, Button } from "antd";
 import ReportScreen from "../../report/views/Report";
 interface CommentsScreenProps {
   postId?: string;
@@ -17,7 +17,7 @@ interface CommentsScreenProps {
 
 const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
   useColor();
-const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => { 
+const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const {
     comments,
     replyMap,
@@ -46,12 +46,13 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     handleShowEditModal,
     handleOutsideClick,
     setVisibleReplies,
-    visibleReplies, 
+    visibleReplies,
     fetchComments,
+    heartColors,
   } = PostDetailsViewModel(postId || "", defaultPostRepo);
-   
 
-  const [post, setPost] = useState<PostResponseModel | null>(null); 
+
+  const [post, setPost] = useState<PostResponseModel | null>(null);
   const [loading, setLoading] = useState(false);
   const { localStrings } = useAuth();
   const reportViewModel = ReportViewModel();
@@ -62,21 +63,21 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
-  
-  const {showModal, setShowModal} = ReportViewModel();
+
+  const { showModal, setShowModal } = ReportViewModel();
   const router = useRouter();
-  const [currentCommentId, setCurrentCommentId] = useState<string>(""); 
+  const [currentCommentId, setCurrentCommentId] = useState<string>("");
   const reportComment = (commentId: string) => {
     // router.push(`/report?commentId=${commentId}`);
     <Modal
-    centered
-    title={localStrings.Public.ReportFriend}
-    open={showModal}
-    onCancel={() => setShowModal(false)}
-    footer={null}
-  >
-    <ReportScreen commentId={commentId} setShowModal={setShowModal} />
-  </Modal>
+      centered
+      title={localStrings.Public.ReportFriend}
+      open={showModal}
+      onCancel={() => setShowModal(false)}
+      footer={null}
+    >
+      <ReportScreen commentId={commentId} setShowModal={setShowModal} />
+    </Modal>
   };
 
   const fetchPost = async (postId: string) => {
@@ -98,6 +99,14 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
       fetchPost(postId);
     }
   }, [postId]);
+
+  useEffect(() => {
+    if (postId) {
+      comments.forEach((comment) => {
+        fetchReplies(postId, comment.id);
+      });
+    }
+  }, [postId, comments]);
 
   return (
     <div className="comments-container bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
@@ -127,14 +136,26 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                   <Col span={4} className="hover:cursor-pointer">
                     <FaHeart
                       size={16}
-                      color={userLikes[comment.id] ? "red" : "gray"}
+                      color={heartColors[comment.id] || 'gray'}
                       style={{
                         stroke: "black",
                         strokeWidth: 2,
-                        marginRight: 50,
+                        marginRight: 5,
                       }}
                       onClick={() => handleLike(comment.id)}
                     />
+                  </Col>
+                  <Col span={4}>
+                    <span
+                      style={{
+                        color: brandPrimaryTap,
+                        fontSize: 12,
+                        opacity: 0.5,
+                        marginRight: 1,
+                      }}
+                    >
+                      {likeCount[comment.id]}
+                    </span>
                   </Col>
                   {userId === comment.user?.id ? (
                     <Col span={4} className="hover:cursor-pointer">
@@ -195,18 +216,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                       }}
                     />
                   </Col>
-                  <Col span={4}>
-                    <span
-                      style={{
-                        color: brandPrimaryTap,
-                        fontSize: 12,
-                        opacity: 0.5,
-                        marginRight: 50,
-                      }}
-                    >
-                      {/* {likeCount[comment.id]} */}
-                    </span>
-                  </Col>
+
                 </Row>
               </div>
             </div>
@@ -216,14 +226,14 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
             >
               {replyMap[comment.id]?.length > 0 && (
                 <button
-                onClick={() => {
-                  toggleRepliesVisibility(comment.id);
-                  if (visibleReplies[comment.id]) {
-                    fetchReplies(postId || "", comment.id);
-                  } else {
-                    fetchComments();
-                  }
-                }}
+                  onClick={() => {
+                    toggleRepliesVisibility(comment.id);
+                    if (visibleReplies[comment.id]) {
+                      fetchReplies(postId || "", comment.id);
+                    } else {
+                      fetchComments();
+                    }
+                  }}
                   className="show-replies-btn text-blue-500 text-xs mb-2"
                 >
                   {visibleReplies[comment.id] ? `${localStrings.PostDetails.HideReplies}` : `${localStrings.PostDetails.ViewReplies}`}
@@ -327,7 +337,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               marginRight: 50,
                             }}
                           >
-                            {/* {likeCount[reply.id]} */}
+                            {likeCount[reply.id]}
                           </span>
                         </Col>
                       </Row>
@@ -463,7 +473,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       marginRight: 50,
                                     }}
                                   >
-                                    {/* {likeCount[nestedReply.id]} */}
+                                    {likeCount[nestedReply.id]}
                                   </span>
                                 </Col>
                               </Row>

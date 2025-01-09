@@ -89,9 +89,7 @@ const Post: React.FC<IPost> = React.memo(
 
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy>(
-      Privacy.PUBLIC
-    );
+    const [sharePostPrivacy, setSharePostPrivacy] = useState(Privacy.PUBLIC);
     const [shareContent, setShareContent] = useState("");
     const renderPrivacyIcon = () => {
       switch (likedPost?.privacy) {
@@ -134,14 +132,14 @@ const Post: React.FC<IPost> = React.memo(
             } else if (pathname === "/profile" && fetchUserPosts) {
               fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
             }
+    +       likedPost && (likedPost.privacy = sharePostPrivacy);
           })
           .catch((error) => {
             console.error("Error sharing post:", error);
             // Xử lý lỗi nếu cần
           });
       }
-    }
-    , [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
+    }, [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
 
     const renderLikeIcon = () => {
       if (likedPost?.is_liked) {
@@ -598,6 +596,7 @@ const Post: React.FC<IPost> = React.memo(
                 value={sharePostPrivacy}
                 onChange={(value) => setSharePostPrivacy(value)}
                 style={{ width: 120 }}
+                defaultValue={Privacy.PUBLIC}
               >
                 <Select.Option value={Privacy.PUBLIC}>
                   {localStrings.Public.Everyone}

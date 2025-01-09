@@ -35,7 +35,7 @@ const PostDetailsViewModel = (
 
   const [likeIcon, setLikeIcon] = useState("heart-outline");
   const [renderLikeIconState, setRenderLikeIconState] = useState(false);
-
+  const [heartColors, setHeartColors] = useState<{ [key: string]: string }>({});
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
@@ -113,33 +113,40 @@ const PostDetailsViewModel = (
   useEffect(() => {
     fetchComments();
   }, []);
+ 
 
-  const handleLike = async (commentOrReplyId: string) => {
+  const handleLike = async (commentId: string) => {
     const isLike =
-      userLikes[commentOrReplyId] === undefined
+      userLikes[commentId] === undefined
         ? true
-        : !userLikes[commentOrReplyId];
-
+        : !userLikes[commentId];
+  
     try {
       const response = await defaultLikeCommentRepo.postLikeComment({
-        commentId: commentOrReplyId,
+        commentId: commentId,
         isLike,
       });
-
+  
       if (response && response.data) {
         const likeCommentResponse: LikeCommentResponseModel = response.data;
-        // Cập nhật trạng thái like dựa trên response trả về
+        const oldLikeCount = likeCount[commentId] || 0;
+        const newLikeCount = isLike ? oldLikeCount + 1 : oldLikeCount - 1;
+  
         setUserLikes((prevUserLikes) => ({
           ...prevUserLikes,
-          [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
+          [commentId]: likeCommentResponse.is_liked ?? false,
         }));
+  
         setLikeCount((prevLikes) => ({
           ...prevLikes,
-          [commentOrReplyId]: likeCommentResponse.like_count,
+          [commentId]: newLikeCount,
         }));
-
-        // Cập nhật biến renderLikeIconState
-        setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
+  
+        // Cập nhật màu sắc của biểu tượng FaHeart
+        setHeartColors((prevHeartColors) => ({
+          ...prevHeartColors,
+          [commentId]: isLike ? 'red' : 'gray',
+        }));
       }
     } catch (error) {
       console.error("Error liking comment:", error);
@@ -410,6 +417,7 @@ const PostDetailsViewModel = (
     setVisibleReplies,
     visibleReplies, 
     fetchComments,
+    heartColors,
   };
 };
  
