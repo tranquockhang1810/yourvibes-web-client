@@ -23,7 +23,7 @@ const ReportViewModel = () => {
             if (!res?.error) {
                 message.success(localStrings.Report.ReportSuccess);
             } else {
-                message.error(localStrings.Report.ReportFailed);
+                message.error(localStrings.Report.ReportPostFailed);
             }
             return res;
         } catch (error: any) {
@@ -41,7 +41,7 @@ const ReportViewModel = () => {
           if (!res?.error) {
            message.success(localStrings.Report.ReportSuccess);
           } else {
-            message.error(localStrings.Report.ReportFailed);
+            message.error(localStrings.Report.ReportUserFailed);
           }
           return res;
         } catch (error: any) {
@@ -60,7 +60,7 @@ const ReportViewModel = () => {
             if (!res?.error) {
               message.success(localStrings.Report.ReportSuccess);
             } else {
-              message.error(localStrings.Report.ReportFailed);
+              message.error(localStrings.Report.ReportCommentFailed);
             }
             return res;
           } catch (error: any) {

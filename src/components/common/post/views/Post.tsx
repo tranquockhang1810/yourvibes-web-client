@@ -28,7 +28,7 @@ import {
   FaRegComments,
   FaRegHeart,
 } from "react-icons/fa";
-import { usePathname, useRouter } from "next/navigation";
+import {useRouter } from "next/navigation";
 import { getTimeDiff } from "@/utils/helper/DateTransfer";
 import { RiAdvertisementLine } from "react-icons/ri";
 import { HiDotsVertical } from "react-icons/hi";
@@ -72,7 +72,6 @@ const Post: React.FC<IPost> = React.memo(
     const { user, localStrings } = useAuth();
     const [shareForm] = Form.useForm();
     const { showModal, setShowModal } = ReportViewModel();
-    const pathname = usePathname();
     const {
       deleteLoading,
       likePost,
@@ -129,11 +128,6 @@ const Post: React.FC<IPost> = React.memo(
           .then(() => {
             setIsShareModalVisible(false);
             setShareContent("");
-            if (pathname === "/home" && fecthNewFeeds) {
-              fecthNewFeeds(); // Fetch lại newFeeds ở trang Home
-            } else if (pathname === "/profile" && fetchUserPosts) {
-              fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
-            }
           })
           .catch((error) => {
             console.error("Error sharing post:", error);
@@ -141,7 +135,7 @@ const Post: React.FC<IPost> = React.memo(
           });
       }
     }
-    , [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
+    , [likedPost, sharePostPrivacy, shareContent, fecthNewFeeds, fetchUserPosts]);
 
     const renderLikeIcon = () => {
       if (likedPost?.is_liked) {

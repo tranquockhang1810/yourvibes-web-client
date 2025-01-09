@@ -41,24 +41,40 @@ const AdsViewModel = (repo: PostRepo) => {
     }
   };
 
-  //Quảng cáo bài viết
-  const advertisePost = async (params: AdvertisePostRequestModel) => {
-    try {
-      setAdsLoading(true);
-      const res = await repo.advertisePost(params);
-      if (!res?.error) {
-        if (res?.data) {
-          const result = window.open(res.data, '_blank');
-          await getPostDetail(params?.post_id || "", true);
-          await getAdvertisePost(1, params?.post_id || "");
+    //Quảng cáo bài viết
+    const advertisePost = async (params: AdvertisePostRequestModel) => {
+      try {
+        setAdsLoading(true);
+        const res = await repo.advertisePost(params);
+        if (!res?.error) {
+          if (res?.data) {
+            // Mở trình duyệt với đường link quảng cáo
+            const result = window.open(res.data, '_blank'); // Mở URL trong tab mới
+            if (result){
+              
+             result.focus();
+            console.log("newWindow", result);
+
+            result.onload = () => {
+              // Có thể kiểm tra kết quả sau khi người dùng quay lại
+              if (result.location.href.includes('success')) {
+                message.success(localStrings.Ads.AdvertisePostSuccess);
+              } else {
+                message.error(localStrings.Ads.AdvertisePostFailed);
+              }
+            };}
+          
+          }
+        } else { 
+          message.error(localStrings.Ads.AdvertisePostFailed);
         }
-      } else { 
+      } catch (error: any) { 
+        console.error(error);
+        message.error(localStrings.Ads.AdvertisePostFailed);
+      } finally {
+        setAdsLoading(false);
       }
-    } catch (error: any) { 
-    } finally {
-      setAdsLoading(false);
-    }
-  };
+    };
  
   // Lấy danh sách quảng cáo  
   const getAdvertisePost = async (page: number, post_id: string) => {
