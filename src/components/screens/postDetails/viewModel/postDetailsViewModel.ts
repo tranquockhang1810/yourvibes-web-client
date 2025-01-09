@@ -115,6 +115,45 @@ const PostDetailsViewModel = (
   }, []);
  
 
+  // const handleLike = async (commentOrReplyId: string) => {
+  //   const isLike =
+  //     userLikes[commentOrReplyId] === undefined
+  //       ? true
+  //       : !userLikes[commentOrReplyId];
+  
+  //   try {
+  //     const response = await defaultLikeCommentRepo.postLikeComment({
+  //       commentId: commentOrReplyId,
+  //       isLike,
+  //     });
+  
+  //     if (response && response.data) {
+  //       const likeCommentResponse: LikeCommentResponseModel = response.data;
+  //       // Cập nhật trạng thái like dựa trên response trả về
+  //       setUserLikes((prevUserLikes) => ({
+  //         ...prevUserLikes,
+  //         [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
+  //       }));
+  //       setLikeCount((prevLikes) => ({
+  //         ...prevLikes,
+  //         [commentOrReplyId]: likeCommentResponse.like_count,
+  //       }));
+  
+  //       // Cập nhật biến renderLikeIconState
+  //       setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
+  
+  //       // Cập nhật màu sắc của biểu tượng FaHeart
+  //       setHeartColors((prevHeartColors) => ({
+  //         ...prevHeartColors,
+  //         [commentOrReplyId]: isLike ? 'red' : 'gray',
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error liking comment:", error);
+  //   }
+  // };
+
+
   const handleLike = async (commentId: string) => {
     const isLike =
       userLikes[commentId] === undefined
@@ -152,6 +191,7 @@ const PostDetailsViewModel = (
       console.error("Error liking comment:", error);
     }
   };
+  
 
   const handleEditComment = async (commentId: string) => {
     if (!currentCommentId || !editCommentContent) {
