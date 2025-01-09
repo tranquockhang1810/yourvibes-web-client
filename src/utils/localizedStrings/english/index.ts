@@ -109,6 +109,7 @@ export const ENGLocalizedStrings = {
     SignUpNow: "Sign up now!",
     Or: "Or",
     LoginFailed: "Login failed!",
+    AccountLocked: "Your account is locked!",
   },
   SignUp: {
     SignUpButton: "Sign up",

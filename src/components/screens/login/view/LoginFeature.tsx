@@ -18,11 +18,19 @@ const LoginPage = () => {
       content: `${localStrings.Public.LoginLoading}`,
       key: "login",
     });
-
-    await login(values);
-
-    if (!loading) {
-      message.destroy("login");
+  
+    try {
+      await login(values);
+    } catch (error: any) {
+      if (error.response.status === 403) {
+        message.error(localStrings.Login.AccountLocked);
+      } else {
+        message.error(localStrings.Login.LoginFailed);
+      }
+    } finally {
+      if (!loading) {
+        message.destroy("login");
+      }
     }
   };
 
