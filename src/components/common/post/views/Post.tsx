@@ -110,6 +110,7 @@ const Post: React.FC<IPost> = React.memo(
 
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLikeClick = useCallback(() => {
       if (likedPost?.id) {
@@ -132,7 +133,7 @@ const Post: React.FC<IPost> = React.memo(
             } else if (pathname === "/profile" && fetchUserPosts) {
               fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
             }
-    +       likedPost && (likedPost.privacy = sharePostPrivacy);
+            +       likedPost && (likedPost.privacy = sharePostPrivacy);
           })
           .catch((error) => {
             console.error("Error sharing post:", error);
@@ -276,6 +277,15 @@ const Post: React.FC<IPost> = React.memo(
       },
       [userLikePost]
     );
+
+    useEffect(() => {
+      if (isVisible) {
+        setIsLoading(true);
+        fetchUserLikePosts(likedPost!.id as string).finally(() => {
+          setIsLoading(false);
+        });
+      }
+    }, [isVisible, likedPost]);
 
     return (
       <Card
@@ -474,7 +484,7 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsEditModalVisible(false)}
         >
           {post?.id ? (
-            <EditPostScreen id={post.id} postId={post.id}   onEditPostSuccess = {()=> setIsEditModalVisible(false)}/>
+            <EditPostScreen id={post.id} postId={post.id} onEditPostSuccess={() => setIsEditModalVisible(false)} />
           ) : (
             <div>No post ID available</div>
           )}
@@ -504,7 +514,7 @@ const Post: React.FC<IPost> = React.memo(
               type="primary"
               loading={shareLoading}
               onClick={handleSubmitShare}
-                  >
+            >
               {localStrings.Public.Conform}
             </Button>,
           ]}
@@ -633,15 +643,16 @@ const Post: React.FC<IPost> = React.memo(
               padding: 20,
             }}
           >
-            {userLikePost && userLikePost.length > 0 ? (
+            {isLoading ? (
+              <Spin />
+            ) : userLikePost && userLikePost.length > 0 ? (
               <div>
                 {userLikePost.map((like) => (
                   <div key={like.id}>{renderLikedUserItem(like)}</div>
                 ))}
               </div>
             ) : (
-              <div>
-                <Spin />
+              <div style={{ textAlign: "center" }}>
                 <span style={{ marginLeft: 10, fontSize: 16 }}>
                   {localStrings.Public.NoUserLikePost}
                 </span>
