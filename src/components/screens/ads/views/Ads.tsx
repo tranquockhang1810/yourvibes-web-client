@@ -310,44 +310,6 @@ const Ads = ({ postId }: { postId: string }) => {
   }, [postId, adsLoading, ads, loading, post, date]);
 
   return (
-    // <div style={{ flex: 1 }}>
-    //   {/* Header */}
-    //   <div style={{ backgroundColor: backgroundColor }}>
-    //     <div
-    //       style={{
-    //         flexDirection: "row",
-    //         alignItems: "flex-end",
-    //         height: 60,
-    //         paddingBottom: 10,
-    //       }}
-    //     >
-    //       <div
-    //         style={{
-    //           flexDirection: "row",
-    //           alignItems: "center",
-    //           justifyContent: "space-between",
-    //           paddingLeft: 10,
-    //           paddingRight: 10,
-    //         }}
-    //       >
-    //         <span style={{ fontWeight: "bold", fontSize: 20, marginLeft: 10 }}>
-    //           {localStrings.Ads.Ads}
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   {/* Content */}
-    //   <div
-    //     style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}
-    //   >
-    //     {/* Left: Post */}
-    //     <div style={{ flex: 1, paddingRight: 20 }}>{renderPost()}</div>
-
-    //     {/* Right: Ads Information */}
-    //     <div style={{ flex: 1, paddingLeft: 20 }}>{renderAds()}</div>
-    //   </div>
-    // </div>
     <div className="p-2.5">
       <div className="mb-2 flex items-center">
         <Button
