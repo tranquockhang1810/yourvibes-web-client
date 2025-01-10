@@ -52,7 +52,7 @@ const PostDetailsViewModel = (
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
   }>({});
-
+  localStorage.setItem('heartColors', JSON.stringify(heartColors));
   const toggleRepliesVisibility = (commentId: string) => {
     setVisibleReplies((prev) => ({
       ...prev,
@@ -152,6 +152,13 @@ const PostDetailsViewModel = (
       console.error("Error liking comment:", error);
     }
   };
+
+  useEffect(() => {
+    const savedHeartColors = localStorage.getItem('heartColors');
+    if (savedHeartColors) {
+      setHeartColors(JSON.parse(savedHeartColors));
+    }
+  }, []);
 
   const handleEditComment = async (commentId: string) => {
     if (!currentCommentId || !editCommentContent) {
