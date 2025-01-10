@@ -1,5 +1,6 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import useColor from "@/hooks/useColor";
 import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
@@ -17,20 +18,23 @@ const Homepage = () => {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { friends, fetchMyFriends, page } = ProfileViewModel();
-
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const isFirstLoad = useRef(true);
   const handleScroll = useCallback(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    if (!isLoadingMore && window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      setIsLoadingMore(true);
       loadMoreNewFeeds();
     }
-  }, [loadMoreNewFeeds]);
+  }, [isLoadingMore, loadMoreNewFeeds]);
 
   useEffect(() => {
-    if (newFeeds.length === 0) {
+    if (isFirstLoad.current && newFeeds.length === 0) {
       fetchNewFeeds();
+      isFirstLoad.current = false;
     }
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   useEffect(() => {
     if (user) {
@@ -38,54 +42,41 @@ const Homepage = () => {
     }
   }, [page, user]);
 
-
   const handleModalClose = () => {
     setIsModalVisible(false);
   };
 
   const renderAddPost = useCallback(() => {
     return (
-      <>
-        <div
-          onClick={() => setIsModalVisible(true)}
+      <div
+        onClick={() => setIsModalVisible(true)}
+        style={{
+          padding: "10px",
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: backgroundColor,
+          border: `1px solid ${lightGray}`,
+          borderRadius: "10px",
+          cursor: "pointer",
+          width: "100%",
+          maxWidth: "600px",
+        }}
+      >
+        <img
+          src={user?.avatar_url}
+          alt="User Avatar"
           style={{
-            padding: "10px",
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: backgroundColor,
-            border: `1px solid ${lightGray}`,
-            borderRadius: "10px",
-            cursor: "pointer",
-            width: "100%",
-            maxWidth: "600px",
+            width: "50px",
+            height: "50px",
+            borderRadius: "25px",
+            backgroundColor: lightGray,
           }}
-        >
-          <img
-            src={user?.avatar_url}
-            alt="User Avatar"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "25px",
-              backgroundColor: lightGray,
-            }}
-          />
-          <div style={{ marginLeft: "10px", flex: 1 }}>
-            <p>{user?.family_name + " " + user?.name || localStrings.Public.Username}</p>
-            <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
-          </div>
+        />
+        <div style={{ marginLeft: "10px", flex: 1 }}>
+          <p>{user?.family_name + " " + user?.name || localStrings.Public.Username}</p>
+          <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
         </div>
-        <Modal
-          centered
-          title={localStrings.AddPost.NewPost}
-          open={isModalVisible}
-          onCancel={handleModalClose}
-          width={800}
-          footer={null}
-        >
-          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} fetchNewFeeds={fetchNewFeeds} />
-        </Modal>
-      </>
+      </div>
     );
   }, [user, localStrings, isModalVisible]);
 
@@ -133,16 +124,13 @@ const Homepage = () => {
     if (!loading) return null;
     return (
       <div style={{ padding: "10px", textAlign: "center" }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="sr-only">Loading...</span>
-        </div>
+        <Spin />
       </div>
     );
   };
 
   return (
-    <div className="lg:flex mt-4 " onScroll={handleScroll}>
-      {/* Content */}
+    <div className="lg:flex mt-4 ">
       <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
         {newFeeds?.length > 0 ? (

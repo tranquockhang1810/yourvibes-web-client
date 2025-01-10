@@ -64,12 +64,32 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     }
   };
 
-  const loadMoreNewFeeds = () => {
-    if (!loading && hasMore) {
-      fetchNewFeeds(page + 1);
+  const loadMoreNewFeeds = async () => { 
+    try {
+      setLoading(true);
+      const response = await repo.getNewFeed({
+        page: page + 1,
+        limit: limit,
+      });
+      if (!response?.error) {
+        setNewFeeds((prevNewFeeds) => [
+          ...prevNewFeeds,
+          ...(response?.data || []),
+        ]);
+        const { page: currentPage, limit: currentLimit, total: totalRecords } =
+          response?.paging;
+        setTotal(totalRecords);
+        setPage(currentPage);
+        setHasMore(currentPage * currentLimit < totalRecords);
+      } else {
+        // Handle error
+      }
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
 
   return {
     newFeeds,
@@ -77,6 +97,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     fetchNewFeeds,
     loadMoreNewFeeds,
     deleteNewFeed,
+    hasMore,
   };
 };
 
