@@ -284,7 +284,7 @@ const Ads = ({ postId }: { postId: string }) => {
                 onClick={() => {
                   advertisePost({
                     post_id: postId,
-                    redirect_url: `/ads/${postId}`,
+                    redirect_url: `${window.location.origin}/ads/${postId}`,
                     end_date: (
                       dayjs(date).format("YYYY-MM-DDT00:00:00") + "Z"
                     ).toString(),
