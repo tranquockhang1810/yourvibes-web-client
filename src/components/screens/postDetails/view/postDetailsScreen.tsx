@@ -146,7 +146,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         opacity: 0.5,
                       }}
                     >
-                      {/* {likeCount[comment.id]} */}
+                      {likeCount[comment.id]}
                     </span>
                   </Col>
                   {userId === comment.user?.id ? (
@@ -268,7 +268,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               opacity: 0.5,
                             }}
                           >
-                            {/* {likeCount[reply.id]} */}
+                            {likeCount[reply.id]}
                           </span>
                         </Col>
                         {userId === reply.user?.id ? (
@@ -387,7 +387,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       opacity: 0.5,
                                     }}
                                   >
-                                    {/* {likeCount[nestedReply.id]} */}
+                                    {likeCount[nestedReply.id]}
                                   </span>
                                 </Col>
                                 {userId === nestedReply.user?.id ? (
