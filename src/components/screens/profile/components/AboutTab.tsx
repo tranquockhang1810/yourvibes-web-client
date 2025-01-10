@@ -11,7 +11,7 @@ import {
   MailFilled,
   PhoneFilled,
 } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DateTransfer } from "@/utils/helper/DateTransfer";
 import { FaGlobe, FaLock } from "react-icons/fa";
 import { IoMdPeople } from "react-icons/io";
@@ -46,8 +46,31 @@ const AboutTab = ({
   const router = useRouter();
   const { brandPrimaryTap, backgroundColor } = useColor();
   const { isLoginUser, localStrings } = useAuth();
-  const [showObject, setShowObject] = React.useState(false);
-  const [showFriend, setShowFriend] = React.useState(false);
+  const [showObject, setShowObject] = useState(false);
+  const [showFriend, setShowFriend] = useState(false);
+  
+  const [friendsToShow, setFriendsToShow] = useState(8);
+
+  useEffect(() => {
+    const updateFriendsToShow = () => {
+      if (window.innerWidth >= 798 && window.innerWidth <= 1024) {
+        setFriendsToShow(10);
+      } else {
+        setFriendsToShow(8);
+      }
+    };
+
+    // Cập nhật số lượng bạn bè hiển thị khi component được mount
+    updateFriendsToShow();
+
+    // Lắng nghe sự kiện thay đổi kích thước màn hình
+    window.addEventListener('resize', updateFriendsToShow);
+
+    // Cleanup listener khi component bị unmount
+    return () => {
+      window.removeEventListener('resize', updateFriendsToShow);
+    };
+  }, []);
 
   const renderPrivacyIcon = () => {
     switch (user?.privacy) {
@@ -187,8 +210,8 @@ const AboutTab = ({
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    {friends.map((friend, index) => (
+                  <div className="grid grid-cols-4 md:grid-cols-5 xl:grid-cols-4 gap-2">
+                    {friends.slice(0, friendsToShow).map((friend, index) => (
                       <div
                         key={index}
                         className="w-[70px]  mb-2 mx-1"

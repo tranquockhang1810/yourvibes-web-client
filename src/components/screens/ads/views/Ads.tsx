@@ -8,10 +8,11 @@ import { DateTransfer, getDayDiff } from "@/utils/helper/DateTransfer";
 import { CurrencyFormat } from "@/utils/helper/CurrencyFormat";
 import dayjs from "dayjs";
 import { AdsCalculate } from "@/utils/helper/AdsCalculate";
-import { FaCalculator, FaCashRegister, FaAd } from "react-icons/fa"; // Added FaAd icon
-import { Spin, Button, List, DatePicker } from "antd";
-import { Header } from "antd/es/layout/layout";
-
+import { FaCalculator, FaCashRegister, FaAd } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { Spin, Button, List, DatePicker, Typography } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
+const { Text } = Typography;
 const Ads = ({ postId }: { postId: string }) => {
   const price = 30000;
   const { brandPrimary, backgroundColor } = useColor();
@@ -20,6 +21,7 @@ const Ads = ({ postId }: { postId: string }) => {
   const { language, localStrings } = useAuth();
   const [diffDay, setDiffDay] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const router = useRouter();
   const {
     getPostDetail,
     post,
@@ -65,7 +67,9 @@ const Ads = ({ postId }: { postId: string }) => {
   const renderPost = useCallback(() => {
     if (loading) {
       return (
-        <div style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <div
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Spin size="large" />
         </div>
       );
@@ -211,27 +215,18 @@ const Ads = ({ postId }: { postId: string }) => {
               </div>
 
               {/* Select advertising date */}
-              <button
-                style={{
-                  backgroundColor: "transparent",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  padding: 10,
-                  marginBottom: 15,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                onClick={() => setShowDatePicker(true)}
-              >
+              <div>
                 <FaCalculator size={24} color={brandPrimary} />
-                <span style={{ paddingLeft: 20 }}>
-                  {`${localStrings.Ads.TimeAds} ${DateTransfer(date)} (${diffDay} ${localStrings.Public.Day.toLowerCase()})`}
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 16,
+                    marginBottom: 5,
+                    marginTop: 20,
+                  }}
+                >
+                  {localStrings.Ads.TimeAds} {diffDay} {localStrings.Public.Day}
                 </span>
-              </button>
-
-              {/* Show Date Picker */}
-              {showDatePicker && (
                 <DatePicker
                   value={dayjs(date)}
                   onChange={(date) => {
@@ -241,10 +236,11 @@ const Ads = ({ postId }: { postId: string }) => {
                     }
                   }}
                   style={{ width: "100%" }}
-                  disabledDate={(current) => current && current < dayjs().endOf("day")}
+                  disabledDate={(current) =>
+                    current && current < dayjs().endOf("day")
+                  }
                 />
-              )}
-
+              </div>
               {/* Budget */}
               <div style={{ marginTop: 20 }}>
                 <FaCashRegister size={24} color={brandPrimary} />
@@ -267,9 +263,12 @@ const Ads = ({ postId }: { postId: string }) => {
                       title={item.name}
                       style={{
                         borderWidth: 1,
-                        borderRadius: 8,
+                        borderColor: method === item.id ? "#4CAF50" : "#ccc",
+                        backgroundColor:
+                          method === item.id ? "#E8F5E9" : "transparent",
                         padding: 5,
                         marginRight: 10,
+                        borderRadius: 10,
                       }}
                     >
                       <img src={item.image} style={{ width: 50, height: 50 }} />
@@ -282,7 +281,18 @@ const Ads = ({ postId }: { postId: string }) => {
               <Button
                 type="primary"
                 icon={<FaAd />}
-                onClick={() => alert("New Advertisement functionality")}
+                onClick={() => {
+                  advertisePost({
+                    post_id: postId,
+                    redirect_url: `/ads/${postId}`,
+                    end_date: (
+                      dayjs(date).format("YYYY-MM-DDT00:00:00") + "Z"
+                    ).toString(),
+                    start_date: (
+                      dayjs().format("YYYY-MM-DDT00:00:00") + "Z"
+                    ).toString(),
+                  });
+                }}
                 style={{
                   marginTop: 20,
                   borderRadius: 8,
@@ -297,45 +307,61 @@ const Ads = ({ postId }: { postId: string }) => {
         )}
       </>
     );
-  }, [postId, adsLoading, ads, loading, post, showDatePicker, date]);
+  }, [postId, adsLoading, ads, loading, post, date]);
 
   return (
-    <div style={{ flex: 1 }}>
-      {/* Header */}
-      <div style={{ backgroundColor: backgroundColor }}>
-        <div
-          style={{
-            flexDirection: "row",
-            alignItems: "flex-end",
-            height: 60,
-            paddingBottom: 10,
-          }}
-        >
-          <div
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingLeft: 10,
-              paddingRight: 10,
-            }}
-          >
-            <span style={{ fontWeight: "bold", fontSize: 20, marginLeft: 10 }}>
-              {localStrings.Ads.Ads}
-            </span>
-          </div>
-        </div>
+    // <div style={{ flex: 1 }}>
+    //   {/* Header */}
+    //   <div style={{ backgroundColor: backgroundColor }}>
+    //     <div
+    //       style={{
+    //         flexDirection: "row",
+    //         alignItems: "flex-end",
+    //         height: 60,
+    //         paddingBottom: 10,
+    //       }}
+    //     >
+    //       <div
+    //         style={{
+    //           flexDirection: "row",
+    //           alignItems: "center",
+    //           justifyContent: "space-between",
+    //           paddingLeft: 10,
+    //           paddingRight: 10,
+    //         }}
+    //       >
+    //         <span style={{ fontWeight: "bold", fontSize: 20, marginLeft: 10 }}>
+    //           {localStrings.Ads.Ads}
+    //         </span>
+    //       </div>
+    //     </div>
+    //   </div>
+
+    //   {/* Content */}
+    //   <div
+    //     style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}
+    //   >
+    //     {/* Left: Post */}
+    //     <div style={{ flex: 1, paddingRight: 20 }}>{renderPost()}</div>
+
+    //     {/* Right: Ads Information */}
+    //     <div style={{ flex: 1, paddingLeft: 20 }}>{renderAds()}</div>
+    //   </div>
+    // </div>
+    <div className="p-2.5">
+      <div className="mb-2 flex items-center">
+        <Button
+          icon={<CloseOutlined />}
+          type="text"
+          onClick={() => router.back()}
+        />
+        <Text strong style={{ fontSize: "18px", marginLeft: "10px" }}>
+          {localStrings.Ads.Ads}
+        </Text>
       </div>
-
-      {/* Content */}
-      <div
-        style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}
-      >
-        {/* Left: Post */}
-        <div style={{ flex: 1, paddingRight: 20 }}>{renderPost()}</div>
-
-        {/* Right: Ads Information */}
-        <div style={{ flex: 1, paddingLeft: 20 }}>{renderAds()}</div>
+      <div>
+        <div>{renderPost()}</div>
+        <div>{renderAds()}</div>
       </div>
     </div>
   );
