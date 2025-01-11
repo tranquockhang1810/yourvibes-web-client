@@ -3,7 +3,7 @@ import { ApiPath } from "@/api/ApiPath";
 import { defaultNotificationRepo } from "@/api/features/notification/NotifiCationRepo";
 import MainLayout from "@/components/common/MainLayouts/MainLayout";
 import { useAuth } from "@/context/auth/useAuth";
-import { Button, notification } from "antd";
+import { Button, notification, Skeleton } from "antd";
 import { Suspense, useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }): React.ReactElement {
@@ -67,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
   }, [user]);
 
   return (
-    <Suspense>
+    <Suspense fallback={<Skeleton paragraph={{ rows: 10 }} active />}>
       <div className="mb-10">
         <MainLayout>{children}</MainLayout>
       </div>

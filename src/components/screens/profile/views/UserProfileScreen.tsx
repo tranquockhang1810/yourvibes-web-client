@@ -1,6 +1,6 @@
 "use client"
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Drawer, Modal, Space, Typography } from 'antd';
+import { Button, Drawer, Modal, Skeleton, Space, Typography } from 'antd';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
@@ -36,6 +36,13 @@ const UserProfileScreen = ({ id }: { id: string }) => {
 
   return (
     <div>
+      {loading ? (
+        <Skeleton
+          active
+          paragraph={{ rows: 16 }}
+        />
+      ) : (
+      <>
         <ProfileHeader
           total={total}
           user={userInfo as UserModel}
@@ -51,9 +58,11 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           friendCount={friendCount}
           friends={friends}
           resultCode={resultCode}
-          fetchUserPosts={() => {}}
+          fetchUserPosts={() => { }}
           hasMore={hasMore}
         />
+      </>
+      )}
     </div>
   );
 };
