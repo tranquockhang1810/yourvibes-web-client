@@ -126,6 +126,8 @@ const PostDetailsViewModel = (
         commentId: commentOrReplyId,
         isLike,
       });
+      console.log("response", response);
+      
   
       if (response && response.data) {
         const likeCommentResponse: LikeCommentResponseModel = response.data;

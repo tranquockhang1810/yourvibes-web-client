@@ -284,6 +284,7 @@ Ads: {
   PaymentSuccess:"Thanh toán thành công", 
   PaymentFailed:"Thanh toán thất bại",
   NoCampaign:"Không có chiến dịch nào",
+  AdvertisePostPending: "Quảng cáo đang chờ xử lý, vui lòng kiểm tra lại quá trình.",
 },
 
 

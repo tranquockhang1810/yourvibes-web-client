@@ -288,6 +288,7 @@ export const ENGLocalizedStrings = {
     PaymentSuccess: "Payment successful.",
     PaymentFailed: "Payment failed.",
     NoCampaign: "No campaign found",
+    AdvertisePostPending: "Advertisement is pending, please check the process again.",
   },
 
   Report: {

@@ -10,14 +10,15 @@ import dayjs from "dayjs";
 import { AdsCalculate } from "@/utils/helper/AdsCalculate";
 import { FaCalculator, FaCashRegister, FaAd } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { Spin, Button, List, DatePicker, Typography } from "antd";
+import { Spin, Button, List, DatePicker, Typography, Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+
 const { Text } = Typography;
 const Ads = ({ postId }: { postId: string }) => {
   const price = 30000;
   const { brandPrimary, backgroundColor } = useColor();
   const [method, setMethod] = useState("momo");
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showCampaign, setShowCampaign] = useState(false);
   const { language, localStrings } = useAuth();
   const [diffDay, setDiffDay] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
@@ -64,23 +65,6 @@ const Ads = ({ postId }: { postId: string }) => {
     }
   }, [postId]);
 
-  const renderPost = useCallback(() => {
-    if (loading) {
-      return (
-        <div
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Spin size="large" />
-        </div>
-      );
-    } else {
-      return (
-        <Post post={post} noFooter>
-          {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
-        </Post>
-      );
-    }
-  }, [post, loading]);
 
   const renderAds = useCallback(() => {
     if (loading) return null;
@@ -89,7 +73,7 @@ const Ads = ({ postId }: { postId: string }) => {
         {post?.is_advertisement ? (
           <>
             {/* Advertisement history */}
-            <div style={{ flexDirection: "row", alignItems: "center" }}>
+            <div style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div
                   style={{
@@ -109,80 +93,81 @@ const Ads = ({ postId }: { postId: string }) => {
                   {localStrings.Ads.ActiveCampaign}
                 </span>
               </div>
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <div
-                style={{
-                  backgroundColor: "#f7f7f7",
-                  padding: 20,
-                  borderRadius: 8,
-                }}
-              >
+              <div style={{ marginTop: 10 }}>
                 <div
                   style={{
-                    fontSize: 16,
-                    fontWeight: "bold",
+                    backgroundColor: "#f7f7f7",
+                    borderRadius: 8,
                   }}
                 >
-                  <span>{localStrings.Ads.Campaign} #1</span>
-                  <FaCalculator size={20} color={brandPrimary} />
-                </div>
-                <div style={{ marginTop: 10 }}>
-                  <span
+                  <div
+                    className="flex flex-row justify-between items-center"
                     style={{
-                      fontSize: 14,
-                      color: "gray",
+                      fontSize: 16,
+                      fontWeight: "bold",
                     }}
                   >
+                    <span>{localStrings.Ads.Campaign} #1</span>
+                    <FaCalculator size={20} color={brandPrimary} />
+                  </div>
+                  <div style={{ marginTop: 10 }}>
                     <span
                       style={{
-                        fontWeight: "bold",
+                        fontSize: 14,
+                        color: "gray",
                       }}
                     >
-                      {localStrings.Ads.Campaign}:
-                    </span>{" "}
-                    {DateTransfer(ads?.start_date)}
-                  </span>
-                  <br />
-                  <span
-                    style={{
-                      fontSize: 14,
-                      color: "gray",
-                    }}
-                  >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.Campaign}:
+                      </span>{" "}
+                      {DateTransfer(ads?.start_date)}
+                    </span>
+                    <br />
                     <span
                       style={{
-                        fontWeight: "bold",
+                        fontSize: 14,
+                        color: "gray",
                       }}
                     >
-                      {localStrings.Ads.End}:
-                    </span>{" "}
-                    {DateTransfer(ads?.end_date)}
-                  </span>
-                  <br />
-                  <span
-                    style={{
-                      fontSize: 14,
-                      color: "gray",
-                    }}
-                  >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.End}:
+                      </span>{" "}
+                      {DateTransfer(ads?.end_date)}
+                    </span>
+                    <br />
                     <span
                       style={{
-                        fontWeight: "bold",
+                        fontSize: 14,
+                        color: "gray",
                       }}
                     >
-                      {localStrings.Ads.RemainingTime}:
-                    </span>{" "}
-                    {ads?.day_remaining} {localStrings.Ads.Day}
-                  </span>
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.RemainingTime}:
+                      </span>{" "}
+                      {ads?.day_remaining} {localStrings.Ads.Day}
+                    </span>
+                  </div>
                 </div>
               </div>
+              <div></div>
             </div>
           </>
         ) : (
           <>
             {/* Advertisement Information */}
-            <div style={{ flex: 1, paddingLeft: 10, paddingRight: 10 }}>
+            <div style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10 }}>
               <div>
                 <span
                   style={{
@@ -216,18 +201,22 @@ const Ads = ({ postId }: { postId: string }) => {
 
               {/* Select advertising date */}
               <div>
-                <FaCalculator size={24} color={brandPrimary} />
-                <span
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 16,
-                    marginBottom: 5,
-                    marginTop: 20,
-                  }}
-                >
-                  {localStrings.Ads.TimeAds} {diffDay} {localStrings.Public.Day}
-                </span>
+                <div className="flex flex-row mt-4 mb-2 items-center">
+                  <FaCalculator size={24} color={brandPrimary} />
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 16,
+                      paddingLeft: 10,
+                    }}
+                  >
+                    {localStrings.Ads.TimeAds} {diffDay}{" "}
+                    {localStrings.Public.Day}
+                  </span>
+                </div>
+
                 <DatePicker
+                  format={"DD/MM/YYYY"}
                   value={dayjs(date)}
                   onChange={(date) => {
                     if (date) {
@@ -241,10 +230,11 @@ const Ads = ({ postId }: { postId: string }) => {
                   }
                 />
               </div>
+
               {/* Budget */}
-              <div style={{ marginTop: 20 }}>
+              <div className="flex mt-4 mb-2 items-center">
                 <FaCashRegister size={24} color={brandPrimary} />
-                <span style={{ paddingLeft: 20 }}>
+                <span style={{ paddingLeft: 10 }}>
                   {localStrings.Ads.BudgetAds}{" "}
                   {CurrencyFormat(AdsCalculate(diffDay, price))}
                 </span>
@@ -278,30 +268,31 @@ const Ads = ({ postId }: { postId: string }) => {
               </div>
 
               {/* New Advertisement Button */}
-              <Button
-                type="primary"
-                icon={<FaAd />}
-                onClick={() => {
-                  advertisePost({
-                    post_id: postId,
-                    redirect_url: `${window.location.origin}/ads/${postId}`,
-                    end_date: (
-                      dayjs(date).format("YYYY-MM-DDT00:00:00") + "Z"
-                    ).toString(),
-                    start_date: (
-                      dayjs().format("YYYY-MM-DDT00:00:00") + "Z"
-                    ).toString(),
-                  });
-                }}
-                style={{
-                  marginTop: 20,
-                  borderRadius: 8,
-                  backgroundColor: brandPrimary,
-                  color: "white",
-                }}
-              >
-                {localStrings.Ads.Ads}
-              </Button>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+        <Button
+          type="primary"
+          icon={<FaAd />}
+          onClick={() => {
+            advertisePost({
+              post_id: postId,
+              redirect_url: `${window.location.origin}/ads/${postId}`,
+              end_date: (
+                dayjs(date).format('YYYY-MM-DDT00:00:00') + 'Z'
+              ).toString(),
+              start_date: (
+                dayjs().format('YYYY-MM-DDT00:00:00') + 'Z'
+              ).toString(),
+            });
+          }}
+          style={{
+            borderRadius: 8,
+            backgroundColor: brandPrimary,
+            color: 'white',
+          }}
+        >
+          {localStrings.Ads.Ads}
+        </Button>
+      </div>
             </div>
           </>
         )}
@@ -310,44 +301,6 @@ const Ads = ({ postId }: { postId: string }) => {
   }, [postId, adsLoading, ads, loading, post, date]);
 
   return (
-    // <div style={{ flex: 1 }}>
-    //   {/* Header */}
-    //   <div style={{ backgroundColor: backgroundColor }}>
-    //     <div
-    //       style={{
-    //         flexDirection: "row",
-    //         alignItems: "flex-end",
-    //         height: 60,
-    //         paddingBottom: 10,
-    //       }}
-    //     >
-    //       <div
-    //         style={{
-    //           flexDirection: "row",
-    //           alignItems: "center",
-    //           justifyContent: "space-between",
-    //           paddingLeft: 10,
-    //           paddingRight: 10,
-    //         }}
-    //       >
-    //         <span style={{ fontWeight: "bold", fontSize: 20, marginLeft: 10 }}>
-    //           {localStrings.Ads.Ads}
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   {/* Content */}
-    //   <div
-    //     style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}
-    //   >
-    //     {/* Left: Post */}
-    //     <div style={{ flex: 1, paddingRight: 20 }}>{renderPost()}</div>
-
-    //     {/* Right: Ads Information */}
-    //     <div style={{ flex: 1, paddingLeft: 20 }}>{renderAds()}</div>
-    //   </div>
-    // </div>
     <div className="p-2.5">
       <div className="mb-2 flex items-center">
         <Button
@@ -359,10 +312,179 @@ const Ads = ({ postId }: { postId: string }) => {
           {localStrings.Ads.Ads}
         </Text>
       </div>
-      <div>
-        <div>{renderPost()}</div>
-        <div>{renderAds()}</div>
+      <div className="flex items-center xl:items-start xl:flex-row flex-col justify-center">
+        <Post post={post} noFooter>
+          {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
+        </Post>
+
+        <div style={{ maxWidth: 600 }}>{renderAds()}
+        <div onClick={() => setShowCampaign(true)} className="cursor-pointer pl-2.5 mt-2.5 text-blue-500 font-bold text-[16px]">
+          {localStrings.Ads.ShowCampaign}
+        </div>
+        </div>
       </div>
+      <Modal
+        centered
+        title={localStrings.Ads.Campaign}
+        open={showCampaign}
+        onCancel={() => setShowCampaign(false)}
+        footer={null}
+      >
+        {(adsAll?.length ?? 0) > 0 ? (
+          (adsAll ?? []).map((item, index) => (
+            <div key={index} style={{ marginTop: 10 }}>
+              <div
+                style={{
+                  backgroundColor: "#f7f7f7",
+                  borderRadius: 8,
+                }}
+              >
+                <div
+                  className="flex flex-row justify-between items-center"
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
+                >
+                  <span>
+                    {localStrings.Ads.Campaign} #{index + 1}
+                  </span>
+                  <FaCalculator size={20} color={brandPrimary} />
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        color: "gray",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.Campaign}:
+                      </span>{" "}
+                      {DateTransfer(item?.start_date)}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        color: "gray",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.End}:
+                      </span>{" "}
+                      {DateTransfer(item?.end_date)}
+                    </span>
+                  </div>
+
+                  <div>
+                    {item?.bill?.status && (
+                      <span
+                        style={{
+                          fontSize: 14,
+                          color: "gray",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {localStrings.Ads.RemainingTime}:
+                        </span>{" "}
+                        {item?.day_remaining
+                          ? `${item?.day_remaining} ${localStrings.Ads.Day}`
+                          : "Đã kết thúc"}
+                      </span>
+                    )}
+                  </div>
+
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        color: "gray",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.Grant}:
+                      </span>{" "}
+                      {item?.bill?.price
+                        ? CurrencyFormat(item?.bill?.price)
+                        : NaN}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        color: "gray",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.PaymentMethod}:
+                      </span>{" "}
+                      {method === "momo" ? "MoMo" : "Khác"}
+                    </span>
+                  </div>
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        color: "gray",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {localStrings.Ads.Status}:
+                      </span>{" "}
+                      {item?.bill?.status
+                        ? localStrings.Ads.PaymentSuccess
+                        : localStrings.Ads.PaymentFailed}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <span style={{ fontSize: 16, fontWeight: "bold" }}>
+              {localStrings.Ads.NoCampaign}
+            </span>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
