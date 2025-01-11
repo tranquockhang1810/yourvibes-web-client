@@ -7,6 +7,7 @@ import { useState, useRef } from "react";
 const HomeViewModel = (repo: NewFeedRepo) => {
   const [newFeeds, setNewFeeds] = useState<NewFeedResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -66,7 +67,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
 
   const loadMoreNewFeeds = async () => { 
     try {
-      setLoading(true);
+      setLoadingMore(true);
       const response = await repo.getNewFeed({
         page: page + 1,
         limit: limit,
@@ -94,6 +95,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
   return {
     newFeeds,
     loading,
+    loadingMore,
     fetchNewFeeds,
     loadMoreNewFeeds,
     deleteNewFeed,

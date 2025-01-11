@@ -168,6 +168,7 @@ export const VnLocalizedStrings = {
     DeleteNewFeed: "Ẩn bài viết",
     NoContent: "Nội dung không hiển thị",
     Sponsor: "Được tài trợ",
+    NoPosts: "Không có bài viết nào",
   },
   PostDetails:{
     ViewReplies: "Xem phản hồi",

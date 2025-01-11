@@ -1,40 +1,24 @@
 "use client";
-
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useColor from "@/hooks/useColor";
 import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation";
-import { Modal, Spin } from 'antd';
+import { Empty, Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen";
 import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
+import { LoadingOutlined } from '@ant-design/icons';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed, hasMore } = HomeViewModel(defaultNewFeedRepo);
   const { user, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { friends, fetchMyFriends, page } = ProfileViewModel();
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const isFirstLoad = useRef(true);
-  const handleScroll = useCallback(() => {
-    if (!isLoadingMore && window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      setIsLoadingMore(true);
-      loadMoreNewFeeds();
-    }
-  }, [isLoadingMore, loadMoreNewFeeds]);
-
-  useEffect(() => {
-    if (isFirstLoad.current && newFeeds.length === 0) {
-      fetchNewFeeds();
-      isFirstLoad.current = false;
-    }
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
 
   useEffect(() => {
     if (user) {
@@ -42,41 +26,58 @@ const Homepage = () => {
     }
   }, [page, user]);
 
+  useEffect(() => {
+    fetchNewFeeds();
+  }
+  , []);
+
   const handleModalClose = () => {
     setIsModalVisible(false);
   };
 
   const renderAddPost = useCallback(() => {
     return (
-      <div
-        onClick={() => setIsModalVisible(true)}
-        style={{
-          padding: "10px",
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: backgroundColor,
-          border: `1px solid ${lightGray}`,
-          borderRadius: "10px",
-          cursor: "pointer",
-          width: "100%",
-          maxWidth: "600px",
-        }}
-      >
-        <img
-          src={user?.avatar_url}
-          alt="User Avatar"
+      <>
+        <div
+          onClick={() => setIsModalVisible(true)}
           style={{
-            width: "50px",
-            height: "50px",
-            borderRadius: "25px",
-            backgroundColor: lightGray,
+            padding: "10px",
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: backgroundColor,
+            border: `1px solid ${lightGray}`,
+            borderRadius: "10px",
+            cursor: "pointer",
+            width: "100%",
+            maxWidth: "600px",
           }}
-        />
-        <div style={{ marginLeft: "10px", flex: 1 }}>
-          <p>{user?.family_name + " " + user?.name || localStrings.Public.Username}</p>
-          <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
+        >
+          <img
+            src={user?.avatar_url}
+            alt="User Avatar"
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "25px",
+              backgroundColor: lightGray,
+            }}
+          />
+          <div style={{ marginLeft: "10px", flex: 1 }}>
+            <p>{user?.family_name + " " + user?.name || localStrings.Public.Username}</p>
+            <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
+          </div>
         </div>
-      </div>
+        <Modal
+          centered
+          title={localStrings.AddPost.NewPost}
+          open={isModalVisible}
+          onCancel={handleModalClose}
+          width={800}
+          footer={null}
+        >
+          <AddPostScreen onPostSuccess={() => setIsModalVisible(false)} fetchNewFeeds={fetchNewFeeds} />
+        </Modal>
+      </>
     );
   }, [user, localStrings, isModalVisible]);
 
@@ -120,21 +121,24 @@ const Homepage = () => {
     );
   };
 
-  const renderFooter = () => {
-    if (!loading) return null;
-    return (
-      <div style={{ padding: "10px", textAlign: "center" }}>
-        <Spin />
-      </div>
-    );
-  };
-
   return (
     <div className="lg:flex mt-4 ">
-      <div className="flex-auto w-auto flex flex-col items-center justify-center">
+      {/* Content */}
+      {loading ?(
+        <div className="flex-auto w-auto flex items-center justify-center">
+          <Spin indicator={<LoadingOutlined spin />} size="large" />
+        </div>):(<>
+         <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
+        <div style={{ width: "100%" }}>
         {newFeeds?.length > 0 ? (
-          newFeeds.map((item) => (
+          <InfiniteScroll
+          className="flex flex-col items-center"
+            dataLength={newFeeds.length}
+            next={loadMoreNewFeeds}
+            hasMore={hasMore}
+            loader={<Spin indicator={<LoadingOutlined spin />} size="large" />}>
+               {newFeeds.map((item) => (
             <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
               <Post post={item} />
               {item?.parent_post && (
@@ -143,17 +147,27 @@ const Homepage = () => {
                 </div>
               )}
             </div>
-          ))
+          ))}
+            </InfiniteScroll>
+          
         ) : (
           <div className="w-full h-screen flex justify-center items-center">
-            <Spin tip="Loading..." />
+            <Empty description={
+                <span style={{ color: 'gray', fontSize: 16 }}>
+                  {localStrings.Post.NoPosts}
+                </span>
+              }
+            />
           </div>
         )}
-        {renderFooter()}
+        </div>
+        
       </div>
       <div className="flex-initial w-[300px] hidden xl:block">
         {renderFriends()}
       </div>
+        </>)}
+     
     </div>
   );
 };

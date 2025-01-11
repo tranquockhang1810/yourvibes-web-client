@@ -170,6 +170,7 @@ export const ENGLocalizedStrings = {
     DeleteNewFeed: "Delete (hide) new feed",
     NoContent: "Content is empty",
     Sponsor: "Sponsored",
+    NoPosts: "No posts found",
   },
   PostDetails: {
     ViewReplies: "View replies",

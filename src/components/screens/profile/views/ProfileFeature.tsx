@@ -44,7 +44,10 @@ const ProfileFeature = () => {
 
   return (
     <div className='lg:mx-8'>
-      {loading ?(<Spin indicator={<LoadingOutlined spin />} size="large" />):(
+      {loading ?(
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <Spin indicator={<LoadingOutlined spin />} size="large" />
+        </div>):(
         <>
           <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
           <ProfileTabs

@@ -1,6 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Spin, Modal } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Spin, Modal, Empty } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import useColor from '@/hooks/useColor';
@@ -78,19 +79,38 @@ const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore
       {isLoginUser(user?.id as string) && renderAddPost()}
 
       {/* Posts List */}
-      {loading ? (
-        <Spin indicator={<LoadingOutlined spin />} size="large" />
-      ) : (
-        posts && posts.length > 0 ? (
-          posts.map((item) => (
-            <div key={item?.id} className='w-full flex flex-col items-center'>
-              <Post post={item}>
-                {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-              </Post>
-            </div>
-          ))
-        ) : null
-      )}
+      <div style={{width: '100%' }}>
+       {posts && posts.length > 0 ? (
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={loadMorePosts}
+          hasMore={hasMore}
+          loader={<Spin indicator={<LoadingOutlined spin />} size="large" />}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              {/* <b>{localStrings.Public.NoMorePosts}</b> */}
+            </p>
+          }
+        >
+         
+            {posts.map((item) => (
+              <div key={item?.id} className='w-full flex flex-col items-center' >
+                <Post post={item}>
+                  {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+                </Post>
+              </div>
+            ))}
+        </InfiniteScroll>): (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+              <Empty description={
+                <span style={{ color: 'gray', fontSize: 16 }}>
+                  {localStrings.Post.NoPosts}
+                </span>
+              }
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
