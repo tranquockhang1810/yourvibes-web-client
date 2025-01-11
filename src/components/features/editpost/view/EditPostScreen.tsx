@@ -180,7 +180,7 @@ const EditPostScreen = ({
           <Button
             type="primary"
             onClick={handleSubmitEditPost}
-            disabled={!postContent.trim() && selectedMediaFiles.length === 0}
+            // disabled={!postContent.trim() && selectedMediaFiles.length === 0}
             loading={updateLoading}
           >
             {localStrings.Public.Save}

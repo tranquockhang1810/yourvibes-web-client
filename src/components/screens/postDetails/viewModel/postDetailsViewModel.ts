@@ -28,6 +28,7 @@ const PostDetailsViewModel = (
 
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
+
   const [newComment, setNewComment] = useState("");
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
 
@@ -120,16 +121,16 @@ const PostDetailsViewModel = (
       userLikes[commentOrReplyId] === undefined
         ? true
         : !userLikes[commentOrReplyId]; 
-  
+    
     try {
       const response = await defaultLikeCommentRepo.postLikeComment({
         commentId: commentOrReplyId,
         isLike,
       });
-  
+    
       if (response && response.data) {
         const likeCommentResponse: LikeCommentResponseModel = response.data; 
-        // Cập nhật trạng thái like dựa trên response trả về
+        // Update the like state based on the response
         setUserLikes((prevUserLikes) => ({
           ...prevUserLikes,
           [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
@@ -138,11 +139,7 @@ const PostDetailsViewModel = (
           ...prevLikes,
           [commentOrReplyId]: likeCommentResponse.like_count,
         }));
-  
-        // Cập nhật biến renderLikeIconState
         setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
-  
-        // Cập nhật màu sắc của biểu tượng FaHeart
         setHeartColors((prevHeartColors) => ({
           ...prevHeartColors,
           [commentOrReplyId]: isLike ? 'red' : 'gray',
@@ -152,13 +149,6 @@ const PostDetailsViewModel = (
       console.error("Error liking comment:", error);
     }
   };
-
-  useEffect(() => {
-    const savedHeartColors = localStorage.getItem('heartColors');
-    if (savedHeartColors) {
-      setHeartColors(JSON.parse(savedHeartColors));
-    }
-  }, []);
 
   const handleEditComment = async (commentId: string) => {
     if (!currentCommentId || !editCommentContent) {

@@ -74,18 +74,15 @@ const Post: React.FC<IPost> = React.memo(
     const { showModal, setShowModal } = ReportViewModel();
     const pathname = usePathname();
     // const {fetchUserPosts} = ProfileViewModel();
-    const {
-      deleteLoading,
+    const { 
       likePost,
       likedPost,
       setLikedPost,
       sharePost,
       shareLoading,
-      deletePost,
-      updatePost,
+      deletePost, 
       fetchUserLikePosts,
-      userLikePost,
-      setUserLikePost,
+      userLikePost, 
     } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
 
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
@@ -105,10 +102,6 @@ const Post: React.FC<IPost> = React.memo(
       }
     };
     const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
-    const handleCommentClick = useCallback(() => {
-      setIsCommentModalVisible(true);
-    }, [post]);
-
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);

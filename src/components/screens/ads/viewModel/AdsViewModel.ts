@@ -24,7 +24,6 @@ const AdsViewModel = (repo: PostRepo) => {
   const [page, setPage] = useState<number>(1);
 
   //Lấy chi tiết bài viết
-
   const getPostDetail = async (id: string, newAds = false) => {
     try {
       setLoading(true);
@@ -83,8 +82,11 @@ const advertisePost = async (params: AdvertisePostRequestModel) => {
       message.error(localStrings.Ads.AdvertisePostFailed);
     }
   } catch (error: any) {
-    console.error(error);
-    message.error(localStrings.Ads.AdvertisePostFailed);
+    if (error.response?.data?.err_detail) {
+      message.error(localStrings.Ads.AdvertisePostFailed, error.response?.data?.err_detail);
+    } else {
+      message.error(localStrings.Ads.AdvertisePostFailed, error.message);
+    }
   } finally {
     setAdsLoading(false);
   }

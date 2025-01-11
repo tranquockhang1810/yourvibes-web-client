@@ -116,7 +116,7 @@ const EditPostViewModel = (
   };
 
   const handleSubmit = async () => {
-    if (!postContent.trim() && fileList.length === 0) return; 
+    // if (!postContent.trim() && fileList.length === 0) return; 
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);

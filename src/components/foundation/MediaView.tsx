@@ -49,7 +49,7 @@ const MediaView: React.FC<MediaViewProps> = React.memo(({ mediaItems }) => {
                   loop
                   muted
                   playing
-                  style={{ width: '100%', objectFit: 'fill' }}
+                  style={{ width: '100%', objectFit: 'cover' }}
                 />
               ) : (
                 <img

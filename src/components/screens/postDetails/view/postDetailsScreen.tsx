@@ -59,13 +59,12 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     null
   );
 
+  const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
 
   const { showModal, setShowModal } = ReportViewModel();
-  const router = useRouter();
-
 
   const [currentCommentId, setCurrentCommentId] = useState<string>("");
   const reportComment = (commentId: string) => {
@@ -136,7 +135,10 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                         strokeWidth: 2,
                         marginRight: 5,
                       }}
-                      onClick={() => handleLike(comment.id)}
+                      onClick={() => handleLike(comment.id).then(() => {
+                        setLikedComment({ is_liked: !likedComment.is_liked });
+                        fetchComments();
+                      })}
                     />
                     <span
                       style={{
@@ -249,7 +251,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                     <p className="text-gray-700">{reply.content}</p>
                     <div className="reply-actions mt-3 flex space-x-4 text-xs">
                       <Row>
-                        <Col span={4} className="hover:cursor-pointer">
+                        <Col span={4} className="hover:cursor-pointer" style={{ display: 'flex', alignItems: 'center' }}>
                           <FaHeart
                             size={16}
                             color={heartColors[reply.id] || 'gray'}
@@ -258,7 +260,10 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                               strokeWidth: 2,
                               marginRight: 5,
                             }}
-                            onClick={() => handleLike(reply.id)}
+                            onClick={() => handleLike(reply.id).then(() => {
+                              setLikedComment({ is_liked: !likedComment.is_liked });
+                              fetchComments();
+                            })}
                           />
                           <span
                             style={{
@@ -336,8 +341,8 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                           className="show-replies-btn text-blue-500 text-xs mb-2"
                         >
                           {visibleReplies[reply.id]
-                            ? "Hide Replies"
-                            : "Show Replies"}
+                            ? `${localStrings.PostDetails.HideReplies}`
+                            : `${localStrings.PostDetails.ViewReplies}`}
                         </button>
                       )}
                       {visibleReplies[reply.id] &&
@@ -368,7 +373,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                             </p>
                             <div className="reply-actions mt-3 flex space-x-4 text-xs">
                               <Row>
-                                <Col span={4} className="hover:cursor-pointer">
+                                <Col span={4} className="hover:cursor-pointer" style={{ display: 'flex', alignItems: 'center' }}>
                                   <FaHeart
                                     size={16}
                                     color={heartColors[nestedReply.id] || 'gray'}
@@ -377,7 +382,10 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
                                       strokeWidth: 2,
                                       marginRight: 5,
                                     }}
-                                    onClick={() => handleLike(nestedReply.id)}
+                                    onClick={() => handleLike(nestedReply.id).then(() => {
+                                      setLikedComment({ is_liked: !likedComment.is_liked });
+                                      fetchComments();
+                                    })}
                                   />
                                   <span
                                     style={{
