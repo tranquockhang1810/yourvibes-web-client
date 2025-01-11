@@ -45,6 +45,7 @@ import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/pos
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import ReportScreen from "@/components/screens/report/views/Report";
+import ProfileViewModel from "@/components/screens/profile/viewModel/ProfileViewModel";
 
 interface IPost {
   post?: PostResponseModel;
@@ -52,8 +53,7 @@ interface IPost {
   noFooter?: boolean;
   children?: React.ReactNode;
   noComment?: boolean;
-  fecthNewFeeds?: () => void;
-  fetchUserPosts?: () => void;
+  fetchUserPosts?: () => void;  
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -63,8 +63,8 @@ const Post: React.FC<IPost> = React.memo(
     noFooter = false,
     children,
     noComment = false,
-    fecthNewFeeds,
     fetchUserPosts,
+
   }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
@@ -73,6 +73,7 @@ const Post: React.FC<IPost> = React.memo(
     const [shareForm] = Form.useForm();
     const { showModal, setShowModal } = ReportViewModel();
     const pathname = usePathname();
+    // const {fetchUserPosts} = ProfileViewModel();
     const {
       deleteLoading,
       likePost,
@@ -128,11 +129,6 @@ const Post: React.FC<IPost> = React.memo(
           .then(() => {
             setIsShareModalVisible(false);
             setShareContent("");
-            if (pathname === "/home" && fecthNewFeeds) {
-              fecthNewFeeds(); // Fetch lại newFeeds ở trang Home
-            } else if (pathname === "/profile" && fetchUserPosts) {
-              fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
-            }
             +       likedPost && (likedPost.privacy = sharePostPrivacy);
           })
           .catch((error) => {
@@ -140,7 +136,7 @@ const Post: React.FC<IPost> = React.memo(
             // Xử lý lỗi nếu cần
           });
       }
-    }, [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
+    }, [likedPost, sharePostPrivacy, shareContent, pathname]);
 
     const renderLikeIcon = () => {
       if (likedPost?.is_liked) {
@@ -166,7 +162,6 @@ const Post: React.FC<IPost> = React.memo(
             onClick: async () => {
               if (post && post.id) {
                 setIsEditModalVisible(true);
-                <EditPostScreen id={post.id} postId={post.id} />;
               }
             },
           },
@@ -484,7 +479,7 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsEditModalVisible(false)}
         >
           {post?.id ? (
-            <EditPostScreen id={post.id} postId={post.id} onEditPostSuccess={() => setIsEditModalVisible(false)} />
+            <EditPostScreen id={post.id} postId={post.id} onEditPostSuccess={() => setIsEditModalVisible(false)} fetchUserPosts={fetchUserPosts} />
           ) : (
             <div>No post ID available</div>
           )}
@@ -660,6 +655,7 @@ const Post: React.FC<IPost> = React.memo(
             )}
           </div>
         </Modal>
+        
       </Card>
     );
   }

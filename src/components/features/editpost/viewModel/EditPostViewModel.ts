@@ -132,11 +132,11 @@ const EditPostViewModel = (
     await updatePost(updatePostRequest);
   };
 
-  useEffect(() => {
-    if (!updateLoading && post) {
-      getNewFeed(); // Làm mới dữ liệu
-    }
-  }, [updateLoading]);
+  // useEffect(() => {
+  //   if (!updateLoading && post) {
+  //     getNewFeed(); // Làm mới dữ liệu
+  //   }
+  // }, [updateLoading]);
 
   const deletePost = async (id: string) => {
     if (!repo) return;
@@ -147,7 +147,6 @@ const EditPostViewModel = (
       setHidePost((hidePost) => hidePost.filter((post) => post.id !== id));
       if (!res?.error) {
         message.success(localStrings.DeletePost.DeleteSuccess);
-        router.push("/profile?tabNum=posts");
       } else {
         message.error(localStrings.DeletePost.DeleteFailed);
       }
