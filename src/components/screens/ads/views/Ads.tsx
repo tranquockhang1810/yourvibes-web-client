@@ -306,7 +306,7 @@ const Ads = ({ postId }: { postId: string }) => {
         <Button
           icon={<CloseOutlined />}
           type="text"
-          onClick={() => router.back()}
+          onClick={() => router.push("/profile?tab=info")}
         />
         <Text strong style={{ fontSize: "18px", marginLeft: "10px" }}>
           {localStrings.Ads.Ads}
@@ -329,10 +329,11 @@ const Ads = ({ postId }: { postId: string }) => {
         open={showCampaign}
         onCancel={() => setShowCampaign(false)}
         footer={null}
+        bodyStyle={{ maxHeight: '70vh', overflowY: 'scroll' }}
       >
         {(adsAll?.length ?? 0) > 0 ? (
           (adsAll ?? []).map((item, index) => (
-            <div key={index} style={{ marginTop: 10 }}>
+            <div key={index} style={{ marginTop: 10, overflowY: 'scroll'}} >
               <div
                 style={{
                   backgroundColor: "#f7f7f7",

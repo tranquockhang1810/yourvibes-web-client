@@ -112,6 +112,14 @@ const advertisePost = async (params: AdvertisePostRequestModel) => {
     }
   };
 
+  const loadMoreAds = () => {
+    setPage(prevPage => {
+      const newPage = prevPage + 1;
+      getAdvertisePost(newPage, post?.id ?? '');
+      return newPage;
+    });
+  };
+
    const getTomorrow = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
