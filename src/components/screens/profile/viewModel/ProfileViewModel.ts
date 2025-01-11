@@ -2,15 +2,14 @@
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { defaultPostRepo } from '@/api/features/post/PostRepo';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
-import { UpdateProfileRequestModel } from '@/api/features/profile/model/UpdateProfileModel';
 import { defaultProfileRepo } from '@/api/features/profile/ProfileRepository';
 import { useAuth } from '@/context/auth/useAuth';
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const ProfileViewModel = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);

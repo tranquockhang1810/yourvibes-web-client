@@ -4,7 +4,7 @@ import { UserModel } from "@/api/features/authenticate/model/LoginModel";
 import { FriendResponseModel } from "@/api/features/profile/model/FriendReponseModel";
 import { useAuth } from "@/context/auth/useAuth";
 import useColor from "@/hooks/useColor";
-import { Button, Flex, Modal, Spin } from "antd";
+import { Avatar, Button, Col, Flex, Modal, Row, Spin } from "antd";
 import {
   CreditCardFilled,
   LoadingOutlined,
@@ -93,12 +93,10 @@ const AboutTab = ({
             <Spin indicator={<LoadingOutlined spin />} size="large" />
           </Flex>
         ) : (
-          <div className="flex flex-col xl:flex-row w-full items-center gap-4 xl:items-start">
-            <div className="w-full max-w-[600px] xl:max-w-96 xl:sticky xl:top-20"> 
-            {/* // style={{  position: "sticky",top: 0,}} */}
-          
+          <Row gutter={[16, 16]} align={"top"} justify={"center"}>
+            <Col xs={24} lg={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
               <div
-                className="w-auto flex flex-col px-5 border rounded-md "
+                className="w-full mx-auto max-w-[600px] lg:max-w-screen-xl flex flex-col px-5 border rounded-md "
                 style={{ backgroundColor: backgroundColor }}
               >
                 {/* // detail */}
@@ -174,16 +172,13 @@ const AboutTab = ({
                     ) : resultCode === 50016 ? (
                       <span className="text-center">
                         {" "}
-                        {`${user?.family_name || ""} ${user?.name || ""} ${
-                          localStrings.Public.HideInfo
-                        }`}
+                        {`${user?.family_name || ""} ${user?.name || ""} ${localStrings.Public.HideInfo
+                          }`}
                       </span>
                     ) : resultCode === 50015 ? (
-                      <span className="text-center">{`${
-                        user?.family_name || ""
-                      } ${user?.name || ""} ${localStrings.Public.HideInfo} ${
-                        localStrings.Public.FriendOnly
-                      }`}</span>
+                      <span className="text-center">{`${user?.family_name || ""
+                        } ${user?.name || ""} ${localStrings.Public.HideInfo} ${localStrings.Public.FriendOnly
+                        }`}</span>
                     ) : null}
                   </div>
                 </div>
@@ -198,7 +193,7 @@ const AboutTab = ({
                       <span className="text-gray-500">
                         {/* {user?.friend_count}  */}
                         {friendCount}
-                        {localStrings.Public.Friend}
+                        <span className="ml-1">{localStrings.Public.Friend}</span>
                       </span>
                     </div>
                     <div className="cursor-pointer">
@@ -217,14 +212,16 @@ const AboutTab = ({
                         className="w-[70px]  mb-2 mx-1"
                         onClick={() => router.push(`/user/${friend?.id}`)}
                       >
-                        <img
+                        <Avatar
                           src={friend?.avatar_url}
                           alt={`${friend?.family_name} ${friend?.name}`}
-                          className="w-12 h-12 rounded-full bg-gray-300 mr-2"
+                          className="mr-2"
+                          shape="circle"
+                          size={35}
                         />
-                        <span className="mt-2">
+                        <div className="mt-2">
                           {friend?.family_name} {friend?.name}
-                        </span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -249,16 +246,15 @@ const AboutTab = ({
                     <ListFriends
                       friends={friends}
                       page={1}
-                      setPage={() => {}}
+                      setPage={() => { }}
                       totalPage={1}
                     />
                     ,
                   </Modal>
                 </div>
               </div>
-            </div>
-
-            <div className="w-full">
+            </Col>
+            <Col xs={24} lg={16} className="w-full">
               <PostList
                 loading={loading}
                 posts={posts}
@@ -267,8 +263,8 @@ const AboutTab = ({
                 fetchUserPosts={fetchUserPosts}
                 hasMore={hasMore}
               />
-            </div>
-          </div>
+            </Col>
+          </Row>
         )}
       </div>
     </div>

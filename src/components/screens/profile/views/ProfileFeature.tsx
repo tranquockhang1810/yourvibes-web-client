@@ -7,22 +7,22 @@ import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import ProfileTabs from '../components/ProfileTabs';
 import { FriendStatus, Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
 import ProfileViewModel from '../viewModel/ProfileViewModel';
-import {Spin } from 'antd';
+import { Skeleton, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 const ProfileFeature = () => {
-    const { backgroundColor } = useColor();
+  const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
 
-  
+
   const {
     loading,
     posts,
     fetchUserPosts,
     loadMorePosts,
     total,
-    friends, 
-    friendCount,  
+    friends,
+    friendCount,
     resultCode,
     fetchUserProfile,
     fetchMyFriends,
@@ -31,25 +31,27 @@ const ProfileFeature = () => {
   } = ProfileViewModel();
 
   useEffect(() => {
-    
+
   }, [user]);
   useEffect(() => {
-    if (user) { 
+    if (user) {
       fetchUserProfile(user?.id as string);
       fetchMyFriends(page);
       fetchUserPosts();
     }
   }, [page, user, friendCount]);
-  
+
 
   return (
-    <div className='lg:mx-8'>
-      {loading ?(
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <Spin indicator={<LoadingOutlined spin />} size="large" />
-        </div>):(
+    <div>
+      {loading ? (
+        <Skeleton 
+          active
+          paragraph={{ rows: 16 }}
+        />
+      ) : (
         <>
-          <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount}/>
+          <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount} />
           <ProfileTabs
             posts={posts}
             loading={loading}
@@ -64,7 +66,7 @@ const ProfileFeature = () => {
           />
         </>
       )}
-      </div>
+    </div>
   )
 }
 

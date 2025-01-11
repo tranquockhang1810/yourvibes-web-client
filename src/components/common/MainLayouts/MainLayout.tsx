@@ -1,7 +1,7 @@
 "use client"; // Đảm bảo rằng đây là một client-side component
 
 import React, { useState } from "react";
-import { Layout, Menu, Input, Grid, ConfigProvider } from "antd";
+import { Layout, Menu, Input, Grid, ConfigProvider, Modal } from "antd";
 import { createElement } from "react";
 import {
   FaHome,
@@ -16,6 +16,7 @@ import { Content, Footer, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import useColor from "@/hooks/useColor";
 import { IoMenu } from "react-icons/io5";
+import SettingsTab from "@/components/screens/profile/components/SettingTabs";
 
 const { useBreakpoint } = Grid;
 const siderStyle: React.CSSProperties = {
@@ -38,7 +39,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const screens = useBreakpoint();
-  const [selectedKey, setSelectedKey] = useState("0");
+  const [settingModal, setSettingModal] = useState(false);
 
   const content = {
     nav: [
@@ -48,7 +49,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         icon: FaHome,
       },
       {
-        link: "/profile?tab=info",
+        link: "/profile",
         content: localStrings.Public.Profile,
         icon: FaUser,
       },
@@ -58,7 +59,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         icon: FaBell,
       },
       {
-        link: "/profile?tab=settings",
+        link: "/settings",
         content: localStrings.Public.Settings,
         icon: FaCog,
       },
@@ -87,7 +88,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Cập nhật lại hàm handleItemClick
   const handleItemClick = (link: string) => {
-    router.push(link); // Chuyển trang khi nhấn vào menu item
+    if (link === '/settings') {
+      setSettingModal(true);
+    } else {
+      router.push(link); // Chuyển trang khi nhấn vào menu item
+    }
     setVisible(false); // Đóng menu khi nhấn vào item
   };
 
@@ -190,7 +195,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           marginInlineStart: screens.lg ? 200 : 0,
           // backgroundColor: backgroundColor,
         }}>
-          <div className="mx-1 lg:mx-4">{children}</div>
+          <div className="max-w-screen-xxl">{children}</div>
         </Content>
       </Layout>
       {visible && (
@@ -234,6 +239,18 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             </Menu.Item>
           ))}
         </Menu>
+      )}
+      {settingModal && (
+        <Modal
+          open={settingModal}
+          onCancel={() => setSettingModal(false)}
+          footer={null}
+          width={500}
+          centered
+          title={<span className="font-bold">{localStrings.Public.Settings}</span>}
+        >
+          <SettingsTab setSettingModal={setSettingModal}/>
+        </Modal>
       )}
     </Layout>
   );
