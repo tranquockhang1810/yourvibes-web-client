@@ -85,6 +85,10 @@ export const VnLocalizedStrings = {
       AgreeRequiredMessage: "Vui lòng đồng ý các điều khoản!",
       OTPRequiredMessage: "Vui lòng nhập mã OTP!",
       OTPPressRequiredMessage: "Vui lòng nhận mã OTP!",
+      BirthDayInvalidMessage: "Ngày không phù hợp!",
+      PhoneInvalidMessage: "Số điện thoại không phù hợp!",
+      InvalidEmailMessage: "Email không hợp lệ!",
+      PasswordMinLengthMessage: "Mật khẩu phải từ 8 kí tự!",
     },
     TypeMessage: {
       EmailTypeMessage: "Email không hợp lệ!",
@@ -103,6 +107,8 @@ export const VnLocalizedStrings = {
     SignUpNow: "Đăng ký ngay!",
     Or: "Hoặc",
     LoginFailed: "Đăng nhập thất bại!",
+    AccountLocked:"Tài khoản của bạn đã bị khóa",
+    changeLanguage: "Thay đổi ngôn ngữ sang: Tiếng Anh",
   },
   SignUp: {
     SignUpButton: "Đăng ký",
@@ -162,6 +168,7 @@ export const VnLocalizedStrings = {
     DeleteNewFeed: "Ẩn bài viết",
     NoContent: "Nội dung không hiển thị",
     Sponsor: "Được tài trợ",
+    NoPosts: "Không có bài viết nào",
   },
   PostDetails:{
     ViewReplies: "Xem phản hồi",
@@ -278,6 +285,7 @@ Ads: {
   PaymentSuccess:"Thanh toán thành công", 
   PaymentFailed:"Thanh toán thất bại",
   NoCampaign:"Không có chiến dịch nào",
+  AdvertisePostPending: "Quảng cáo đang chờ xử lý, vui lòng kiểm tra lại quá trình.",
 },
 
 
@@ -287,6 +295,9 @@ Report: {
   ReportComment:"Tại sao bạn báo cáo bình luận này?",
   ReportSuccess: "Báo cáo thành công!",
   ReportFailed: "Báo cáo thất bại!",
+  ReportUserFailed: "Báo cáo thất bại, bạn đã báo cáo tài khoản này trước đó!",
+  ReportPostFailed: "Báo cáo thất bại, bạn đã báo cáo bài viết này trước đó!",
+  ReportCommentFailed: "Báo cáo thất bại, bạn đã báo cáo bình luận này trước đó!",
   Note: "Nếu bạn nhận thấy sự đe dọa hoặc ai đó dang gặp nguy hiểm, đừng chần chừ mà hãy tìm ngay sự giúp đỡ và báo cho dịch vụ khẩn cấp ở địa phương trước khi báo cáo với YourVibes.",
   placeholder:"Viết lý do báo cáo của bạn ở đây...",
 },

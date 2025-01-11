@@ -1,6 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Spin, Modal } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Spin, Modal, Empty, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
 import { UserModel } from '@/api/features/authenticate/model/LoginModel';
 import useColor from '@/hooks/useColor';
@@ -8,21 +9,35 @@ import { useAuth } from '@/context/auth/useAuth';
 import Post from '@/components/common/post/views/Post';
 import AddPostScreen from '@/components/screens/addPost/view/AddPostScreen';
 
-const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore }: {
+const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore, deletePost }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
   user: UserModel;
   fetchUserPosts: () => void;
   hasMore: boolean; // Biến để kiểm tra có còn dữ liệu hay không
+  deletePost: (postId: string) => void;
 }) => {
   const { backgroundColor, lightGray } = useColor();
   const { isLoginUser, localStrings } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const [postList, setPostList] = useState<PostResponseModel[]>(posts);
+  useEffect(() => {
+    setPostList(posts);
+  }, [posts]);
+  
+    // Hàm xóa bài viết khỏi danh sách hiển thị
+    const handleDeletePost = (postId: string) => {
+      setPostList((prev) => prev.filter((post) => post.id !== postId));
+      message.success('Bài viết đã được xóa!');
+    };
+
+
   const handleModalClose = () => {
     setIsModalVisible(false); 
   };
+  
 
   const handlePostSuccess = () => {
     setIsModalVisible(false);
@@ -78,19 +93,41 @@ const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore
       {isLoginUser(user?.id as string) && renderAddPost()}
 
       {/* Posts List */}
-      {loading ? (
-        <Spin indicator={<LoadingOutlined spin />} size="large" />
-      ) : (
-        posts && posts.length > 0 ? (
-          posts.map((item) => (
-            <div key={item?.id} className='w-full flex flex-col items-center'>
-              <Post post={item}>
-                {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
-              </Post>
-            </div>
-          ))
-        ) : null
-      )}
+      <div style={{width: '100%' }}>
+       {posts && posts.length > 0 ? (
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={loadMorePosts}
+          hasMore={hasMore}
+          loader={<Spin indicator={<LoadingOutlined spin />} size="large" />}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              {/* <b>{localStrings.Public.NoMorePosts}</b> */}
+            </p>
+          }
+        >
+         
+            {posts.map((item) => (
+              <div key={item?.id} className='w-full flex flex-col items-center' >
+                <Post post={item} fetchUserPosts={() => {
+                    fetchUserPosts(); // Gọi lại API nếu cần
+                    item?.id && handleDeletePost(item.id); // Xóa bài viết khỏi danh sách
+                  }}>
+                  {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
+                </Post>
+              </div>
+            ))}
+        </InfiniteScroll>): (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+              <Empty description={
+                <span style={{ color: 'gray', fontSize: 16 }}>
+                  {localStrings.Post.NoPosts}
+                </span>
+              }
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

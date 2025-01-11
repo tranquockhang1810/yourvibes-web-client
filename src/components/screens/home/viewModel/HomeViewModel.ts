@@ -2,16 +2,18 @@ import { NewFeedResponseModel } from "@/api/features/newFeed/Model/NewFeedModel"
 import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { message } from "antd";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const HomeViewModel = (repo: NewFeedRepo) => {
   const [newFeeds, setNewFeeds] = useState<NewFeedResponseModel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const { localStrings } = useAuth();
   const limit = 20;
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchNewFeeds = async (newPage: number = 1) => {
     try {
@@ -63,18 +65,41 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     }
   };
 
-  const loadMoreNewFeeds = () => {
-    if (!loading && hasMore) {
-      fetchNewFeeds(page + 1);
+  const loadMoreNewFeeds = async () => { 
+    try {
+      setLoadingMore(true);
+      const response = await repo.getNewFeed({
+        page: page + 1,
+        limit: limit,
+      });
+      if (!response?.error) {
+        setNewFeeds((prevNewFeeds) => [
+          ...prevNewFeeds,
+          ...(response?.data || []),
+        ]);
+        const { page: currentPage, limit: currentLimit, total: totalRecords } =
+          response?.paging;
+        setTotal(totalRecords);
+        setPage(currentPage);
+        setHasMore(currentPage * currentLimit < totalRecords);
+      } else {
+        // Handle error
+      }
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return {
     newFeeds,
     loading,
+    loadingMore,
     fetchNewFeeds,
     loadMoreNewFeeds,
     deleteNewFeed,
+    hasMore,
   };
 };
 

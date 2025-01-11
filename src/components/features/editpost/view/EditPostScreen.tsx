@@ -23,12 +23,14 @@ interface EditPostScreenProps {
   id: string;
   postId: string;
   onEditPostSuccess?: () => void;
+  fetchUserPosts?: () => void;
 }
 
 const EditPostScreen = ({
   id,
   postId,
   onEditPostSuccess,
+  fetchUserPosts,
 }: EditPostScreenProps) => {
   const { user, localStrings } = useAuth();
   const savedPost = usePostContext();
@@ -52,6 +54,7 @@ const EditPostScreen = ({
     setPreviewImage,
   } = EditPostViewModel(defaultPostRepo, id, postId);
 
+
   useEffect(() => {
     getDetailPost(id);
   }, [id]);
@@ -66,6 +69,11 @@ const EditPostScreen = ({
   const handleSubmitEditPost = async () => {
    try {
     await handleSubmit();
+    if (fetchUserPosts) {
+      console.log("fetchUserPosts");
+      
+      fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
+    }
     if (onEditPostSuccess) {
       onEditPostSuccess();
     }

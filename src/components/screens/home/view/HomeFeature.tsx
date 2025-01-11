@@ -5,39 +5,31 @@ import Post from "@/components/common/post/views/Post";
 import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
-import { useRouter } from "next/navigation"; 
-import { Modal, Spin } from 'antd';
+import { useRouter } from "next/navigation";
+import { Empty, Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen";
 import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
+import { LoadingOutlined } from '@ant-design/icons';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
+  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed, hasMore } = HomeViewModel(defaultNewFeedRepo);
   const { user, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { friends, fetchMyFriends, page } = ProfileViewModel();
-
-  const handleScroll = useCallback(() => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      loadMoreNewFeeds();
-    }
-  }, [loadMoreNewFeeds]);
-
-  useEffect(() => {
-    if (newFeeds.length === 0) {
-      fetchNewFeeds();
-    }
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     if (user) {
       fetchMyFriends(page);
     }
   }, [page, user]);
-  
+
+  useEffect(() => {
+    fetchNewFeeds();
+  }
+  , []);
 
   const handleModalClose = () => {
     setIsModalVisible(false);
@@ -91,15 +83,15 @@ const Homepage = () => {
 
   const renderFriends = () => {
     return (
-      <div style={{ 
+      <div style={{
         marginInline: "10px",
-        position: 'fixed',  
+        position: 'fixed',
         width: '280px',
-        maxHeight: '400px', 
-        overflowY: 'auto', 
+        maxHeight: '400px',
+        overflowY: 'auto',
         backgroundColor,
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
-        borderRadius: '8px', 
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+        borderRadius: '8px',
       }}>
         {friends.map((user) => (
           <div
@@ -129,43 +121,53 @@ const Homepage = () => {
     );
   };
 
-  const renderFooter = () => {
-    if (!loading) return null;
-    return (
-      <div style={{ padding: "10px", textAlign: "center" }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="lg:flex mt-4 ">
       {/* Content */}
-      <div className="flex-auto w-auto flex flex-col items-center justify-center">
+      {loading ?(
+        <div className="flex-auto w-auto flex items-center justify-center">
+          <Spin indicator={<LoadingOutlined spin />} size="large" />
+        </div>):(<>
+         <div className="flex-auto w-auto flex flex-col items-center justify-center">
         {renderAddPost()}
+        <div style={{ width: "100%" }}>
         {newFeeds?.length > 0 ? (
-          newFeeds.map((item) => (
+          <InfiniteScroll
+          className="flex flex-col items-center"
+            dataLength={newFeeds.length}
+            next={loadMoreNewFeeds}
+            hasMore={hasMore}
+            loader={<Spin indicator={<LoadingOutlined spin />} size="large" />}>
+               {newFeeds.map((item) => (
             <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
-              <Post post={item} /> 
+              <Post post={item} />
               {item?.parent_post && (
                 <div style={{ marginLeft: "20px" }}>
                   <Post post={item?.parent_post} isParentPost />
-                </div> 
+                </div>
               )}
             </div>
-          ))
+          ))}
+            </InfiniteScroll>
+          
         ) : (
           <div className="w-full h-screen flex justify-center items-center">
-            <Spin tip="Loading..." />
+            <Empty description={
+                <span style={{ color: 'gray', fontSize: 16 }}>
+                  {localStrings.Post.NoPosts}
+                </span>
+              }
+            />
           </div>
         )}
-        {renderFooter()}
+        </div>
+        
       </div>
       <div className="flex-initial w-[300px] hidden xl:block">
-  {renderFriends()}
-</div>
+        {renderFriends()}
+      </div>
+        </>)}
+     
     </div>
   );
 };

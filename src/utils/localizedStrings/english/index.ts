@@ -1,4 +1,5 @@
 import { Upload } from "antd";
+import { changeLanguage } from "i18next";
 
 export const ENGLocalizedStrings = {
   Public: {
@@ -56,9 +57,9 @@ export const ENGLocalizedStrings = {
     FriendOnly: "only friends can see",
     UserLikePost: " List of users liked post",
     NoUserLikePost: "No one liked this post",
-    ReplyClick:"Click and write your Reply here...",
-    CommentClick:"Click and write your Comment here...",
-    LoginLoading:"Loading Login ...",
+    ReplyClick: "Click and write your Reply here...",
+    CommentClick: "Click and write your Comment here...",
+    LoginLoading: "Loading Login ...",
     Home: "Home",
     Settings: "Settings",
     Profile: "Profile",
@@ -87,6 +88,10 @@ export const ENGLocalizedStrings = {
       AgreeRequiredMessage: "Please agree to the terms!",
       OTPRequiredMessage: "Please enter OTP code!",
       OTPPressRequiredMessage: "Please receive OTP code!",
+      BirthDayInvalidMessage: "Invalid birth date!",
+      PhoneInvalidMessage: "Invalid phone number!",
+      InvalidEmailMessage: "Invalid email!",
+      PasswordMinLengthMessage: "Password must be at least 8 characters long!",
     },
     TypeMessage: {
       EmailTypeMessage: "Invalid email!",
@@ -94,7 +99,8 @@ export const ENGLocalizedStrings = {
       ConfirmPasswordTypeMessage: "Confirm password is invalid!",
       OTPTypeMessage: "OTP code must be a 6-digit string!",
       PhoneTypeMessage: "Phone number must be a 10-digit string!",
-      PleaseOldPasswordDifferentNewPassword:"New password must be different from old password!",
+      PleaseOldPasswordDifferentNewPassword:
+        "New password must be different from old password!",
       PleaseInformationDifferent: "Please enter all information",
     },
   },
@@ -105,6 +111,8 @@ export const ENGLocalizedStrings = {
     SignUpNow: "Sign up now!",
     Or: "Or",
     LoginFailed: "Login failed!",
+    AccountLocked: "Your account is locked!",
+    changeLanguage: "Change Language: Vietnamese",
   },
   SignUp: {
     SignUpButton: "Sign up",
@@ -145,7 +153,8 @@ export const ENGLocalizedStrings = {
     ProfilePrivacy: "Profile's privacy",
     Contents: {
       WhoCanSee: "Who can see your information?",
-      DefaultPrivacy2: ", but you can change the privacy for your account details.",
+      DefaultPrivacy2:
+        ", but you can change the privacy for your account details.",
     },
   },
   Post: {
@@ -161,10 +170,11 @@ export const ENGLocalizedStrings = {
     DeleteNewFeed: "Delete (hide) new feed",
     NoContent: "Content is empty",
     Sponsor: "Sponsored",
+    NoPosts: "No posts found",
   },
-  PostDetails:{
+  PostDetails: {
     ViewReplies: "View replies",
-    HideReplies:"Hide replies",
+    HideReplies: "Hide replies",
     Save: "Save",
     Cancel: "Cancel",
     Error: "Error",
@@ -174,7 +184,7 @@ export const ENGLocalizedStrings = {
     DeleteComment: "Delete comment",
     DeleteCommentSusesfully: "Delete comment successful!",
     DeleteCommentFailed: "Delete comment failed!",
-    ActionOptions:"Action options",
+    ActionOptions: "Action options",
     ReportSusesfully: "Reported succeeded!",
     Success: "Success",
     EditCommentSuccess: "Edit comment successful!",
@@ -242,8 +252,8 @@ export const ENGLocalizedStrings = {
       CommentPost: "commented on your post: ",
       Friend: "sent you a friend request.",
       AcceptFriend: "accepted your friend request.",
-    NewPost: "posted a new post.",
-    LikeComment: "liked your comment: ",
+      NewPost: "posted a new post.",
+      LikeComment: "liked your comment: ",
     },
   },
   ListFriends: {
@@ -268,17 +278,18 @@ export const ENGLocalizedStrings = {
     AdvertisePostFailed: "Advertise post failed!",
     AdvertisePostSuccess: "Advertise post successful!",
     ActiveCampaign: "Active campaign",
-    HideCampaign:"Hide campaign",
-    ShowCampaign:"Show campaign",
+    HideCampaign: "Hide campaign",
+    ShowCampaign: "Show campaign",
     Campaign: "Campaign",
-    End:"End",
-    RemainingTime:"Remaining time",
-    Day:"Day",
-    Grant:"Grant", 
-    Status:"Status",
+    End: "End",
+    RemainingTime: "Remaining time",
+    Day: "Day",
+    Grant: "Grant",
+    Status: "Status",
     PaymentSuccess: "Payment successful.",
     PaymentFailed: "Payment failed.",
     NoCampaign: "No campaign found",
+    AdvertisePostPending: "Advertisement is pending, please check the process again.",
   },
 
   Report: {
@@ -287,12 +298,16 @@ export const ENGLocalizedStrings = {
     ReportComment: "Why are you reporting this comment?",
     ReportSuccess: "Reported successfully!",
     ReportFailed: "Report failed!",
+    ReportUserFailed: "Report failed, you have already reported this account!",
+    ReportPostFailed: "Report failed, you have already reported this post!",
+    ReportCommentFailed:"Report failed, you have already reported this comment!",
     Note: "If you see a threat or someone in danger, don't hesitate to seek help and report to local emergency services before reporting to YourVibes.",
-    placeholder:"Write your report here..."
+    placeholder: "Write your report here...",
   },
   ChangePassword: {
     ChangePassword: "Change password",
-    ChangePasswordFailed: "Password change failed, please check the password again",
+    ChangePasswordFailed:
+      "Password change failed, please check the password again",
     ChangePasswordSuccess: "Password change successful!",
     OldPassword: "Old password",
     NewPassword: "New password",
@@ -302,4 +317,4 @@ export const ENGLocalizedStrings = {
     OTP: "OTP",
     ConformChangePassword: "Confirm change password",
   },
-}
+};

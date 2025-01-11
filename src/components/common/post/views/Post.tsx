@@ -45,6 +45,7 @@ import PostDetailsViewModel from "@/components/screens/postDetails/viewModel/pos
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import ReportScreen from "@/components/screens/report/views/Report";
+import ProfileViewModel from "@/components/screens/profile/viewModel/ProfileViewModel";
 
 interface IPost {
   post?: PostResponseModel;
@@ -52,8 +53,7 @@ interface IPost {
   noFooter?: boolean;
   children?: React.ReactNode;
   noComment?: boolean;
-  fecthNewFeeds?: () => void;
-  fetchUserPosts?: () => void;
+  fetchUserPosts?: () => void;  
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -63,8 +63,8 @@ const Post: React.FC<IPost> = React.memo(
     noFooter = false,
     children,
     noComment = false,
-    fecthNewFeeds,
     fetchUserPosts,
+
   }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
@@ -73,6 +73,7 @@ const Post: React.FC<IPost> = React.memo(
     const [shareForm] = Form.useForm();
     const { showModal, setShowModal } = ReportViewModel();
     const pathname = usePathname();
+    // const {fetchUserPosts} = ProfileViewModel();
     const {
       deleteLoading,
       likePost,
@@ -89,9 +90,7 @@ const Post: React.FC<IPost> = React.memo(
 
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [sharePostPrivacy, setSharePostPrivacy] = useState<Privacy>(
-      Privacy.PUBLIC
-    );
+    const [sharePostPrivacy, setSharePostPrivacy] = useState(Privacy.PUBLIC);
     const [shareContent, setShareContent] = useState("");
     const renderPrivacyIcon = () => {
       switch (likedPost?.privacy) {
@@ -112,6 +111,7 @@ const Post: React.FC<IPost> = React.memo(
 
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLikeClick = useCallback(() => {
       if (likedPost?.id) {
@@ -129,19 +129,14 @@ const Post: React.FC<IPost> = React.memo(
           .then(() => {
             setIsShareModalVisible(false);
             setShareContent("");
-            if (pathname === "/home" && fecthNewFeeds) {
-              fecthNewFeeds(); // Fetch lại newFeeds ở trang Home
-            } else if (pathname === "/profile" && fetchUserPosts) {
-              fetchUserPosts(); // Fetch lại bài đăng của người dùng ở trang Profile
-            }
+            +       likedPost && (likedPost.privacy = sharePostPrivacy);
           })
           .catch((error) => {
             console.error("Error sharing post:", error);
             // Xử lý lỗi nếu cần
           });
       }
-    }
-    , [likedPost, sharePostPrivacy, shareContent, pathname, fecthNewFeeds, fetchUserPosts]);
+    }, [likedPost, sharePostPrivacy, shareContent, pathname]);
 
     const renderLikeIcon = () => {
       if (likedPost?.is_liked) {
@@ -167,7 +162,6 @@ const Post: React.FC<IPost> = React.memo(
             onClick: async () => {
               if (post && post.id) {
                 setIsEditModalVisible(true);
-                <EditPostScreen id={post.id} postId={post.id} />;
               }
             },
           },
@@ -278,6 +272,15 @@ const Post: React.FC<IPost> = React.memo(
       },
       [userLikePost]
     );
+
+    useEffect(() => {
+      if (isVisible) {
+        setIsLoading(true);
+        fetchUserLikePosts(likedPost!.id as string).finally(() => {
+          setIsLoading(false);
+        });
+      }
+    }, [isVisible, likedPost]);
 
     return (
       <Card
@@ -476,7 +479,7 @@ const Post: React.FC<IPost> = React.memo(
           onCancel={() => setIsEditModalVisible(false)}
         >
           {post?.id ? (
-            <EditPostScreen id={post.id} postId={post.id}   onEditPostSuccess = {()=> setIsEditModalVisible(false)}/>
+            <EditPostScreen id={post.id} postId={post.id} onEditPostSuccess={() => setIsEditModalVisible(false)} fetchUserPosts={fetchUserPosts} />
           ) : (
             <div>No post ID available</div>
           )}
@@ -506,7 +509,7 @@ const Post: React.FC<IPost> = React.memo(
               type="primary"
               loading={shareLoading}
               onClick={handleSubmitShare}
-                  >
+            >
               {localStrings.Public.Conform}
             </Button>,
           ]}
@@ -598,6 +601,7 @@ const Post: React.FC<IPost> = React.memo(
                 value={sharePostPrivacy}
                 onChange={(value) => setSharePostPrivacy(value)}
                 style={{ width: 120 }}
+                defaultValue={Privacy.PUBLIC}
               >
                 <Select.Option value={Privacy.PUBLIC}>
                   {localStrings.Public.Everyone}
@@ -634,15 +638,16 @@ const Post: React.FC<IPost> = React.memo(
               padding: 20,
             }}
           >
-            {userLikePost && userLikePost.length > 0 ? (
+            {isLoading ? (
+              <Spin />
+            ) : userLikePost && userLikePost.length > 0 ? (
               <div>
                 {userLikePost.map((like) => (
                   <div key={like.id}>{renderLikedUserItem(like)}</div>
                 ))}
               </div>
             ) : (
-              <div>
-                <Spin />
+              <div style={{ textAlign: "center" }}>
                 <span style={{ marginLeft: 10, fontSize: 16 }}>
                   {localStrings.Public.NoUserLikePost}
                 </span>
@@ -650,6 +655,7 @@ const Post: React.FC<IPost> = React.memo(
             )}
           </div>
         </Modal>
+        
       </Card>
     );
   }
