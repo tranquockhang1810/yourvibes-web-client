@@ -53,7 +53,7 @@ interface IPost {
   noFooter?: boolean;
   children?: React.ReactNode;
   noComment?: boolean;
-  fetchUserPosts?: () => void;  
+  fetchUserPosts?: () => void;
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -74,15 +74,15 @@ const Post: React.FC<IPost> = React.memo(
     const { showModal, setShowModal } = ReportViewModel();
     const pathname = usePathname();
     // const {fetchUserPosts} = ProfileViewModel();
-    const { 
+    const {
       likePost,
       likedPost,
       setLikedPost,
       sharePost,
       shareLoading,
-      deletePost, 
+      deletePost,
       fetchUserLikePosts,
-      userLikePost, 
+      userLikePost,
     } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
 
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
@@ -417,7 +417,12 @@ const Post: React.FC<IPost> = React.memo(
             ]
         }
       >
-        <Row gutter={[8, 8]} className="mx-2">
+        <Row gutter={[8, 8]} className="mx-2"
+          // vào post details
+          onClick={() => {
+            setIsCommentModalVisible(false);
+            router.push(`postDetails?postId=${likedPost?.id}`);
+          }}>
           {!isParentPost && children ? (
             <Col span={24}>
               {likedPost?.content && (
@@ -480,13 +485,22 @@ const Post: React.FC<IPost> = React.memo(
         {/* Modal for comments */}
         <Modal
           visible={isCommentModalVisible}
-          width={800}
+          centered
           footer={null}
           closable={true}
           onCancel={() => setIsCommentModalVisible(false)}
+          width="90vw" // Điều chỉnh chiều rộng modal bằng phần trăm của màn hình
+          style={{
+            maxWidth: '1200px', // Giới hạn chiều rộng tối đa
+          }}
+          bodyStyle={{
+            maxHeight: '80vh', // Giới hạn chiều cao
+            overflowY: 'auto', // Thêm thanh cuộn dọc nếu cần
+          }}
         >
           <PostDetailsScreen postId={likedPost?.id} />
         </Modal>
+
 
         {/* Modal for share Post */}
         <Modal
@@ -648,7 +662,6 @@ const Post: React.FC<IPost> = React.memo(
             )}
           </div>
         </Modal>
-        
       </Card>
     );
   }

@@ -63,7 +63,7 @@ const Homepage = () => {
             }}
           />
           <div style={{ marginLeft: "10px", flex: 1 }}>
-            <p>{user?.family_name + " " + user?.name || localStrings.Public.Username}</p>
+            <p><b>{user?.family_name + " " + user?.name || localStrings.Public.Username}</b></p>
             <p style={{ color: "gray" }}>{localStrings.Public.Today}</p>
           </div>
         </div>

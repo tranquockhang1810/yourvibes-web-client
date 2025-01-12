@@ -32,21 +32,17 @@ const ProfileFeature = () => {
   } = ProfileViewModel();
 
   useEffect(() => {
-
-  }, [user]);
-  useEffect(() => {
     if (user) {
       fetchUserProfile(user?.id as string);
       fetchMyFriends(page);
       fetchUserPosts();
     }
-  }, [page, user, friendCount]);
-
+  }, []);
 
   return (
     <div>
       {profileLoading ? (
-        <Skeleton 
+        <Skeleton
           active
           paragraph={{ rows: 16 }}
         />
