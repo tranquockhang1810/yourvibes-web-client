@@ -7,35 +7,30 @@ import { useAuth } from "@/context/auth/useAuth";
 import useColor from "@/hooks/useColor";
 import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
 import { defaultPostRepo } from "@/api/features/post/PostRepo";
-import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
-import { useRouter } from "next/navigation";
-import { Modal, Input, Button } from "antd";
+import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel"; 
+import { Modal } from "antd";
 import ReportScreen from "../../report/views/Report";
 interface CommentsScreenProps {
   postId?: string;
 }
 
-const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
-  useColor();
+const { brandPrimaryTap } = useColor();
+
 const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
-  const {
+  const { 
     comments,
     replyMap,
-    likeCount,
-    userLikes,
+    likeCount, 
     newComment,
     isEditModalVisible,
     editCommentContent,
     handleLike,
-    handleDelete,
-    handleEditComment,
+    handleDelete, 
     setEditCommentContent,
     replyContent,
     setReplyContent,
     handlePostAction,
-    handleTextChange,
-    setReplyToCommentId,
-    setReplyToReplyId,
+    handleTextChange, 
     replyToCommentId,
     replyToReplyId,
     fetchReplies,
@@ -49,23 +44,21 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     visibleReplies,
     fetchComments,
     heartColors,
+    setLikedComment,
+    likedComment
   } = PostDetailsViewModel(postId || "", defaultPostRepo);
 
   const [post, setPost] = useState<PostResponseModel | null>(null);
   const [loading, setLoading] = useState(false);
-  const { localStrings } = useAuth();
-  const reportViewModel = ReportViewModel();
+  const { localStrings } = useAuth(); 
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
     null
   );
 
-  const [likedComment, setLikedComment] = useState({ is_liked: false });
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
-
   const { showModal, setShowModal } = ReportViewModel();
-
   const [currentCommentId, setCurrentCommentId] = useState<string>("");
   const reportComment = (commentId: string) => {
     setCurrentCommentId(commentId);
