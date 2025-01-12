@@ -26,6 +26,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
     friendCount,
     resultCode,
     hasMore,
+    fetchFriends
   } = UserProfileViewModel();
 
 
@@ -48,6 +49,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           user={userInfo as UserModel}
           loading={profileLoading}
           friendCount={friendCount}
+          fetchUserProfile={fetchUserProfile}
         />
         <ProfileTabs
           posts={posts}
@@ -60,6 +62,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
           resultCode={resultCode}
           fetchUserPosts={() => { }}
           hasMore={hasMore}
+          setPosts={() => { }}
         />
       </>
       )}

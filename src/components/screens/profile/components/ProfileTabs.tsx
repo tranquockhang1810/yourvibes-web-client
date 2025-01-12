@@ -17,6 +17,7 @@ const ProfileTabs = ({
   resultCode,
   fetchUserPosts,
   loading,
+  setPosts,
 }: {
   posts: PostResponseModel[],
   hasMore: boolean,
@@ -28,6 +29,7 @@ const ProfileTabs = ({
   resultCode: number,
   fetchUserPosts: () => void,
   loading: boolean,
+  setPosts: React.Dispatch<React.SetStateAction<PostResponseModel[]>>,
 }) => {
   const searchParams = useSearchParams(); // Lấy tham số search của URL
   const tab = searchParams.get('tab'); // Lấy giá trị của tham số 'tab' từ URL
@@ -52,6 +54,7 @@ const ProfileTabs = ({
       loadMorePosts={loadMorePosts}
       fetchUserPosts={fetchUserPosts}
       hasMore={hasMore}
+      setPosts={setPosts}
     />
   );
 };

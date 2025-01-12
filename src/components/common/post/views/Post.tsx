@@ -53,7 +53,9 @@ interface IPost {
   noFooter?: boolean;
   children?: React.ReactNode;
   noComment?: boolean;
-  fetchUserPosts?: () => void;
+  fetchUserPosts?: () => void;  
+  onDeletePost?: (postId: string) => void;
+  onDeleteNewFeed?: (postId: string) => void;
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -64,7 +66,8 @@ const Post: React.FC<IPost> = React.memo(
     children,
     noComment = false,
     fetchUserPosts,
-
+    onDeletePost = () => {},
+    onDeleteNewFeed = () => {},
   }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
@@ -84,7 +87,6 @@ const Post: React.FC<IPost> = React.memo(
       fetchUserLikePosts,
       userLikePost,
     } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
-
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [sharePostPrivacy, setSharePostPrivacy] = useState(Privacy.PUBLIC);
@@ -169,9 +171,11 @@ const Post: React.FC<IPost> = React.memo(
                 content: localStrings.DeletePost.DeleteConfirm,
                 okText: localStrings.Public.Confirm,
                 cancelText: localStrings.Public.Cancel,
-                onOk: () => {
-                  deletePost && deletePost(post?.id as string);
+                onOk: async () => {
+                  await onDeletePost(post?.id as string);
                 },
+                
+                
               });
             },
           },
@@ -206,9 +210,7 @@ const Post: React.FC<IPost> = React.memo(
                 content: localStrings.DeletePost.DeleteConfirm,
                 okText: localStrings.Public.Confirm,
                 cancelText: localStrings.Public.Cancel,
-                onOk: () => {
-                  deleteNewFeed && deleteNewFeed(post?.id as string);
-                },
+                onOk: () => {onDeleteNewFeed(post?.id as string);},
               });
             },
           },

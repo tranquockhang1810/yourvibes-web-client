@@ -82,6 +82,7 @@ const ProfileViewModel = () => {
           ) as FriendResponseModel[];
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
+          return friends;
         } 
     else{
       console.error("response.data is null");
@@ -129,7 +130,8 @@ const fetchUserProfile = async (id: string) => {
     fetchUserProfile,
     resultCode,
     profileLoading,
-    setProfileLoading
+    setProfileLoading,
+    setPosts,
   };
 };
 
