@@ -27,8 +27,6 @@ const Homepage = () => {
     }
   }, [page]);
 
-  
-
   const handleModalClose = () => {
     setIsModalVisible(false);
   };

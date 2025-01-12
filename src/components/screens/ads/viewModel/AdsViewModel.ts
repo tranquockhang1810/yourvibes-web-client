@@ -30,68 +30,67 @@ const AdsViewModel = (repo: PostRepo) => {
       const res = await repo.getPostById(id);
       if (!res?.error) {
         setPost(res?.data);
-        if (newAds && res?.data?.is_advertisement) { 
+        if (newAds && res?.data?.is_advertisement) {
         }
-      } else { 
+      } else {
       }
-    } catch (error: any) { 
+    } catch (error: any) {
     } finally {
       setLoading(false);
     }
   };
 
-    //Quảng cáo bài viết
-const advertisePost = async (params: AdvertisePostRequestModel) => {
-  try {
-    setAdsLoading(true);
-    const res = await repo.advertisePost(params);
-    if (!res?.error) {
-      if (res?.data) {
-        // Mở trình duyệt với đường link quảng cáo
-        const result = window.open(res.data, '_blank'); // Mở URL trong tab mới
-        if (result) {
-          result.focus();
-          console.log("newWindow", result);
+  //Quảng cáo bài viết
+  const advertisePost = async (params: AdvertisePostRequestModel) => {
+    try {
+      setAdsLoading(true);
+      const res = await repo.advertisePost(params);
+      if (!res?.error) {
+        if (res?.data) {
+          // Mở trình duyệt với đường link quảng cáo
+          const result = window.open(res.data, '_blank'); // Mở URL trong tab mới
+          if (result) {
+            result.focus();
 
-          const checkWindowClosed = setInterval(() => {
-            if (result.closed) {
+            const checkWindowClosed = setInterval(() => {
+              if (result.closed) {
+                clearInterval(checkWindowClosed);
+                message.error(localStrings.Ads.AdvertisePostFailed);
+              }
+            }, 1000);
+
+            result.onload = () => {
               clearInterval(checkWindowClosed);
-              message.error(localStrings.Ads.AdvertisePostFailed);
-            }
-          }, 1000);
+              // Có thể kiểm tra kết quả sau khi người dùng quay lại
+              if (result.location.href.includes('success')) {
+                message.success(localStrings.Ads.AdvertisePostSuccess);
+              } else {
+                message.error(localStrings.Ads.AdvertisePostFailed);
+              }
+            };
 
-          result.onload = () => {
-            clearInterval(checkWindowClosed);
-            // Có thể kiểm tra kết quả sau khi người dùng quay lại
-            if (result.location.href.includes('success')) {
-              message.success(localStrings.Ads.AdvertisePostSuccess);
-            } else {
-              message.error(localStrings.Ads.AdvertisePostFailed);
-            }
-          };
-
-          // Thêm sự kiện để kiểm tra nếu người dùng để trang mở mà không thực hiện hành động nào
-          setTimeout(() => {
-            if (!result.closed) {
-              message.info(localStrings.Ads.AdvertisePostPending);
-            }
-          }, 30000); // Thời gian chờ 30 giây để kiểm tra trạng thái
+            // Thêm sự kiện để kiểm tra nếu người dùng để trang mở mà không thực hiện hành động nào
+            setTimeout(() => {
+              if (!result.closed) {
+                message.info(localStrings.Ads.AdvertisePostPending);
+              }
+            }, 30000); // Thời gian chờ 30 giây để kiểm tra trạng thái
+          }
         }
+      } else {
+        message.error(localStrings.Ads.AdvertisePostFailed);
       }
-    } else {
-      message.error(localStrings.Ads.AdvertisePostFailed);
+    } catch (error: any) {
+      if (error.response?.data?.err_detail) {
+        message.error(localStrings.Ads.AdvertisePostFailed, error.response?.data?.err_detail);
+      } else {
+        message.error(localStrings.Ads.AdvertisePostFailed, error.message);
+      }
+    } finally {
+      setAdsLoading(false);
     }
-  } catch (error: any) {
-    if (error.response?.data?.err_detail) {
-      message.error(localStrings.Ads.AdvertisePostFailed, error.response?.data?.err_detail);
-    } else {
-      message.error(localStrings.Ads.AdvertisePostFailed, error.message);
-    }
-  } finally {
-    setAdsLoading(false);
-  }
-};
- 
+  };
+
   // Lấy danh sách quảng cáo  
   const getAdvertisePost = async (page: number, post_id: string) => {
     try {
@@ -108,7 +107,7 @@ const advertisePost = async (params: AdvertisePostRequestModel) => {
         setAdsPost(undefined);
         setAdsAll([]);
       }
-    } catch (error: any) { 
+    } catch (error: any) {
     } finally {
       setLoading(false);
     }
@@ -122,7 +121,7 @@ const advertisePost = async (params: AdvertisePostRequestModel) => {
     });
   };
 
-   const getTomorrow = () => {
+  const getTomorrow = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
