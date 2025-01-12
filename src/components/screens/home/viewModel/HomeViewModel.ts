@@ -2,7 +2,7 @@ import { NewFeedResponseModel } from "@/api/features/newFeed/Model/NewFeedModel"
 import { NewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { message } from "antd";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const HomeViewModel = (repo: NewFeedRepo) => {
   const [newFeeds, setNewFeeds] = useState<NewFeedResponseModel[]>([]);
@@ -13,7 +13,6 @@ const HomeViewModel = (repo: NewFeedRepo) => {
   const [hasMore, setHasMore] = useState(false);
   const { localStrings } = useAuth();
   const limit = 20;
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchNewFeeds = async (newPage: number = 1) => {
     try {
@@ -92,6 +91,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     }
   };
 
+
   return {
     newFeeds,
     loading,
@@ -100,6 +100,7 @@ const HomeViewModel = (repo: NewFeedRepo) => {
     loadMoreNewFeeds,
     deleteNewFeed,
     hasMore,
+    setNewFeeds,
   };
 };
 

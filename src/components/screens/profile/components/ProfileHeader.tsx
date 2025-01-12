@@ -5,7 +5,18 @@ import useColor from "@/hooks/useColor";
 import React, { useCallback, useEffect } from "react";
 import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 import { FriendStatus } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { Avatar, Button, Col, Dropdown, Flex, Image, MenuProps, Modal, Row, Spin } from "antd";
+import {
+  Avatar,
+  Button,
+  Col,
+  Dropdown,
+  Flex,
+  Image,
+  MenuProps,
+  Modal,
+  Row,
+  Spin,
+} from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { FaUserCheck, FaUserPlus } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
@@ -20,11 +31,13 @@ const ProfileHeader = ({
   user,
   loading,
   friendCount,
+  fetchUserProfile,
 }: {
   total: number;
   user: UserModel;
   loading: boolean;
   friendCount: number;
+  fetchUserProfile: (id: string) => void;
 }) => {
   const { lightGray, brandPrimary, backgroundColor } = useColor();
   const { localStrings, language, isLoginUser } = useAuth();
@@ -42,11 +55,11 @@ const ProfileHeader = ({
     setNewFriendStatus,
   } = UserProfileViewModel();
 
-  const itemsFriend: MenuProps['items'] = [
+  const itemsFriend: MenuProps["items"] = [
     {
-      key: '1',
+      key: "1",
       label: localStrings.Public.UnFriend,
-      type: 'item',
+      type: "item",
       onClick: () => {
         Modal.confirm({
           centered: true,
@@ -54,21 +67,19 @@ const ProfileHeader = ({
           content: localStrings.Profile.Friend.UnfriendConfirm,
           okText: localStrings.Public.Confirm,
           cancelText: localStrings.Public.Cancel,
-          onOk: () => {
-            unFriend(user?.id as string);
-          }
+          onOk: async () => {
+            await unFriend(user?.id as string);
+            fetchUserProfile(user?.id as string);
+          },
         });
-      }
+      },
     },
     {
-      key: '2',
+      key: "2",
       label: localStrings.Public.Cancel,
-      type: 'item',
-      onClick: () => {
-
-      }
+      type: "item",
+      onClick: () => {},
     },
-
   ];
 
   const renderFriendButton = useCallback(() => {
@@ -141,10 +152,7 @@ const ProfileHeader = ({
             >
               <div className="flex flex-row items-center">
                 <RxCross2 name="cross" size={24} color={brandPrimary} />
-                <span
-                >
-                  {localStrings.Public.CancelFriendRequest}
-                </span>
+                <span>{localStrings.Public.CancelFriendRequest}</span>
               </div>
             </Button>
           </div>
@@ -172,8 +180,9 @@ const ProfileHeader = ({
               <Button
                 style={{ width: "48%" }}
                 type="primary"
-                onClick={() => {
-                  acceptFriendRequest(user?.id as string);
+                onClick={async () => {
+                  await acceptFriendRequest(user?.id as string);
+                  fetchUserProfile(user?.id as string);
                 }}
                 loading={sendRequestLoading}
               >
@@ -193,7 +202,7 @@ const ProfileHeader = ({
         );
       default:
         return (
-          <Button type="default" onClick={() => { }}>
+          <Button type="default" onClick={() => {}}>
             <text style={{ color: brandPrimary, fontSize: 16 }}>
               {localStrings.Public.AddFriend}
             </text>
@@ -223,7 +232,12 @@ const ProfileHeader = ({
           {/* Avatar */}
           <Col xs={24} md={18}>
             <Row justify={"space-between"}>
-              <Col xs={24} md={10} xl={8} style={{ display: "flex", justifyContent: "center" }}>
+              <Col
+                xs={24}
+                md={10}
+                xl={8}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
                 <Avatar
                   src={
                     user?.avatar_url ||
@@ -231,7 +245,14 @@ const ProfileHeader = ({
                   }
                   alt="Profile"
                   shape="circle"
-                  size={{ xs: 150, sm: 150, md: 200, lg: 200, xl: 200, xxl: 200 }}
+                  size={{
+                    xs: 150,
+                    sm: 150,
+                    md: 200,
+                    lg: 200,
+                    xl: 200,
+                    xxl: 200,
+                  }}
                 />
               </Col>
               <Col xs={24} md={14} xl={16} className="md:mt-[60px] mt-0 pl-4">
@@ -247,9 +268,9 @@ const ProfileHeader = ({
                     <text className="font-bold md:text-left text-center">
                       {total || user?.post_count} {localStrings.Public.Post}
                       {language === "en" &&
-                        (total || user?.post_count) &&
-                        ((total && total > 1) ||
-                          (user?.post_count && user?.post_count > 1))
+                      (total || user?.post_count) &&
+                      ((total && total > 1) ||
+                        (user?.post_count && user?.post_count > 1))
                         ? "s"
                         : ""}
                     </text>
@@ -266,18 +287,21 @@ const ProfileHeader = ({
             <div className="w-full flex justify-center md:justify-end flex-row">
               {/* Friend Button */}
               {!isLoginUser(user?.id as string) && (
-                <span className="mr-4">
-                  {renderFriendButton()}
-                </span>
+                <>
+                  <span className="mr-4">{renderFriendButton()}</span>
+
+                  <Button
+                    type="primary"
+                    ghost
+                    onClick={() => setShowModal(true)}
+                    icon={<IoFlagSharp />}
+                  >
+                    <span className="font-bold text-base">
+                      {localStrings.Public.ReportFriend}
+                    </span>
+                  </Button>
+                </>
               )}
-              <Button
-                type="primary"
-                ghost
-                onClick={() => setShowModal(true)}
-                icon={<IoFlagSharp />}
-              >
-                <span className="font-bold text-base">{localStrings.Public.ReportFriend}</span>
-              </Button>
             </div>
           </Col>
         </Row>

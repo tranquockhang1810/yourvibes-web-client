@@ -329,7 +329,7 @@ const Ads = ({ postId }: { postId: string }) => {
         open={showCampaign}
         onCancel={() => setShowCampaign(false)}
         footer={null}
-        bodyStyle={{ maxHeight: '70vh', overflowY: 'scroll' }}
+        bodyStyle={{ maxHeight: '70vh', overflowY: 'scroll', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {(adsAll?.length ?? 0) > 0 ? (
           (adsAll ?? []).map((item, index) => (

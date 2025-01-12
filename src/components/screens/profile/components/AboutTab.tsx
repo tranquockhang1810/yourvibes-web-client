@@ -32,6 +32,7 @@ const AboutTab = ({
   loadMorePosts,
   fetchUserPosts,
   hasMore,
+  setPosts,
 }: {
   user: UserModel;
   loading: boolean;
@@ -42,6 +43,7 @@ const AboutTab = ({
   loadMorePosts: () => void;
   fetchUserPosts: () => void;
   hasMore: boolean;
+  setPosts: React.Dispatch<React.SetStateAction<PostResponseModel[]>>;
 }) => {
   const router = useRouter();
   const { brandPrimaryTap, backgroundColor } = useColor();
@@ -59,14 +61,8 @@ const AboutTab = ({
         setFriendsToShow(8);
       }
     };
-
-    // Cập nhật số lượng bạn bè hiển thị khi component được mount
     updateFriendsToShow();
-
-    // Lắng nghe sự kiện thay đổi kích thước màn hình
     window.addEventListener('resize', updateFriendsToShow);
-
-    // Cleanup listener khi component bị unmount
     return () => {
       window.removeEventListener('resize', updateFriendsToShow);
     };
@@ -234,6 +230,7 @@ const AboutTab = ({
                     {localStrings.Public.FriendView}
                   </div>
                   <Modal
+                   bodyStyle={{ maxHeight: '70vh', overflowY: 'scroll', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     title={
                       <span className="text-xl font-bold">
                         {localStrings.ListFriends.ListFriends}
@@ -251,7 +248,6 @@ const AboutTab = ({
                       setPage={() => { }}
                       totalPage={1}
                     />
-                    ,
                   </Modal>
                 </div>
               </div>
@@ -264,6 +260,7 @@ const AboutTab = ({
                 user={user}
                 fetchUserPosts={fetchUserPosts}
                 hasMore={hasMore}
+                setPosts={setPosts}
               />
             </Col>
           </Row>

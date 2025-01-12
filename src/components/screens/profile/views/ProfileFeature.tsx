@@ -1,19 +1,21 @@
-"use client"
-import React, { useEffect } from 'react'
-import ProfileHeader from '../components/ProfileHeader'
-import useColor from '@/hooks/useColor';
-import { useAuth } from '@/context/auth/useAuth';
-import { UserModel } from '@/api/features/authenticate/model/LoginModel';
-import ProfileTabs from '../components/ProfileTabs';
-import { FriendStatus, Privacy } from '@/api/baseApiResponseModel/baseApiResponseModel';
-import ProfileViewModel from '../viewModel/ProfileViewModel';
-import { Skeleton, Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+"use client";
+import React, { useEffect } from "react";
+import ProfileHeader from "../components/ProfileHeader";
+import useColor from "@/hooks/useColor";
+import { useAuth } from "@/context/auth/useAuth";
+import { UserModel } from "@/api/features/authenticate/model/LoginModel";
+import ProfileTabs from "../components/ProfileTabs";
+import {
+  FriendStatus,
+  Privacy,
+} from "@/api/baseApiResponseModel/baseApiResponseModel";
+import ProfileViewModel from "../viewModel/ProfileViewModel";
+import { Skeleton, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const ProfileFeature = () => {
   const { backgroundColor } = useColor();
   const { user, localStrings } = useAuth();
-
 
   const {
     loading,
@@ -28,31 +30,31 @@ const ProfileFeature = () => {
     fetchUserProfile,
     fetchMyFriends,
     page,
-    hasMore
+    hasMore,
+    setPosts,
   } = ProfileViewModel();
 
-  useEffect(() => {
-
-  }, [user]);
   useEffect(() => {
     if (user) {
       fetchUserProfile(user?.id as string);
       fetchMyFriends(page);
       fetchUserPosts();
     }
-  }, [page, user, friendCount]);
-
+  }, []);
 
   return (
     <div>
       {profileLoading ? (
-        <Skeleton 
-          active
-          paragraph={{ rows: 16 }}
-        />
+        <Skeleton active paragraph={{ rows: 16 }} />
       ) : (
         <>
-          <ProfileHeader total={total} user={user as UserModel} loading={false} friendCount={friendCount} />
+          <ProfileHeader
+            total={total}
+            user={user as UserModel}
+            loading={false}
+            friendCount={friendCount}
+            fetchUserProfile={fetchUserProfile}
+          />
           <ProfileTabs
             posts={posts}
             loading={loading}
@@ -64,11 +66,12 @@ const ProfileFeature = () => {
             resultCode={resultCode}
             fetchUserPosts={fetchUserPosts}
             hasMore={hasMore}
+            setPosts={setPosts}
           />
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileFeature
+export default ProfileFeature;

@@ -14,7 +14,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const Homepage = () => {
   const { brandPrimary, backgroundColor, lightGray } = useColor();
-  const { loading, newFeeds, fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed, hasMore } = HomeViewModel(defaultNewFeedRepo);
+  const { loading, newFeeds, setNewFeeds,fetchNewFeeds, loadMoreNewFeeds, deleteNewFeed, hasMore } = HomeViewModel(defaultNewFeedRepo);
   const { user, localStrings } = useAuth();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,17 +23,20 @@ const Homepage = () => {
   useEffect(() => {
     if (user) {
       fetchMyFriends(page);
+      // fetchNewFeeds();
     }
-  }, [page, user]);
+  }, [page]);
 
-  useEffect(() => {
-    fetchNewFeeds();
-  }
-  , []);
+  
 
   const handleModalClose = () => {
     setIsModalVisible(false);
   };
+
+  const handleDeleteNewFeed = async (id: string) => {
+    await deleteNewFeed(id);
+    setNewFeeds((prevNewFeeds) => prevNewFeeds.filter((post) => post.id !== id));
+  }
 
   const renderAddPost = useCallback(() => {
     return (
@@ -140,7 +143,7 @@ const Homepage = () => {
             loader={<Spin indicator={<LoadingOutlined spin />} size="large" />}>
                {newFeeds.map((item) => (
             <div key={item?.id} style={{ width: "100%", maxWidth: "600px" }}>
-              <Post post={item} />
+              <Post post={item} onDeleteNewFeed={handleDeleteNewFeed} />
               {item?.parent_post && (
                 <div style={{ marginLeft: "20px" }}>
                   <Post post={item?.parent_post} isParentPost />
