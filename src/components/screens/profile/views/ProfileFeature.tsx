@@ -17,6 +17,7 @@ const ProfileFeature = () => {
 
   const {
     loading,
+    profileLoading,
     posts,
     fetchUserPosts,
     loadMorePosts,
@@ -44,7 +45,7 @@ const ProfileFeature = () => {
 
   return (
     <div>
-      {loading ? (
+      {profileLoading ? (
         <Skeleton 
           active
           paragraph={{ rows: 16 }}

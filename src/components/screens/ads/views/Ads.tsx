@@ -333,7 +333,7 @@ const Ads = ({ postId }: { postId: string }) => {
       >
         {(adsAll?.length ?? 0) > 0 ? (
           (adsAll ?? []).map((item, index) => (
-            <div key={index} style={{ marginTop: 10, overflowY: 'scroll'}} >
+            <div key={index} style={{ marginTop: 10}} >
               <div
                 style={{
                   backgroundColor: "#f7f7f7",
