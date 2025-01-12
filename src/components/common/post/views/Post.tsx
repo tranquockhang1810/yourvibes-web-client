@@ -296,7 +296,7 @@ const Post: React.FC<IPost> = React.memo(
               className="hover:cursor-pointer"
               onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
             >
-              <Avatar src={likedPost?.user?.avatar_url} shape="circle" />
+              <Avatar src={likedPost?.user?.avatar_url} shape="circle" size={{ xs: 24, sm: 32, md: 40, lg: 40, xl: 40, xxl: 40 }} />
             </Col>
             <Col xs={18} md={21}>
               <Row>
