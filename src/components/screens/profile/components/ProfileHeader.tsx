@@ -2,7 +2,7 @@
 import { UserModel } from "@/api/features/authenticate/model/LoginModel";
 import { useAuth } from "@/context/auth/useAuth";
 import useColor from "@/hooks/useColor";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import UserProfileViewModel from "../viewModel/UserProfileViewModel";
 import { FriendStatus } from "@/api/baseApiResponseModel/baseApiResponseModel";
 import {
@@ -43,6 +43,7 @@ const ProfileHeader = ({
   const { localStrings, language, isLoginUser } = useAuth();
   const router = useRouter();
   const { showModal, setShowModal } = ReportViewModel();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const {
     sendFriendRequest,
@@ -220,10 +221,11 @@ const ProfileHeader = ({
       <>
         {/* Cover Image */}
         <div style={{ backgroundColor: lightGray }}>
-          <img
+          <Image
             src={user?.capwall_url}
             alt="Cover"
             className="w-full md:max-h-[375px] max-h-[250px] object-top object-cover"
+            width="100%"
           />
         </div>
 
@@ -237,8 +239,46 @@ const ProfileHeader = ({
                 md={10}
                 xl={8}
                 style={{ display: "flex", justifyContent: "center" }}
-              >
-                <Avatar
+              > 
+             <Image.PreviewGroup
+        preview={{
+          visible: isPreviewOpen, // Trạng thái mở preview
+          onVisibleChange: (visible) => setIsPreviewOpen(visible), // Đóng preview
+        }}
+      >
+        <Image
+          src={
+            user?.avatar_url ||
+            "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"
+          }
+          style={{ display: "none" }} // Ẩn Image
+        />
+      </Image.PreviewGroup>
+
+      {/* Avatar hiển thị chính */}
+      <Avatar
+        src={
+          user?.avatar_url ||
+          "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"
+        }
+        alt="Profile"
+        shape="circle"
+        size={{
+          xs: 150,
+          sm: 150,
+          md: 200,
+          lg: 200,
+          xl: 200,
+          xxl: 200,
+        }}
+        style={{
+          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Hiệu ứng bóng đẹp
+          border: "2px solid #f0f0f0", // Viền mỏng đẹp mắt
+          cursor: "pointer", // Con trỏ chuột dạng nhấn
+        }}
+        onClick={() => setIsPreviewOpen(true)} // Kích hoạt preview khi nhấp vào
+      />
+                {/* <Avatar
                   src={
                     user?.avatar_url ||
                     "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"
@@ -253,7 +293,7 @@ const ProfileHeader = ({
                     xl: 200,
                     xxl: 200,
                   }}
-                />
+                /> */}
               </Col>
               <Col xs={24} md={14} xl={16} className="md:mt-[60px] mt-0 pl-4">
                 <div className="md:text-left text-center mt-2">

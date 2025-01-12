@@ -60,6 +60,7 @@ export const VnLocalizedStrings = {
     Home: "Trang chủ",
     Settings: "Cài đặt",
     Profile: "Tài khoản",
+    LoginStatus:"Vui lòng đăng nhập lại",
   },
   Form: {
     Label: {

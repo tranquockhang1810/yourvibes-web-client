@@ -98,7 +98,9 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
     <div className="container mx-auto flex flex-col lg:flex-row gap-6">
       {/* Cột hiển thị bài viết */}
       <div className="post-container flex-1 bg-white p-6 rounded-lg shadow-md">
-        <Post noComment={true} post={post || undefined} />
+        <Post noComment={true} post={post || undefined} >
+                  {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
+                </Post>
       </div>
 
       {/* Cột hiển thị bình luận */}

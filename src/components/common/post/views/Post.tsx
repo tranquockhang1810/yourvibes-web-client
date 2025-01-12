@@ -46,6 +46,7 @@ import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import ReportScreen from "@/components/screens/report/views/Report";
 import ProfileViewModel from "@/components/screens/profile/viewModel/ProfileViewModel";
+import { t } from "i18next";
 
 interface IPost {
   post?: PostResponseModel;
@@ -419,12 +420,7 @@ const Post: React.FC<IPost> = React.memo(
             ]
         }
       >
-        <Row gutter={[8, 8]} className="mx-2"
-          // vào post details
-          onClick={() => {
-            setIsCommentModalVisible(false);
-            router.push(`postDetails?postId=${likedPost?.id}`);
-          }}>
+        <Row gutter={[8, 8]} className="mx-2">
           {!isParentPost && children ? (
             <Col span={24}>
               {likedPost?.content && (
