@@ -171,7 +171,7 @@ const PostDetailsViewModel = (
             });
             return { ...prevReplyMap, [parentId]: updatedReplies };
           });
-          // Hiển thị reply mới
+          // Hiển thị reply mới 
           setComments((prev) => [...prev, { ...response.data, replies: [] }]);
         } else {
           // Cập nhật comment
