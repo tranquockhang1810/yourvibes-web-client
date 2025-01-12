@@ -54,7 +54,6 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(
     null
   );
-
   const [isReplyModalVisible, setReplyModalVisible] = useState(false);
   const { user } = useAuth();
   const userId = user?.id;
@@ -99,8 +98,8 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
       {/* Cột hiển thị bài viết */}
       <div className="post-container flex-1 bg-white p-6 rounded-lg shadow-md">
         <Post noComment={true} post={post || undefined} >
-                  {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
-                </Post>
+          {post?.parent_post && <Post post={post?.parent_post} isParentPost />}
+        </Post>
       </div>
 
       {/* Cột hiển thị bình luận */}
@@ -562,7 +561,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
           <ReportScreen commentId={currentCommentId} setShowModal={setShowModal} />
         </Modal>
       </div>
-      
+
     </div>
   );
 };

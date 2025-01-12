@@ -196,7 +196,6 @@ const Post: React.FC<IPost> = React.memo(
             label: localStrings.Post.ReportPost,
             type: "item",
             onClick: () => {
-              // router.push(`/report?postId=${post?.id}`);
               setShowModal(true);
             },
           },
@@ -290,10 +289,6 @@ const Post: React.FC<IPost> = React.memo(
           <Row
             gutter={[8, 8]}
             className="m-2"
-          // onClick={() => {
-          //   setIsCommentModalVisible(false);
-          //   router.push(`postDetails?postId=${likedPost?.id}`);
-          // }}
           >
             <Col
               xs={4}

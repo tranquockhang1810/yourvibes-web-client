@@ -356,8 +356,8 @@ const PostDetailsViewModel = (
       handleAddComment(newComment);
       setNewComment("");
     }
-  };
-
+  }; 
+ 
   return {
     comments,
     replyMap,
