@@ -565,5 +565,4 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({ postId }) => {
   );
 };
 
-
 export default PostDetailsScreen;
