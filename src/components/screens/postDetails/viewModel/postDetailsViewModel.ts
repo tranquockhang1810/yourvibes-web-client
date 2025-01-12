@@ -40,14 +40,15 @@ const PostDetailsViewModel = (
   const [replyContent, setReplyContent] = useState("");   
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
-  }>({});
-  localStorage.setItem('heartColors', JSON.stringify(heartColors));
+  }>({}); 
+
   const toggleRepliesVisibility = (commentId: string) => {
     setVisibleReplies((prev) => ({
       ...prev,
       [commentId]: !prev[commentId],
     }));
   };
+  
   const handleReplyClick = (commentId: string, isReply: boolean = false) => {
     if (isReply) {
       setReplyToReplyId(commentId);

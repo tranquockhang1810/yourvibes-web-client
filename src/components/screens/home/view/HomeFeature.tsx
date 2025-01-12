@@ -23,7 +23,7 @@ const Homepage = () => {
   useEffect(() => {
     if (user) {
       fetchMyFriends(page);
-      // fetchNewFeeds();
+      fetchNewFeeds();
     }
   }, [page]);
 
