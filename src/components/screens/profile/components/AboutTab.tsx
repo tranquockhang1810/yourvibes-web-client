@@ -94,7 +94,7 @@ const AboutTab = ({
           </Flex>
         ) : (
           <Row gutter={[16, 16]} align={"top"} justify={"center"}>
-            <Col xs={24} lg={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
+            <Col xs={24} xl={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
               <div
                 className="w-full mx-auto max-w-[600px] lg:max-w-screen-xl flex flex-col px-5 border rounded-md "
                 style={{ backgroundColor: backgroundColor }}
@@ -207,22 +207,24 @@ const AboutTab = ({
                   </div>
                   <div className="grid grid-cols-4 md:grid-cols-5 xl:grid-cols-4 gap-2">
                     {friends.slice(0, friendsToShow).map((friend, index) => (
-                      <div
-                        key={index}
-                        className="w-[70px]  mb-2 mx-1"
-                        onClick={() => router.push(`/user/${friend?.id}`)}
-                      >
-                        <Avatar
-                          src={friend?.avatar_url}
-                          alt={`${friend?.family_name} ${friend?.name}`}
-                          className="mr-2"
-                          shape="circle"
-                          size={35}
-                        />
-                        <div className="mt-2">
-                          {friend?.family_name} {friend?.name}
-                        </div>
-                      </div>
+                       <div
+                       key={index}
+                       className="mb-2 mx-1 flex flex-col items-center text-center"
+                       onClick={() => router.push(`/user/${friend?.id}`)}
+                     >
+                       <Avatar
+                         src={friend?.avatar_url}
+                         alt={`${friend?.family_name} ${friend?.name}`}
+                         shape="circle"
+                         size={50}
+                       />
+                       <div
+                         className="mt-2 truncate w-full"
+                         style={{ whiteSpace: "nowrap" }}
+                       >
+                         {friend?.family_name} {friend?.name}
+                       </div>
+                     </div>
                     ))}
                   </div>
                   <div
@@ -254,7 +256,7 @@ const AboutTab = ({
                 </div>
               </div>
             </Col>
-            <Col xs={24} lg={16} className="w-full">
+            <Col xs={24} xl={16} className="w-full">
               <PostList
                 loading={loading}
                 posts={posts}

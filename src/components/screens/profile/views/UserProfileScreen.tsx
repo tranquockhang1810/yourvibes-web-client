@@ -36,7 +36,7 @@ const UserProfileScreen = ({ id }: { id: string }) => {
 
   return (
     <div>
-      {loading ? (
+      {profileLoading ? (
         <Skeleton
           active
           paragraph={{ rows: 16 }}
