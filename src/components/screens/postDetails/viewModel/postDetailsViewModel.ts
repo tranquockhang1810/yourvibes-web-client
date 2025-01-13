@@ -4,18 +4,14 @@ import { message } from "antd";
 //Comments
 import { CommentsResponseModel } from "@/api/features/comment/models/CommentResponseModel";
 import { defaultCommentRepo } from "@/api/features/comment/CommentRepo";
-import { CreateCommentsRequestModel } from "@/api/features/comment/models/CreateCommentsModel";
-import { UpdateCommentsRequestModel } from "@/api/features/comment/models/UpdateCommentsModel";
+import { CreateCommentsRequestModel } from "@/api/features/comment/models/CreateCommentsModel"; 
 //LikeComments
 import { defaultLikeCommentRepo } from "@/api/features/likeComment/LikeCommentRepo";
 import { LikeCommentResponseModel } from "@/api/features/likeComment/models/LikeCommentResponses";
 //UserLikePost
 import { defaultPostRepo, PostRepo } from "@/api/features/post/PostRepo";
 import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
-import { Modal } from "antd";
-import { PostResponseModel } from "@/api/features/post/models/PostResponseModel";
-import { Privacy } from "@/api/baseApiResponseModel/baseApiResponseModel";
-import { comment } from "postcss";
+import { Modal } from "antd"; 
 
 const PostDetailsViewModel = (
   postId: string,
@@ -28,37 +24,31 @@ const PostDetailsViewModel = (
 
   const [likeCount, setLikeCount] = useState<{ [key: string]: number }>({});
   const [userLikes, setUserLikes] = useState<{ [key: string]: boolean }>({});
+  const [isLiked, setIsLiked] = useState<{ [key: string]: boolean }>({});
+  const [heartColors, setHeartColors] = useState<{ [key: string]: string }>({});
+  const [likedComment, setLikedComment] = useState({ is_liked: false }
+  );
+
   const [newComment, setNewComment] = useState("");
   const [replyToCommentId, setReplyToCommentId] = useState<string | null>(null);
-
   const [replyToReplyId, setReplyToReplyId] = useState<string | null>(null);
-
-  const [likeIcon, setLikeIcon] = useState("heart-outline");
-  const [renderLikeIconState, setRenderLikeIconState] = useState(false);
-  const [heartColors, setHeartColors] = useState<{ [key: string]: string }>({});
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState("");
   const [currentCommentId, setCurrentCommentId] = useState("");
   const [userLikePost, setUserLikePost] = useState<LikeUsersModel[]>([]);
   const { user, localStrings } = useAuth();
-  const [replyContent, setReplyContent] = useState("");
-  const [getPostLoading, setGetPostLoading] = useState<boolean>(false);
-  const [post, setPost] = useState<PostResponseModel | undefined>(undefined);
-  const [postContent, setPostContent] = useState("");
-  const [privacy, setPrivacy] = useState<Privacy | undefined>(Privacy.PUBLIC);
-  const [mediaIds, setMediaIds] = useState<string[]>([]);
-  const [originalImageFiles, setOriginalImageFiles] = useState<any[]>([]);
-  const [fileList, setFileList] = useState<any[]>([]);
+  const [replyContent, setReplyContent] = useState("");   
   const [visibleReplies, setVisibleReplies] = useState<{
     [key: string]: boolean;
-  }>({});
-  localStorage.setItem('heartColors', JSON.stringify(heartColors));
+  }>({}); 
+
   const toggleRepliesVisibility = (commentId: string) => {
     setVisibleReplies((prev) => ({
       ...prev,
       [commentId]: !prev[commentId],
     }));
   };
+  
   const handleReplyClick = (commentId: string, isReply: boolean = false) => {
     if (isReply) {
       setReplyToReplyId(commentId);
@@ -114,52 +104,26 @@ const PostDetailsViewModel = (
     fetchComments();
   }, []);
  
-
-  const handleLike = async (commentOrReplyId: string) => {
-    const isLike =
-      userLikes[commentOrReplyId] === undefined
-        ? true
-        : !userLikes[commentOrReplyId]; 
+  
+  const handleLike = async (commentId: string) => {
+    const isLike = isLiked[commentId] === undefined ? true : !isLiked[commentId];
   
     try {
       const response = await defaultLikeCommentRepo.postLikeComment({
-        commentId: commentOrReplyId,
+        commentId,
         isLike,
       });
   
       if (response && response.data) {
-        const likeCommentResponse: LikeCommentResponseModel = response.data; 
-        // Cập nhật trạng thái like dựa trên response trả về
-        setUserLikes((prevUserLikes) => ({
-          ...prevUserLikes,
-          [commentOrReplyId]: likeCommentResponse.is_liked ?? false,
-        }));
-        setLikeCount((prevLikes) => ({
-          ...prevLikes,
-          [commentOrReplyId]: likeCommentResponse.like_count,
-        }));
-  
-        // Cập nhật biến renderLikeIconState
-        setRenderLikeIconState(Boolean(likeCommentResponse.is_liked));
-  
-        // Cập nhật màu sắc của biểu tượng FaHeart
-        setHeartColors((prevHeartColors) => ({
-          ...prevHeartColors,
-          [commentOrReplyId]: isLike ? 'red' : 'gray',
-        }));
+        const likeCommentResponse: LikeCommentResponseModel = response.data;
+        setIsLiked((prevIsLiked) => ({ ...prevIsLiked, [commentId]: likeCommentResponse.is_liked ?? false }));
+        setLikeCount((prevLikeCount) => ({ ...prevLikeCount, [commentId]: likeCommentResponse.like_count }));
+        setHeartColors((prevHeartColors) => ({ ...prevHeartColors, [commentId]: isLike ? 'red' : 'gray' }));
       }
     } catch (error) {
       console.error("Error liking comment:", error);
     }
   };
-
-  useEffect(() => {
-    const savedHeartColors = localStorage.getItem('heartColors');
-    if (savedHeartColors) {
-      setHeartColors(JSON.parse(savedHeartColors));
-    }
-  }, []);
-
   const handleEditComment = async (commentId: string) => {
     if (!currentCommentId || !editCommentContent) {
       console.error("Invalid comment ID or content");
@@ -208,7 +172,7 @@ const PostDetailsViewModel = (
             });
             return { ...prevReplyMap, [parentId]: updatedReplies };
           });
-          // Hiển thị reply mới
+          // Hiển thị reply mới 
           setComments((prev) => [...prev, { ...response.data, replies: [] }]);
         } else {
           // Cập nhật comment
@@ -392,8 +356,8 @@ const PostDetailsViewModel = (
       handleAddComment(newComment);
       setNewComment("");
     }
-  };
-
+  }; 
+ 
   return {
     comments,
     replyMap,
@@ -425,6 +389,8 @@ const PostDetailsViewModel = (
     visibleReplies, 
     fetchComments,
     heartColors,
+    setLikedComment,
+    likedComment
   };
 };
  

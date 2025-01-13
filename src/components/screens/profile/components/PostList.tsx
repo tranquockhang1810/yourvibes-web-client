@@ -8,40 +8,35 @@ import useColor from '@/hooks/useColor';
 import { useAuth } from '@/context/auth/useAuth';
 import Post from '@/components/common/post/views/Post';
 import AddPostScreen from '@/components/screens/addPost/view/AddPostScreen';
+import EditPostViewModel from '@/components/features/editpost/viewModel/EditPostViewModel';
+import { defaultPostRepo } from '@/api/features/post/PostRepo';
 
-const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore }: {
+const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore, setPosts }: {
   loading: boolean;
   posts: PostResponseModel[];
   loadMorePosts: () => void;
   user: UserModel;
   fetchUserPosts: () => void;
   hasMore: boolean; // Biến để kiểm tra có còn dữ liệu hay không
+  setPosts: React.Dispatch<React.SetStateAction<PostResponseModel[]>>;
 }) => {
   const { backgroundColor, lightGray } = useColor();
   const { isLoginUser, localStrings } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const [postList, setPostList] = useState<PostResponseModel[]>(posts);
-  useEffect(() => {
-    setPostList(posts);
-  }, [posts]);
-
-  // Hàm xóa bài viết khỏi danh sách hiển thị
-  const handleDeletePost = (postId: string) => {
-    setPostList((prev) => prev.filter((post) => post.id !== postId));
-    message.success('Bài viết đã được xóa!');
-  };
-
-
-  const handleModalClose = () => {
-    setIsModalVisible(false);
-  };
-
+  const {deletePost} = EditPostViewModel(defaultPostRepo, user?.id || "", "");
+  
 
   const handlePostSuccess = () => {
     setIsModalVisible(false);
     fetchUserPosts();
   };
+
+  const handleDeletePost = async (postId: string) => {
+      await deletePost(postId); 
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+    
+  };
+  
 
   const renderAddPost = useCallback(() => {
     return (
@@ -108,10 +103,7 @@ const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore
 
             {posts.map((item) => (
               <div key={item?.id} className='w-full flex flex-col items-center' >
-                <Post post={item} fetchUserPosts={() => {
-                  fetchUserPosts(); // Gọi lại API nếu cần
-                  item?.id && handleDeletePost(item.id); // Xóa bài viết khỏi danh sách
-                }}>
+                <Post post={item} fetchUserPosts={fetchUserPosts} onDeletePost={handleDeletePost}>
                   {item?.parent_post && <Post post={item?.parent_post} isParentPost />}
                 </Post>
               </div>

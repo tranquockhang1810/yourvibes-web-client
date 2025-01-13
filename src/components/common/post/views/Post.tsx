@@ -46,6 +46,7 @@ import { LikeUsersModel } from "@/api/features/post/models/LikeUsersModel";
 import ReportViewModel from "@/components/screens/report/ViewModel/reportViewModel";
 import ReportScreen from "@/components/screens/report/views/Report";
 import ProfileViewModel from "@/components/screens/profile/viewModel/ProfileViewModel";
+import { t } from "i18next";
 
 interface IPost {
   post?: PostResponseModel;
@@ -54,6 +55,8 @@ interface IPost {
   children?: React.ReactNode;
   noComment?: boolean;
   fetchUserPosts?: () => void;  
+  onDeletePost?: (postId: string) => void;
+  onDeleteNewFeed?: (postId: string) => void;
 }
 
 const Post: React.FC<IPost> = React.memo(
@@ -64,7 +67,8 @@ const Post: React.FC<IPost> = React.memo(
     children,
     noComment = false,
     fetchUserPosts,
-
+    onDeletePost = () => {},
+    onDeleteNewFeed = () => {},
   }) => {
     const router = useRouter();
     const { brandPrimary, brandPrimaryTap, lightGray, backgroundColor } =
@@ -75,19 +79,15 @@ const Post: React.FC<IPost> = React.memo(
     const pathname = usePathname();
     // const {fetchUserPosts} = ProfileViewModel();
     const {
-      deleteLoading,
       likePost,
       likedPost,
       setLikedPost,
       sharePost,
       shareLoading,
       deletePost,
-      updatePost,
       fetchUserLikePosts,
       userLikePost,
-      setUserLikePost,
     } = EditPostViewModel(defaultPostRepo, post?.id || "", post?.id || "");
-
     const { deleteNewFeed } = HomeViewModel(defaultNewFeedRepo);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [sharePostPrivacy, setSharePostPrivacy] = useState(Privacy.PUBLIC);
@@ -105,10 +105,6 @@ const Post: React.FC<IPost> = React.memo(
       }
     };
     const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
-    const handleCommentClick = useCallback(() => {
-      setIsCommentModalVisible(true);
-    }, [post]);
-
     const [isVisible, setIsVisible] = useState(false);
     const [isShareModalVisible, setIsShareModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -176,9 +172,11 @@ const Post: React.FC<IPost> = React.memo(
                 content: localStrings.DeletePost.DeleteConfirm,
                 okText: localStrings.Public.Confirm,
                 cancelText: localStrings.Public.Cancel,
-                onOk: () => {
-                  deletePost && deletePost(post?.id as string);
+                onOk: async () => {
+                  await onDeletePost(post?.id as string);
                 },
+                
+                
               });
             },
           },
@@ -198,7 +196,6 @@ const Post: React.FC<IPost> = React.memo(
             label: localStrings.Post.ReportPost,
             type: "item",
             onClick: () => {
-              // router.push(`/report?postId=${post?.id}`);
               setShowModal(true);
             },
           },
@@ -213,9 +210,7 @@ const Post: React.FC<IPost> = React.memo(
                 content: localStrings.DeletePost.DeleteConfirm,
                 okText: localStrings.Public.Confirm,
                 cancelText: localStrings.Public.Cancel,
-                onOk: () => {
-                  deleteNewFeed && deleteNewFeed(post?.id as string);
-                },
+                onOk: () => {onDeleteNewFeed(post?.id as string);},
               });
             },
           },
@@ -294,10 +289,6 @@ const Post: React.FC<IPost> = React.memo(
           <Row
             gutter={[8, 8]}
             className="m-2"
-          // onClick={() => {
-          //   setIsCommentModalVisible(false);
-          //   router.push(`postDetails?postId=${likedPost?.id}`);
-          // }}
           >
             <Col
               xs={4}
@@ -305,7 +296,7 @@ const Post: React.FC<IPost> = React.memo(
               className="hover:cursor-pointer"
               onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
             >
-              <Avatar src={likedPost?.user?.avatar_url} shape="circle" />
+              <Avatar src={likedPost?.user?.avatar_url} shape="circle" size={{ xs: 24, sm: 32, md: 40, lg: 40, xl: 40, xxl: 40 }} />
             </Col>
             <Col xs={18} md={21}>
               <Row>
@@ -487,13 +478,22 @@ const Post: React.FC<IPost> = React.memo(
         {/* Modal for comments */}
         <Modal
           visible={isCommentModalVisible}
-          width={800}
+          centered
           footer={null}
           closable={true}
           onCancel={() => setIsCommentModalVisible(false)}
+          width="90vw" // Điều chỉnh chiều rộng modal bằng phần trăm của màn hình
+          style={{
+            maxWidth: '1200px', // Giới hạn chiều rộng tối đa
+          }}
+          bodyStyle={{
+            maxHeight: '80vh', // Giới hạn chiều cao
+            overflowY: 'auto', // Thêm thanh cuộn dọc nếu cần
+          }}
         >
           <PostDetailsScreen postId={likedPost?.id} />
         </Modal>
+
 
         {/* Modal for share Post */}
         <Modal
@@ -655,7 +655,6 @@ const Post: React.FC<IPost> = React.memo(
             )}
           </div>
         </Modal>
-        
       </Card>
     );
   }

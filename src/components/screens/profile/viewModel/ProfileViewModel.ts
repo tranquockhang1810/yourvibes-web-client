@@ -9,7 +9,8 @@ import { useState } from 'react'
 const ProfileViewModel = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState<PostResponseModel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -81,6 +82,7 @@ const ProfileViewModel = () => {
           ) as FriendResponseModel[];
           setFriends(friends);
           setFriendCount(friends.length); //Đếm số lượng bạn bè
+          return friends;
         } 
     else{
       console.error("response.data is null");
@@ -96,7 +98,7 @@ const ProfileViewModel = () => {
 //Privacy setting
 const fetchUserProfile = async (id: string) => {
   try {
-    setLoading(true);
+    setProfileLoading(true);
     const response = await defaultProfileRepo.getProfile(id);
     
     if (!response?.error) {
@@ -106,7 +108,7 @@ const fetchUserProfile = async (id: string) => {
   } catch (error: any) {
     console.error(error);
   } finally {
-    setLoading(false);
+    setProfileLoading(false);
   }
 }
 
@@ -127,6 +129,9 @@ const fetchUserProfile = async (id: string) => {
     fetchMyFriends,
     fetchUserProfile,
     resultCode,
+    profileLoading,
+    setProfileLoading,
+    setPosts,
   };
 };
 

@@ -115,8 +115,7 @@ const EditPostViewModel = (
     await defaultNewFeedRepo.getNewFeed({ limit: 10, page: 1 });
   };
 
-  const handleSubmit = async () => {
-    if (!postContent.trim() && fileList.length === 0) return; 
+  const handleSubmit = async () => { 
     const validFiles = fileList
       .map((file) => file.originFileObj)
       .filter((file): file is RcFile => !!file);
@@ -131,13 +130,7 @@ const EditPostViewModel = (
     }; 
     await updatePost(updatePostRequest);
   };
-
-  // useEffect(() => {
-  //   if (!updateLoading && post) {
-  //     getNewFeed(); // Làm mới dữ liệu
-  //   }
-  // }, [updateLoading]);
-
+ 
   const deletePost = async (id: string) => {
     if (!repo) return;
 
@@ -147,6 +140,7 @@ const EditPostViewModel = (
       setHidePost((hidePost) => hidePost.filter((post) => post.id !== id));
       if (!res?.error) {
         message.success(localStrings.DeletePost.DeleteSuccess);
+        await getNewFeed();
       } else {
         message.error(localStrings.DeletePost.DeleteFailed);
       }
@@ -157,6 +151,7 @@ const EditPostViewModel = (
       setDeleteLoading(false);
     }
   };
+
 
   const likePost = async (id: string) => {
     if (!repo) return;

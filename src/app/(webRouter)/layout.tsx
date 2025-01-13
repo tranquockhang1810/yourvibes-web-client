@@ -3,12 +3,13 @@ import { ApiPath } from "@/api/ApiPath";
 import { defaultNotificationRepo } from "@/api/features/notification/NotifiCationRepo";
 import MainLayout from "@/components/common/MainLayouts/MainLayout";
 import { useAuth } from "@/context/auth/useAuth";
-import { Button, notification, Skeleton } from "antd";
+import { Button, message, notification, Skeleton } from "antd";
 import { Suspense, useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }): React.ReactElement {
   const { user, localStrings } = useAuth();
   const [statusNotifi, setStatusNotifi] = useState(false);
+
   const mapNotifiCationContent = (type: string) => {
     switch (type) {
       case 'like_post':
@@ -36,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
     ws.onmessage = (e) => {
       const notificationData = JSON.parse(e.data);
       const { from: userName, content, notification_type: type } = notificationData;
- 
+
       setStatusNotifi(true);
 
       const mappedType = mapNotifiCationContent(type);
@@ -51,15 +52,37 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
       });
     };
 
-
     return () => {
       ws.close();
     };
   };
 
+  const fetchData = async () => {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)accesstoken\s*=\s*([^;]*).*$)|^.*$/, "$1");
+
+    const response = await fetch(`
+https://yourvibesapi.duckdns.org:8080/v1/2024/users/${user?.id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    // Nếu nhận được lỗi 401 hoặc 403, điều hướng về trang login
+    if (response.status === 401 || response.status === 403) {
+      window.location.href = '/login';
+      message.error(localStrings.Public.LoginStatus);
+    } else {
+      const data = await response.json();
+      // Xử lý dữ liệu nếu không có lỗi
+    }
+  };
+
   useEffect(() => {
     if (user?.id) {
       const closeWebSocket = connectWebSocket();
+      {}
+      fetchData(); // Gọi hàm fetchData khi component render
       return () => {
         closeWebSocket();
       };

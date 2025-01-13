@@ -32,6 +32,7 @@ const AboutTab = ({
   loadMorePosts,
   fetchUserPosts,
   hasMore,
+  setPosts,
 }: {
   user: UserModel;
   loading: boolean;
@@ -42,6 +43,7 @@ const AboutTab = ({
   loadMorePosts: () => void;
   fetchUserPosts: () => void;
   hasMore: boolean;
+  setPosts: React.Dispatch<React.SetStateAction<PostResponseModel[]>>;
 }) => {
   const router = useRouter();
   const { brandPrimaryTap, backgroundColor } = useColor();
@@ -59,14 +61,8 @@ const AboutTab = ({
         setFriendsToShow(8);
       }
     };
-
-    // Cập nhật số lượng bạn bè hiển thị khi component được mount
     updateFriendsToShow();
-
-    // Lắng nghe sự kiện thay đổi kích thước màn hình
     window.addEventListener('resize', updateFriendsToShow);
-
-    // Cleanup listener khi component bị unmount
     return () => {
       window.removeEventListener('resize', updateFriendsToShow);
     };
@@ -94,7 +90,7 @@ const AboutTab = ({
           </Flex>
         ) : (
           <Row gutter={[16, 16]} align={"top"} justify={"center"}>
-            <Col xs={24} lg={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
+            <Col xs={24} xl={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
               <div
                 className="w-full mx-auto max-w-[600px] lg:max-w-screen-xl flex flex-col px-5 border rounded-md "
                 style={{ backgroundColor: backgroundColor }}
@@ -207,22 +203,24 @@ const AboutTab = ({
                   </div>
                   <div className="grid grid-cols-4 md:grid-cols-5 xl:grid-cols-4 gap-2">
                     {friends.slice(0, friendsToShow).map((friend, index) => (
-                      <div
-                        key={index}
-                        className="w-[70px]  mb-2 mx-1"
-                        onClick={() => router.push(`/user/${friend?.id}`)}
-                      >
-                        <Avatar
-                          src={friend?.avatar_url}
-                          alt={`${friend?.family_name} ${friend?.name}`}
-                          className="mr-2"
-                          shape="circle"
-                          size={35}
-                        />
-                        <div className="mt-2">
-                          {friend?.family_name} {friend?.name}
-                        </div>
-                      </div>
+                       <div
+                       key={index}
+                       className="mb-2 mx-1 flex flex-col items-center text-center"
+                       onClick={() => router.push(`/user/${friend?.id}`)}
+                     >
+                       <Avatar
+                         src={friend?.avatar_url}
+                         alt={`${friend?.family_name} ${friend?.name}`}
+                         shape="circle"
+                         size={50}
+                       />
+                       <div
+                         className="mt-2 truncate w-full"
+                         style={{ whiteSpace: "nowrap" }}
+                       >
+                         {friend?.family_name} {friend?.name}
+                       </div>
+                     </div>
                     ))}
                   </div>
                   <div
@@ -232,6 +230,7 @@ const AboutTab = ({
                     {localStrings.Public.FriendView}
                   </div>
                   <Modal
+                   bodyStyle={{ maxHeight: '70vh', overflowY: 'scroll', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     title={
                       <span className="text-xl font-bold">
                         {localStrings.ListFriends.ListFriends}
@@ -249,12 +248,11 @@ const AboutTab = ({
                       setPage={() => { }}
                       totalPage={1}
                     />
-                    ,
                   </Modal>
                 </div>
               </div>
             </Col>
-            <Col xs={24} lg={16} className="w-full">
+            <Col xs={24} xl={16} className="w-full">
               <PostList
                 loading={loading}
                 posts={posts}
@@ -262,6 +260,7 @@ const AboutTab = ({
                 user={user}
                 fetchUserPosts={fetchUserPosts}
                 hasMore={hasMore}
+                setPosts={setPosts}
               />
             </Col>
           </Row>

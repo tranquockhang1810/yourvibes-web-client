@@ -63,6 +63,7 @@ export const ENGLocalizedStrings = {
     Home: "Home",
     Settings: "Settings",
     Profile: "Profile",
+    LoginStatus: "Please log in again",
   },
   Form: {
     Label: {
