@@ -415,7 +415,11 @@ const Post: React.FC<IPost> = React.memo(
             ]
         }
       >
-        <Row gutter={[8, 8]} className="mx-2">
+        <Row gutter={[8, 8]} className="mx-2"
+         // vào post details
+         onClick={() => {
+          setIsCommentModalVisible(false);
+          router.push(`/postDetails?postId=${likedPost?.id}`);}}>
           {!isParentPost && children ? (
             <Col span={24}>
               {likedPost?.content && (
@@ -491,7 +495,7 @@ const Post: React.FC<IPost> = React.memo(
             overflowY: 'auto', // Thêm thanh cuộn dọc nếu cần
           }}
         >
-          <PostDetailsScreen postId={likedPost?.id} />
+          <PostDetailsScreen postId={likedPost?.id} isModal={true}/>
         </Modal>
 
 
@@ -588,7 +592,7 @@ const Post: React.FC<IPost> = React.memo(
                 <Input.TextArea
                   value={shareContent}
                   onChange={(e) => setShareContent(e.target.value)}
-                  placeholder="Nhập nội dung"
+                  placeholder={localStrings.Post.ShareContent}
                 />
               </Form.Item>
             </Card>

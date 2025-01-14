@@ -390,7 +390,8 @@ const PostDetailsViewModel = (
     fetchComments,
     heartColors,
     setLikedComment,
-    likedComment
+    likedComment,
+    setNewComment,
   };
 };
  

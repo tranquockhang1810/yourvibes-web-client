@@ -172,6 +172,8 @@ export const ENGLocalizedStrings = {
     NoContent: "Content is empty",
     Sponsor: "Sponsored",
     NoPosts: "No posts found",
+    ShareContent: 
+    "Enter the content you want to share...",
   },
   PostDetails: {
     ViewReplies: "View replies",
