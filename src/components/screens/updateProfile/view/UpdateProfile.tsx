@@ -145,7 +145,7 @@ const UpdateProfileScreen = () => {
               className="w-full h-72 object-contain"
             />
             <div className="absolute top-4 left-4">
-              <Upload showUploadList={false} beforeUpload={pickCapwallImage}>
+              <Upload showUploadList={false} beforeUpload={pickCapwallImage}  accept=".jpg, .jpeg, .gif, .png, .svg">
                 <Button icon={<CameraOutlined />} />
               </Upload>
             </div>
@@ -168,7 +168,7 @@ const UpdateProfileScreen = () => {
                 className="w-44 h-44 rounded-full object-cover"
               />
               <div className="absolute top-0 left-2.5">
-                <Upload showUploadList={false} beforeUpload={pickAvatarImage}>
+                <Upload showUploadList={false} beforeUpload={pickAvatarImage}  accept=".jpg, .jpeg, .gif, .png, .svg">
                   <Button icon={<CameraOutlined />} />
                 </Upload>
               </div>

@@ -11,7 +11,7 @@ const Content = () => {
   if (!postId) {
     return <div className="text-center text-gray-500">Đang tải...</div>;
   } else {
-    return <PostDetailsScreen postId={postId} />;
+    return <PostDetailsScreen postId={postId} isModal={false} />;
   }
 }
 

@@ -170,6 +170,7 @@ export const VnLocalizedStrings = {
     NoContent: "Nội dung không hiển thị",
     Sponsor: "Được tài trợ",
     NoPosts: "Không có bài viết nào",
+    ShareContent: "Nhập nội dung chia sẻ của bạn...",
   },
   PostDetails:{
     ViewReplies: "Xem phản hồi",
