@@ -292,13 +292,13 @@ const Post: React.FC<IPost> = React.memo(
           >
             <Col
               xs={4}
-              md={2}
+              md={3}
               className="hover:cursor-pointer"
               onClick={() => router.push(`/user/${likedPost?.user?.id}`)}
             >
-              <Avatar src={likedPost?.user?.avatar_url} shape="circle" size={{ xs: 24, sm: 32, md: 40, lg: 40, xl: 40, xxl: 40 }} />
+              <Avatar src={likedPost?.user?.avatar_url} shape="circle" size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }} />
             </Col>
-            <Col xs={18} md={21}>
+            <Col xs={18} md={20}>
               <Row>
                 <Col
                   span={24}
@@ -528,10 +528,10 @@ const Post: React.FC<IPost> = React.memo(
               }}
             >
               <Row gutter={[8, 8]}>
-                <Col xs={4} md={2} className="hover:cursor-pointer">
-                  <Avatar src={likedPost?.user?.avatar_url} shape="circle" />
+                <Col xs={5} md={4} className="hover:cursor-pointer">
+                  <Avatar src={likedPost?.user?.avatar_url} shape="circle" size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }}/>
                 </Col>
-                <Col xs={18} md={21}>
+                <Col xs={16} md={19}>
                   <Row>
                     <Col
                       span={24}

@@ -104,7 +104,7 @@ const AddPostScreen = ({ onPostSuccess, fetchNewFeeds, fetchUserPosts }: AddPost
             user?.avatar_url ||
             "https://res.cloudinary.com/dfqgxpk50/image/upload/v1712331876/samples/look-up.jpg"
           }
-          size={40}
+          size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }}
         />
         <div style={{ marginLeft: "10px", flex: 1 }}>
           <Text strong>

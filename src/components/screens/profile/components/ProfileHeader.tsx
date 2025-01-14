@@ -272,28 +272,12 @@ const ProfileHeader = ({
           xxl: 200,
         }}
         style={{
-          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Hiệu ứng bóng đẹp
-          border: "2px solid #f0f0f0", // Viền mỏng đẹp mắt
-          cursor: "pointer", // Con trỏ chuột dạng nhấn
+          boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", 
+          border: "2px solid #f0f0f0", 
+          cursor: "pointer", 
         }}
-        onClick={() => setIsPreviewOpen(true)} // Kích hoạt preview khi nhấp vào
+        onClick={() => setIsPreviewOpen(true)} 
       />
-                {/* <Avatar
-                  src={
-                    user?.avatar_url ||
-                    "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg"
-                  }
-                  alt="Profile"
-                  shape="circle"
-                  size={{
-                    xs: 150,
-                    sm: 150,
-                    md: 200,
-                    lg: 200,
-                    xl: 200,
-                    xxl: 200,
-                  }}
-                /> */}
               </Col>
               <Col xs={24} md={14} xl={16} className="md:mt-[60px] mt-0 pl-4">
                 <div className="md:text-left text-center mt-2">

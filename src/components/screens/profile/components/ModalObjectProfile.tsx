@@ -52,14 +52,14 @@ const ObjectProfile = ({ closedModalObject }: { closedModalObject: () => void })
         <div className="mt-2">
           {options.map((option) => (
             <Row key={option.label} align="middle" className="my-2">
-              <Col span={1}>
+              <Col xs={3} sm={2}>
                 <Radio
                   checked={selectedOption === option.value}
                   onChange={() => handleSelect(option.value)}
                   className="mr-4"
                 />
               </Col>
-              <Col span={22}>
+              <Col xs={21} sm={22}>
                 <div className="flex flex-col">
                   <Typography.Text>{option.label}</Typography.Text>
                   <Typography.Text className="text-gray-500 text-sm">{option.description}</Typography.Text>
