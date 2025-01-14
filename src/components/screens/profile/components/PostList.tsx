@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Spin, Modal, Empty, message } from 'antd';
+import { Spin, Modal, Empty, message, Avatar } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { PostResponseModel } from '@/api/features/post/models/PostResponseModel';
@@ -55,15 +55,10 @@ const PostList = ({ loading, posts, loadMorePosts, user, fetchUserPosts, hasMore
             maxWidth: "600px",
           }}
         >
-          <img
+          <Avatar
             src={user?.avatar_url}
             alt="User Avatar"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "25px",
-              backgroundColor: lightGray,
-            }}
+            size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }}
           />
           <div style={{ marginLeft: "10px", flex: 1 }}>
             <p>

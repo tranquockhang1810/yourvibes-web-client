@@ -4,7 +4,7 @@ import React from 'react';
 import { IoEllipsisVerticalSharp } from 'react-icons/io5';
 import { FriendResponseModel } from '@/api/features/profile/model/FriendReponseModel';
 import { useRouter } from 'next/navigation';
-import { Dropdown, MenuProps, Modal } from 'antd';
+import { Avatar, Dropdown, MenuProps, Modal } from 'antd';
 import UserProfileViewModel from '../viewModel/UserProfileViewModel';
 
 const ListFriends = ({
@@ -71,13 +71,13 @@ const ListFriends = ({
             className="flex flex-row items-center"
             onClick={() => router.push(`/user/${friend.id}`)}
           >
-            <img
+            <Avatar
               src={
                 friend.avatar_url ||
                 'https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg'
               }
               alt={'avatar'}
-              className="w-14 h-14 rounded-full"
+              size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }}
             />
             <span className="ml-4 text-lg font-semibold">
               {friend.family_name} {friend.name}

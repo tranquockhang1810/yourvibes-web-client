@@ -212,7 +212,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({
                 className="comment-item bg-gray-50 p-4 rounded-lg shadow-sm text-sm hover:shadow-md"
               >
                 <div className="comment-header flex items-center mb-3">
-                  <Avatar src={comment.user.avatar_url} size="small" />
+                  <Avatar src={comment.user.avatar_url} size={{ xs: 40, sm: 40, md: 40, lg: 40, xl: 40, xxl: 40 }} />
                   <div className="ml-3">
                     <p className="text-gray-800 font-semibold">
                       {comment.user.family_name} {comment.user.name}
@@ -352,7 +352,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({
                         className="reply-item bg-gray-100 p-3 rounded-lg mt-2 text-sm"
                       >
                         <div className="reply-header flex items-center mb-3">
-                          <Avatar src={reply.user.avatar_url} size="small" />
+                          <Avatar src={reply.user.avatar_url} size={{ xs: 40, sm: 40, md: 40, lg: 40, xl: 40, xxl: 40 }} />
                           <div className="ml-3">
                             <p className="text-gray-800 font-semibold">
                               {reply.user.family_name} {reply.user.name}
@@ -480,7 +480,7 @@ const PostDetailsScreen: React.FC<CommentsScreenProps> = ({
                                 <div className="reply-header flex items-center mb-3">
                                   <Avatar
                                     src={nestedReply.user.avatar_url}
-                                    size="small"
+                                    size={{ xs: 40, sm: 40, md: 40, lg: 40, xl: 40, xxl: 40 }}
                                   />
                                   <div className="ml-3">
                                     <p className="text-gray-800 font-semibold">

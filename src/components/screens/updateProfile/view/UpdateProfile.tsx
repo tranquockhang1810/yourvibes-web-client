@@ -58,7 +58,7 @@ const UpdateProfileScreen = () => {
       name: user?.name,
       family_name: user?.family_name,
       email: user?.email,
-      birthday: dayjs(user?.birthday),
+      birthday: user?.birthday && dayjs(user.birthday).isValid() ? dayjs(user.birthday) : dayjs(user?.created_at),
       phone_number: user?.phone_number,
       biography: user?.biography,
     });

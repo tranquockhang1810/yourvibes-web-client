@@ -6,7 +6,7 @@ import HomeViewModel from "../viewModel/HomeViewModel";
 import { defaultNewFeedRepo } from "@/api/features/newFeed/NewFeedRepo";
 import { useAuth } from "@/context/auth/useAuth";
 import { useRouter } from "next/navigation";
-import { Empty, Modal, Spin } from 'antd';
+import { Avatar, Empty, Modal, Spin } from 'antd';
 import AddPostScreen from "../../addPost/view/AddPostScreen";
 import ProfileViewModel from "../../profile/viewModel/ProfileViewModel";
 import { LoadingOutlined } from '@ant-design/icons';
@@ -53,15 +53,10 @@ const Homepage = () => {
             maxWidth: "600px",
           }}
         >
-          <img
+          <Avatar
             src={user?.avatar_url}
             alt="User Avatar"
-            style={{
-              width: "50px",
-              height: "50px",
-              borderRadius: "25px",
-              backgroundColor: lightGray,
-            }}
+            size={{ xs: 40, sm: 40, md: 50, lg: 50, xl: 50, xxl: 50 }}
           />
           <div style={{ marginLeft: "10px", flex: 1 }}>
             <p><b>{user?.family_name + " " + user?.name || localStrings.Public.Username}</b></p>
@@ -107,10 +102,10 @@ const Homepage = () => {
             onClick={() => router.push(`/user/${user?.id}`)}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <img
+              <Avatar
                 src={user.avatar_url}
                 alt={user.name}
-                style={{ width: 50, height: 50, borderRadius: "50%" }}
+                size={50}
               />
               <span style={{ marginLeft: 10, fontWeight: "bold", fontSize: 16 }}>
                 {user.family_name + " " + user.name}

@@ -92,7 +92,7 @@ const AboutTab = ({
           <Row gutter={[16, 16]} align={"top"} justify={"center"}>
             <Col xs={24} xl={8} className="w-full xl:sticky xl:top-20" style={{ position: "sticky" }}>
               <div
-                className="w-full mx-auto max-w-[600px] lg:max-w-screen-xl flex flex-col px-5 border rounded-md "
+                className="w-full mx-auto max-w-[600px] flex flex-col px-5 border rounded-md "
                 style={{ backgroundColor: backgroundColor }}
               >
                 {/* // detail */}
